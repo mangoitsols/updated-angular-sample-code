@@ -1,0 +1,60 @@
+<div class="content">
+    <div class="add_event_main event_main">
+        <div class="row">
+            <div class="col-md-12 create_faq Payment_data_main">
+                <div class="all_btn_group btn_collapse">
+                    <div class="panel_heading">
+                        <h3>Create Category</h3>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body p-20">
+                        <form [formGroup]='categoryForm' (ngSubmit)='createCategory()'>
+                            <div class="alert alert-danger" *ngIf="responseMessage">{{responseMessage}}</div>
+                            <!-- profile header end -->
+                            <!-- profile details data start -->
+                            <div class="profile_details">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="event_field">
+                                            <label>Title</label>
+                                            <input formControlName="category_title" type="text" placeholder="Add a Title">
+                                            <span class="text-danger" *ngIf="formSubmit || categoryForm.controls['category_title'].touched">
+                                                <span *ngIf="categoryForm.controls['category_title'].errors">{{language.error_message.common_required}}</span>
+                                            </span>
+                                        </div>
+                                        <div class="news-dropdown">
+                                             <div class="event_field">
+                                                <label>Position</label>
+                                                <ng-multiselect-dropdown formControlName="category_position"
+                                                    [ngClass]="{ 'is-invalid': formSubmit && categoryForm.controls.category_position.errors }"
+                                                    [placeholder]="language.header.position"
+                                                    [settings]="positionDropdownSettings"
+                                                    [data]="positionList" 
+                                                    (onSelect)="onPositionItemSelect($event)"
+                                                    (onDeSelect)="onPositionItemDeSelect($event)">
+                                                </ng-multiselect-dropdown>
+                                             </div>
+                                        </div>
+                                        <!-- <div class="event_field task_area_field">
+                                            <label>Description</label>
+                                            <angular-editor formControlName="category_description" [config]=""></angular-editor>
+                                            <span class="text-danger" *ngIf="formSubmit || categoryForm.controls['category_description'].touched">
+                                                <span *ngIf=" categoryForm.controls['category_description'].errors">{{language.error_message.common_required}}</span>
+                                            </span>
+                                        </div> -->
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- profile details data End -->
+                            <div class="profile_sub_btn event_sub_btn ">
+                                <button type="button "class="Cancel_btn" routerLink="/faq-category">Cancel</button>
+                                <button type="submit " class="save_btn">Save</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

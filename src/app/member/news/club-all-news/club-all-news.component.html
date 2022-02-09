@@ -1,0 +1,219 @@
+<div class="content" id="all_news_grid">
+
+    <div class="card " *ngIf="role!='guest'">
+        <div class="card-header ">
+            <h5 class="card-title">{{language.dashboard.dashboardNewsTitle}}</h5>
+            <div class="goBack">
+                <button (click)="goBack()" type="button"><img src="../../assets/img/back_btn.png"></button>
+            </div>
+        </div>
+
+        <div class="paginationHead full_width" *ngIf="dashboardData?.length > 0">
+            <div class="pagintHeadLeft">
+                <pagination-controls (pageChange)="pageChanged($event);" autoHide="true" previousLabel="{{language.pagination.previous}}" nextLabel="{{language.pagination.next}}">
+                </pagination-controls>
+            </div>
+            <div class="searchRefine">
+                <span>{{language.pagination.go_to_page}} <input type="text" #cPg value="{{ currentPageNmuber }}"
+                        (change)="goToPg(cPg.value)"></span>
+                <span>{{language.pagination.limit_per_page}}
+                    <select #lPg value="{{ itemPerPage }}" (change)="setItemPerPage(lPg.value)">
+                        <option *ngFor="let limitValue of limitPerPage" value="{{limitValue.value}}">
+                            {{limitValue.value}}</option>
+                    </select>
+                </span>
+                <div class="pagintHeadRight text-center">
+                    {{ ((currentPageNmuber -1) * itemPerPage) + 1 }} {{language.header.to}} {{ (currentPageNmuber * itemPerPage) > newsTotalRecords ? newsTotalRecords : (currentPageNmuber * itemPerPage) }} {{language.header.of}} {{ newsTotalRecords | number }} {{language.header.news}}
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card-body club_all_news">
+            <div class="alert alert-danger" *ngIf="responseMessage">{{responseMessage}}</div>
+            <div class="row" (onLoad)="getAllNews()">
+                <div class="col-lg-3 col-md-3 col-sm-6" *ngFor='let data of dashboardData | paginate: {
+                    itemsPerPage: itemPerPage,
+                    currentPage: currentPageNmuber,
+                    totalItems: newsTotalRecords }'>
+                    <!-- <a routerLink="/clubnews/{{data.id}}" *ngIf="data.show_guest_list && userData.roles[0]=='guest'"> -->
+                  
+                        <!-- <a routerLink="/clubnews/{{data.id}}"> -->
+                        <div class="news-widget"  data-bs-toggle="modal" data-bs-target="#exModal" (click)="getNewsDetails(data.id)">
+                            <div class="news-image" [ngClass]="data.imageUrls == null ? 'no_image' : ''">
+                                <!-- <img src="{{data.imageUrls}}"> -->
+                                <img *ngIf="data.imageUrls!= null" src="{{data.imageUrls}}">
+                                <img *ngIf="data.imageUrls == null" src="../../assets/img/no_image.png">
+                            </div>
+                            <div class="news-content">
+                                <!-- <a routerLink="/clubnews/{{data.id}}"> -->
+                                    <h5 class="news-content-heading" [innerHTML]="data.title"></h5>
+                                <!-- </a> -->
+                                <p class="news-content-text" [innerHTML]="data.text">...<a href="#">{{language.dashboard.dashboardNewsContent}}</a></p>
+                            </div>
+                            <div class="card-footer ">
+                                <hr>
+                                <div class="author-info">
+                                    <div  class="author-img">
+                                        <img *ngIf="data.user.image == null" src="assets/img/defaultProfile.jpeg">
+                                        <img *ngIf="data.user.image != null" [src]="data.user.image">
+                                    </div>
+                                    
+                                    <!-- <div class="author-img" *ngFor="let thumbnail of thumbnails">
+                                        <img *ngIf="thumbnails == null" src="assets/img/defaultProfile.jpeg"> 
+                                        <img  [src]="thumbnail" width="30px">
+                                    </div> -->
+
+                                   
+                                    <div class="author-des">
+                                        <span class="author-date">{{language.dashboard.dashboardNewsAuthor}}</span>
+                                        <span class="author-id">{{data.user.firstname}}
+                                            {{data.user.lastname}}</span>
+                                        <span class="author-date">{{data.created_at | date: 'd MMM y'}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <!-- </a> -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card" *ngIf="role=='guest'">
+        <div class="card-header ">
+            <h5 class="card-title">{{language.dashboard.dashboardNewsTitle}}</h5>
+            <div class="goBack">
+                <button (click)="goBack()" type="button"><img src="../../assets/img/back_btn.png"></button>
+            </div>
+        </div>
+
+        <div class="paginationHead full_width" *ngIf="guestNews?.length > 0">
+            <div class="pagintHeadLeft">
+                <pagination-controls (pageChange)="pageChanged($event);" autoHide="true" previousLabel="{{language.pagination.previous}}" nextLabel="{{language.pagination.next}}">
+                </pagination-controls>
+            </div>
+            <div class="searchRefine">
+                <span>{{language.pagination.go_to_page}} <input type="number" maxLength="132" #cPg
+                        value="{{ currentPageNmuber }}" (change)="goToPg(cPg.value)"></span>
+                <span>{{language.pagination.limit_per_page}}
+                    <select #lPg value="{{ itemPerPage }}" (change)="setItemPerPage(lPg.value)">
+                        <option *ngFor="let limitValue of limitPerPage" value="{{limitValue.value}}">
+                            {{limitValue.value}}</option>
+                    </select>
+                </span>
+                <div class="pagintHeadRight text-center">
+                    {{ ((currentPageNmuber -1) * itemPerPage) + 1 }} to {{ (currentPageNmuber * itemPerPage) > guestNewsRecords ? guestNewsRecords : (currentPageNmuber * itemPerPage) }} of {{ guestNewsRecords | number }} {{language.header.news}}
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body club_all_news">
+            <div class="alert alert-danger" *ngIf="responseMessage">{{responseMessage}}</div>
+            <div class="row" (onLoad)="getAllNews()">
+
+                <div class="col-lg-3 col-md-3 col-sm-6" *ngFor='let data of guestNews | paginate: {
+                    itemsPerPage: itemPerPage,
+                    currentPage: currentPageNmuber,
+                    totalItems: guestNewsRecords }'>
+                    <!-- <a routerLink="/clubnews/{{data.id}}" *ngIf="data.show_guest_list && userData.roles[0]=='guest'"> -->
+                    <!-- <a routerLink="/clubnews/{{data.id}}"> -->
+
+                        <div class="news-widget" data-bs-toggle="modal" data-bs-target="#exModal" (click)="getNewsDetails(data.id)">
+                            <div class="news-image" [ngClass]="data.imageUrls == null ? 'no_image' : ''">
+                             
+                                <img *ngIf="data.imageUrls!= null" src="{{data.imageUrls}}">
+                                <img *ngIf="data.imageUrls == null" src="../../assets/img/no_image.png">
+                            </div>
+                            <div class="news-content">
+                                <!-- <a routerLink="/clubnews/{{data.id}}"> -->
+                                    <h5 class="news-content-heading" [innerHTML]="data.title"></h5>
+                                <!-- </a> -->
+                                <p class="news-content-text" [innerHTML]="data.text">...<a href="#">{{language.dashboard.dashboardNewsContent}}</a></p>
+                            </div>
+                            <div class="card-footer ">
+                                <hr>
+                                <div class="author-info">
+                                    <div class="author-img">
+                                       
+                                        <img *ngIf="data.user.image == null" src="assets/img/defaultProfile.jpeg">
+                                        <img *ngIf="data.user.image != null" [src]="data.user.image">
+                                    </div>
+                                    <div class="author-des">
+                                        <span class="author-date">{{language.dashboard.dashboardNewsAuthor}}</span>
+                                        <span class="author-id">{{data.user.firstname}}
+                                            {{data.user.lastname}}</span>
+                                        <span class="author-date">{{data.created_at | date: 'd MMM y'}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    <!-- </a> -->
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div  class="modal fade change_pass_section news_detail_popup all_news" id="exModal" tabindex="-1" aria-labelledby="exampleModalLabel">
+        <div class="modal-dialog"> 
+            <!-- <div id="profileSpinner" class="overlay__content"><span class="spinner"></span></div> -->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="nc-icon nc-simple-remove"></i></button>
+                </div>
+                <div class="modal-body" >          
+                    <div class="n-detail-main">
+                        <div class="news_details_main">
+                            <div class="row">
+                                <div class="col-md-12 news_detail_inner">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <!-- news details data start -->
+                                            <div class="news_details" *ngIf="newsData">
+                                                <div class="">
+                                                    <div class="news_content col-md-12">
+                                                        <div class="news_image">
+                                                            <app-image-viewer *ngIf="imageUrls" [imageURL]="imageUrls" [open]="viewImage" (close)="viewImage = false"></app-image-viewer>
+                                                            <div class="news_image_container" (click)="viewImage=true">
+                                                                <!-- <img src="{{newsData.imageUrls}}"> -->
+                                                                <img [src]="newsData.imageUrls ? newsData.imageUrls : '../../assets/img/no_image.png'">
+                                                            </div>
+                                                        </div>
+                                                        <!--Remove the tag-->
+                                                        <div class="news_heading">
+                                                            <h2>{{newsData.title}}</h2>
+                                                        </div>
+                                                        <div class="news_content_text" [innerHTML]="newsData.text">...<a href="#">{{language.dashboard.dashboardNewsContent}}</a></div>
+                                                        <div class="author-info">                                                             
+                                                            <div  class="author-img" >
+                                                                <img *ngIf="thumbnail == null"  src="assets/img/defaultProfile.jpeg">
+                                                                <img *ngIf="thumbnail != null"  [src]="thumbnail" style="width: 100px;">
+                                                            </div>                                                           
+                                                            <div class="author-des">
+                                                                <span class="author-id" >
+                                                                    {{language.dashboard.dashboardNewsAuthor}} {{newsData.user.firstname}}  {{newsData.user.lastname}}
+                                                                </span>
+                                                                <span class="author-date">{{newsData.created_at | date: 'd MMM y'}}</span>
+                                                            </div>                                                            
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- news details data End -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+              
+            </div>
+        </div>
+    </div>
+     
+    
+</div>

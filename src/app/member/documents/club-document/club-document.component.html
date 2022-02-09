@@ -1,0 +1,211 @@
+<div class="card-body ">
+    <div class="alert alert-danger" *ngIf="responseMessage">{{responseMessage}}</div>
+    <div class="document-inner list_document">
+        <div class="row">
+    
+            <!-- document box -->
+            <div class="col-md-12" *ngFor="let doc of clubData; let i = index">
+                <div class="doc_box toggle-main">
+                    <a>
+                        <img [src]="extArr[i]? docExt[i] :'assets/img/doc-icons/word.svg'">
+                    </a>
+                    <a>
+                        <span class="docu_name">{{fileNameArr[i]}}</span>
+                    </a>
+                    <div id="comp-render" *ngIf="viewImage[i]==true">
+                        <app-image-viewer [imageURL]="preImage" [open]="viewImage[i]" (close)="viewImage[i] = false">
+                        </app-image-viewer>
+                    </div>
+                    <nav class="navbar navbar-absolute fixed-top">
+                        <div class="collapse navbar-collapse justify-content-end" id="navigation">
+                            <ul class="navbar-nav">
+                                <li class="nav-item dropdown add_dropdown document_dd">
+                                    <a class="nav-link dropdown-toggle toggle_btn" aria-haspopup="true" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-right add-action">
+                                        <ul>
+                                            <li *ngIf="optionVisibility">
+                                                <a href="javascript:;" (click)="moveDoc(doc.id, 'personal')">
+                                                    <i class="fa fa-clipboard" aria-hidden="true"></i> {{language.move_document.move_this_file_to}} {{language.club_document.my_documents}}
+                                                </a>
+                                            </li>
+                                            <li *ngIf="optionVisibility">
+                                                <a href="javascript:;" (click)="moveDoc(doc.id, 'current-statuses')">
+                                                    <i class="fa fa-certificate" aria-hidden="true"></i> {{language.move_document.move_this_file_to}} {{language.club_document.current_status}}
+                                                </a>
+                                            </li>
+                                            <li *ngIf="optionVisibility">
+                                                <a href="javascript:;" (click)="moveDoc(doc.id, 'archive')">
+                                                    <i class="fa fa-file-archive-o" aria-hidden="true"></i> {{language.move_document.move_this_file_to}} {{language.club_document.archived_documents}}
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="javascript:;" (click)="previewImage(i)">
+                                                    <i class="fa fa-eye" aria-hidden="true"></i> {{language.move_document.preview_this_file}}
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a target="_blank" href="{{doc.path}}">
+                                                    <i class="fa fa-download" aria-hidden="true"></i> {{language.move_document.download_this_file}}
+                                                </a>
+                                            </li>
+                                            <li *ngIf="(userData.id == doc.created_by || userData.isAdmin) && optionVisibility">
+                                                <a href="javascript:;" (click)="deleteDoc(doc.id, i)">
+                                                    <i class="fa fa-trash-o" aria-hidden="true"></i> {{language.move_document.remove_this_file}}
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </nav>
+                    <!-- <span class="docu_size">162 Mb</span> -->
+                </div>
+            </div>
+            <!-- document box end-->
+            <!-- <div class="col-md-2 col-sm-3">
+                <div class="doc_box">
+                    <img src="assets/img/doc-icons/word.svg">
+                    <span class="docu_name">User stories.docx</span>
+                    <span class="docu_size">162 Mb</span>
+                </div>
+            </div>
+            
+            <div class="col-md-2 col-sm-3">
+                <div class="doc_box">
+                    <img src="assets/img/doc-icons/x.svg">
+                    <span class="docu_name">Budget estimate for</span>
+                    <span class="docu_size">162 Mb</span>
+                </div>
+            </div>
+            
+            <div class="col-md-2 col-sm-3">
+                <div class="doc_box">
+                    <img src="assets/img/doc-icons/folder.svg">
+                    <span class="docu_name">Additional Material</span>
+                    <span class="docu_size">162 Mb</span>
+                </div>
+            </div>
+            
+            <div class="col-md-2 col-sm-3">
+                <div class="doc_box">
+                    <img src="assets/img/doc-icons/p.svg">
+                    <span class="docu_name">Presentation for Investments</span>
+                    <span class="docu_size">162 Mb</span>
+                </div>
+            </div>
+            
+            <div class="col-md-2 col-sm-3">
+                <div class="doc_box">
+                    <img src="assets/img/doc-icons/p.svg">
+                    <span class="docu_name">Presentation for Investments</span>
+                    <span class="docu_size">162 Mb</span>
+                </div>
+            </div>
+            
+            <div class="col-md-2 col-sm-3">
+                <div class="doc_box">
+                    <img src="assets/img/doc-icons/folder.svg">
+                    <span class="docu_name">IOtask web UI kit.sketch</span>
+                    <span class="docu_size">162 Mb</span>
+                </div>
+            </div>
+            
+            <div class="col-md-2 col-sm-3">
+                <div class="doc_box">
+                    <img src="assets/img/doc-icons/x.svg">
+                    <span class="docu_name">User stories.docx</span>
+                    <span class="docu_size">162 Mb</span>
+                </div>
+            </div>
+            
+            <div class="col-md-2 col-sm-3">
+                <div class="doc_box">
+                    <img src="assets/img/doc-icons/psd.svg">
+                    <span class="docu_name">Budget estimate for</span>
+                    <span class="docu_size">162 Mb</span>
+                </div>
+            </div>
+            
+            <div class="col-md-2 col-sm-3">
+                <div class="doc_box">
+                    <img src="assets/img/doc-icons/p.svg">
+                    <span class="docu_name">Additional Material</span>
+                    <span class="docu_size">162 Mb</span>
+                </div>
+            </div>
+            
+            <div class="col-md-2 col-sm-3">
+                <div class="doc_box">
+                    <img src="assets/img/doc-icons/Ai.svg">
+                    <span class="docu_name">Presentation for Investments</span>
+                    <span class="docu_size">162 Mb</span>
+                </div>
+            </div>
+            
+            <div class="col-md-2 col-sm-3">
+                <div class="doc_box">
+                    <img src="assets/img/doc-icons/Ai.svg">
+                    <span class="docu_name">Presentation for Investments</span>
+                    <span class="docu_size">162 Mb</span>
+                </div>
+            </div>
+            
+            <div class="col-md-2 col-sm-3">
+                <div class="doc_box">
+                    <img src="assets/img/doc-icons/adobe.svg">
+                    <span class="docu_name">Web Presentation for Investments</span>
+                    <span class="docu_size">162 Mb</span>
+                </div>
+            </div>
+            
+            <div class="col-md-2 col-sm-3">
+                <div class="doc_box">
+                    <img src="assets/img/doc-icons/folder.svg">
+                    <span class="docu_name">Image for uploading</span>
+                    <span class="docu_size">162 Mb</span>
+                </div>
+            </div>
+            
+            <div class="col-md-2 col-sm-3">
+                <div class="doc_box">
+                    <img src="assets/img/doc-icons/adobe.svg">
+                    <span class="docu_name">Presentation.pdf</span>
+                    <span class="docu_size">162 Mb</span>
+                </div>
+            </div>
+            
+            <div class="col-md-2 col-sm-3">
+                <div class="doc_box">
+                    <img src="assets/img/doc-icons/sketch.svg">
+                    <span class="docu_name">Additional Material</span>
+                    <span class="docu_size">162 Mb</span>
+                </div>
+            </div>
+            
+            <div class="col-md-2 col-sm-3">
+                <div class="doc_box">
+                    <img src="assets/img/doc-icons/word.svg">
+                    <span class="docu_name">User stories.docx</span>
+                    <span class="docu_size">162 Mb</span>
+                </div>
+            </div>
+            
+            <div class="col-md-2 col-sm-3">
+                <div class="doc_box">
+                    <img src="assets/img/doc-icons/word.svg">
+                    <span class="docu_name">User stories.docx</span>
+                    <span class="docu_size">162 Mb</span>
+                </div>
+            </div>-->
+        </div>
+        <div *ngIf="clubData">
+            <div class="col-lg-12 col-md-12 col-sm-12 empty-data-image" *ngIf="clubData.length == 0">
+                <img src="assets/img/no-event-img.png"><br>
+                <span>{{language.club_document.no_documents}}</span>
+            </div>
+        </div>
+    </div>
+</div>

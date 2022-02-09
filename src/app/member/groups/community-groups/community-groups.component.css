@@ -1,0 +1,31 @@
+@media only screen and (max-width: 1480px) and (min-width: 1261px){
+	.com-g-widget .news-image {
+    height: 154px;
+}
+}
+@media screen and (max-width: 600px) {
+   .card{
+    margin-right: 0px;
+    margin-left: 0px;
+}
+.chat-navigation .nav-tabs .nav-item {
+    width: 100% !important;
+}
+}
+@media only screen and (min-width: 1921px){
+.card-body.manage_g_widget {
+    min-height: 506px;
+    overflow: auto;
+    max-height: 1086px;
+}
+.com-g-widget .news-image {
+    height: 255px;
+}
+}
+.community-group-widget .card {
+    background: #fff;
+    box-shadow: none;
+}
+.news-widget.com-g-widget {
+    background: #fff;
+}

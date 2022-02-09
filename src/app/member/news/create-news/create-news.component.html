@@ -1,0 +1,141 @@
+<div class="content">
+    <div class="add_event_main event_main">
+        <div class="row">
+            <div class="col-md-12 add_event_content Payment_data_main">
+                <div class="card">
+                    <div class="card-body">
+                        <!-- profile header start -->
+                        <div class="profile_main_head">
+                            <div class="profile_title">{{language.create_news.title}}</div>
+                        </div>
+                        <form [formGroup]="createNewsForm" (ngSubmit)='createNews()'>
+                            <!-- profile header end -->
+                            <!-- profile details data start -->
+                            <div class="profile_details">
+                                <div class="error alert alert-danger" *ngIf="responseMessage">{{responseMessage}}</div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="event_field">
+                                            <label>{{language.create_news.title_label}}</label>
+                                            <input formControlName="title" type="text" placeholder="{{language.create_news.title_placeholder}}" [ngClass]="{ 'is-invalid': submitted && createNewsForm.controls.title.errors }">
+                                            <div *ngIf="(createNewsForm.controls.title.touched || submitted)&& (createNewsForm.controls.title.errors?.required || createNewsForm.controls.title.errors?.whitespace)" class="text-danger">
+                                                <div *ngIf="createNewsForm.controls.title.errors.required">
+                                                    {{language.error_message.common_required}}
+                                                </div>
+                                                <div *ngIf="createNewsForm.controls.title.errors?.whitespace">
+                                                    {{language.error_message.common_valid}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="event_field task_area_field">
+                                            <label>{{language.create_news.content}}</label>
+                                            <angular-editor formControlName="content" [config]="editorConfig" [ngClass]="{ 'is-invalid': submitted && createNewsForm.controls.content.errors }">
+                                            </angular-editor>
+                                            <div *ngIf="(createNewsForm.controls.content.touched || submitted)&& createNewsForm.controls.content.errors?.required" class="text-danger">
+                                                <div *ngIf="createNewsForm.controls.content.errors.required">
+                                                    {{language.error_message.common_required}}
+                                                </div>
+                                            </div>
+                                            <!-- <textarea placeholder="Write your content"></textarea> -->
+                                        </div>
+                                        <div class="news-dropdown">
+                                            <div class="multi_dropdown_main">
+                                                <span class="news-visible-dropdown">
+                                                    <label>{{language.create_news.visible}}</label>
+                                                    <ng-multiselect-dropdown formControlName="visible_dropdown"
+                                                        [ngClass]="{ 'is-invalid': submitted && createNewsForm.controls.visible_dropdown.errors }"
+                                                        [placeholder]="language.create_news.visible"
+                                                        [settings]="visiblityDropdownSettings" [data]="visiblity"
+                                                        (onSelect)="onVisiblitySelect($event)">
+                                                    </ng-multiselect-dropdown>
+                                                    <div *ngIf="(createNewsForm.controls.visible_dropdown.touched || submitted)&& createNewsForm.controls.visible_dropdown.errors?.required"
+                                                        class="text-danger">
+                                                        <div
+                                                            *ngIf="createNewsForm.controls.visible_dropdown.errors.required">
+                                                            {{language.error_message.common_required}}
+                                                        </div>
+                                                    </div>
+                                                </span>
+                                            </div>
+                                            <div class="multi_dropdown_main">
+                                                <span class="news-group-dropdown" *ngIf="groupVisiblity == '2'">
+                                                    <label>{{language.create_news.group}}</label>
+                                                    <ng-multiselect-dropdown formControlName="group_dropdown"
+                                                        [ngClass]="{ 'is-invalid': submitted && createNewsForm.controls.group_dropdown.errors }"
+                                                        [placeholder]="language.create_news.group"
+                                                        [settings]="groupDropdownSettings"
+                                                        [data]="groups"
+                                                        (onDeSelect)="onGroupItemDeSelect($event)"
+                                                        (onSelect)="onGroupItemSelect($event)">
+                                                    </ng-multiselect-dropdown>
+                                                    <div *ngIf="(createNewsForm.controls.group_dropdown.touched || submitted)&& createNewsForm.controls.group_dropdown.errors?.required"
+                                                        class="text-danger">
+                                                        <div
+                                                            *ngIf="createNewsForm.controls.group_dropdown.errors.required">
+                                                            {{language.error_message.common_required}}
+                                                        </div>
+                                                    </div>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="guest-option">
+                                            <label class="guest_label">
+                                                <span>{{language.create_news.show_guest}}</span>&nbsp;
+                                                <div class="switch_toggle">
+                                                    <input type="checkbox" id="switch" formControlName="show_guest"
+                                                        [ngClass]="{ 'is-invalid': submitted && createNewsForm.controls.show_guest.errors }" />
+                                                    <label for="switch">Toggle</label>
+                                            <div *ngIf="(createNewsForm.controls.show_guest.touched || submitted)&& createNewsForm.controls.show_guest.errors?.required" class="text-danger">
+                                                <div *ngIf="createNewsForm.controls.show_guest.errors.required">
+                                                    {{language.error_message.common_required}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        </label>
+                                        <!-- <label class="switch">
+                                                <input type="checkbox" formControlName="show_guest"
+                                                    [ngClass]="{ 'is-invalid': submitted && createNewsForm.controls.show_guest.errors }">
+                                                <span class="slider round"></span>
+                                                <div *ngIf="(createNewsForm.controls.show_guest.touched || submitted)&& createNewsForm.controls.show_guest.errors?.required"
+                                                    class="text-danger">
+                                                    <div *ngIf="createNewsForm.controls.show_guest.errors.required">
+                                                        {{language.error_message.common_required}}
+                                                    </div>
+                                                </div>
+                                            </label> -->
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="event_field">
+                                        <label>{{language.create_news.add_picture}}</label>
+                                        <div class="event_upload news_pic_upload">
+                                            <label class="preview_txt" style="display: none;"></label>
+                                            <input type="file" (change)="uploadFile($event)" id="add_image">
+                                            <span class="event_uplod_overlay">
+                                                <label *ngIf="errorImage.isError" class="text-danger">
+                                                    {{ errorImage.errorMessage }}
+                                                </label>
+                                                <img class="preview_img" src="assets/img/event_upload.png">
+                                            </span>
+                                            <div *ngIf="(createNewsForm.controls.add_image.touched || submitted) && (createNewsForm.controls.add_image.errors?.required )" class="text-danger">
+                                                <div *ngIf="createNewsForm.controls.add_image.errors.required">
+                                                    {{language.error_message.common_required}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                    <!-- profile details data End -->
+                    <div class="profile_sub_btn event_sub_btn ">
+                        <button type="button " (click)="onCancel() " class="Cancel_btn ">{{language.create_news.cancel}}</button>
+                        <button type="submit " class="save_btn ">{{language.create_news.save}}</button>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>

@@ -1,0 +1,180 @@
+.sidebar, .off-canvas-sidebar {
+    position: fixed;
+    top: 0;
+    height: 100%;
+    bottom: 0;
+    width: 300px;
+    left: 0;
+    z-index: 1030;
+    border-right: 1px solid #ddd;
+}
+.sidebar:before, .sidebar:after, .off-canvas-sidebar:before, .off-canvas-sidebar:after {
+    display: block;
+    content: "";
+    opacity: 1;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+}
+.sidebar .logo, .sidebar .logo, .off-canvas-sidebar .logo {
+    position: relative;
+    padding: 8px 0.7rem;
+    z-index: 4;
+    border-bottom: 1px solid #E8E9EB;
+    display: inline-block;
+    width: 100%;
+}
+.sidebar[data-color="white"] .logo .simple-text, .off-canvas-sidebar[data-color="white"] .logo .simple-text {
+    color: #66615B;
+}
+.sidebar .logo a.logo-mini, .off-canvas-sidebar .logo a.logo-mini {
+    opacity: 1;
+    float: none;
+    width: 76px;
+    text-align: center;
+    margin: 0 auto;
+}
+.sidebar[data-color="white"] .logo .simple-text, .off-canvas-sidebar[data-color="white"] .logo .simple-text {
+    color: #66615B;
+}
+.sidebar .logo a.logo-mini, .off-canvas-sidebar .logo a.logo-mini {
+    opacity: 1;
+    float: none;
+    width: 76px;
+    text-align: center;
+    margin: 0 auto;
+}
+.sidebar .logo .simple-text, .off-canvas-sidebar .logo .simple-text {
+    text-transform: uppercase;
+    padding: 0.5rem 0;
+    display: block;
+    white-space: nowrap;
+    font-size: 1rem;
+    color: #FFFFFF;
+    text-decoration: none;
+    font-weight: 400;
+    line-height: 30px;
+    overflow: hidden;
+}
+.sidebar[data-color="white"] .logo .simple-text, .off-canvas-sidebar[data-color="white"] .logo .simple-text {
+    color: #66615B;
+}
+.sidebar .logo a.logo-mini, .off-canvas-sidebar .logo a.logo-mini {
+    opacity: 1;
+    float: none;
+    width: 76px;
+    text-align: center;
+    margin: 0 auto;
+}
+.sidebar[data-color="white"] .logo:after, .sidebar[data-color="white"] .user .info a span, .sidebar[data-color="white"] .user .nav .sidebar-mini-icon, .sidebar[data-color="white"] .user .nav .sidebar-normal, .off-canvas-sidebar[data-color="white"] .user .info a span, .off-canvas-sidebar[data-color="white"] .user .nav .sidebar-mini-icon, .off-canvas-sidebar[data-color="white"] .user .nav .sidebar-normal {
+    color: #66615B !important;
+}
+.sidebar .logo:after, .off-canvas-sidebar .logo:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 15px;
+    height: 1px;
+    width: calc(100% - 30px);
+    background-color: rgba(255, 255, 255, 0.5);
+}
+.sidebar .sidebar-wrapper, .off-canvas-sidebar .sidebar-wrapper {
+    position: relative;
+    height: calc(100vh - 75px);
+    overflow: auto;
+    width: 300px;
+    z-index: 4;
+    padding-bottom: 100px;
+}
+.nav-logo {
+    text-align: center;
+    margin: 30px 0px;
+}
+.nav-logo img {
+    max-width: 48%;
+}
+.sidebar .nav, .off-canvas-sidebar .nav {
+    margin-top: 20px;
+    display: block;
+}
+.sidebar-wrapper .nav li.active {
+    border-left: 8px solid #E12217;
+}
+.sidebar-wrapper .nav li {
+    border-left: 8px solid #fff;
+}
+.sidebar[data-active-color="danger"] .nav li.active > a, .sidebar[data-active-color="danger"] .nav li.active > a i, .sidebar[data-active-color="danger"] .nav li.active > a[data-toggle="collapse"], .sidebar[data-active-color="danger"] .nav li.active > a[data-toggle="collapse"] i, .sidebar[data-active-color="danger"] .nav li.active > a[data-toggle="collapse"] ~ div > ul > li.active .sidebar-mini-icon, .sidebar[data-active-color="danger"] .nav li.active > a[data-toggle="collapse"] ~ div > ul > li.active > a, .off-canvas-sidebar[data-active-color="danger"] .nav li.active > a, .off-canvas-sidebar[data-active-color="danger"] .nav li.active > a i, .off-canvas-sidebar[data-active-color="danger"] .nav li.active > a[data-toggle="collapse"], .off-canvas-sidebar[data-active-color="danger"] .nav li.active > a[data-toggle="collapse"] i, .off-canvas-sidebar[data-active-color="danger"] .nav li.active > a[data-toggle="collapse"] ~ div > ul > li.active .sidebar-mini-icon, .off-canvas-sidebar[data-active-color="danger"] .nav li.active > a[data-toggle="collapse"] ~ div > ul > li.active > a {
+    color: #E12217;
+    opacity: 1;
+    background: #FFEAEA;
+}
+.sidebar .nav li > a, .off-canvas-sidebar .nav li > a {
+    color: #FFFFFF;
+    display: block;
+    text-decoration: none;
+    position: relative;
+    text-transform: capitalize;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 15px 8px 15px 25px;
+    line-height: 30px;
+    opacity: 1;
+    font-weight: 500;
+}
+.nav-pills .nav-link, .navbar, .nav-tabs .nav-link, .sidebar .nav a, .sidebar .nav a i, .animation-transition-general, .sidebar .navbar-minimize, .off-canvas-sidebar .navbar-minimize, .sidebar .logo a.logo-mini, .sidebar .logo a.logo-normal, .off-canvas-sidebar .logo a.logo-mini, .off-canvas-sidebar .logo a.logo-normal, .tag, .tag [data-role="remove"], .animation-transition-general, .sidebar .navbar-minimize, .off-canvas-sidebar .navbar-minimize, .sidebar .logo a.logo-mini, .sidebar .logo a.logo-normal, .off-canvas-sidebar .logo a.logo-mini, .off-canvas-sidebar .logo a.logo-normal {
+    transition: all 300ms ease 0s;
+}
+.sidebar .nav i, .off-canvas-sidebar .nav i {
+    font-size: 24px;
+    float: left;
+    margin-right: 12px;
+    line-height: 30px;
+    width: 34px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.5);
+    position: relative;
+}
+.nc-icon {
+    display: inline-block;
+    font: normal normal normal 14px/1 'nucleo-icons';
+    font-size: inherit;
+    speak: none;
+    text-transform: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+.sidebar .nav p, .off-canvas-sidebar .nav p {
+    margin-bottom: 0;
+}
+.sidebar[data-color="white"] .nav li a, .sidebar[data-color="white"] .nav li a i, .sidebar[data-color="white"] .nav li a[data-toggle="collapse"], .sidebar[data-color="white"] .nav li a[data-toggle="collapse"] i, .sidebar[data-color="white"] .nav li a[data-toggle="collapse"] ~ div > ul > li .sidebar-mini-icon, .sidebar[data-color="white"] .nav li a[data-toggle="collapse"] ~ div > ul > li > a, .off-canvas-sidebar[data-color="white"] .nav li a, .off-canvas-sidebar[data-color="white"] .nav li a i, .off-canvas-sidebar[data-color="white"] .nav li a[data-toggle="collapse"], .off-canvas-sidebar[data-color="white"] .nav li a[data-toggle="collapse"] i, .off-canvas-sidebar[data-color="white"] .nav li a[data-toggle="collapse"] ~ div > ul > li .sidebar-mini-icon, .off-canvas-sidebar[data-color="white"] .nav li a[data-toggle="collapse"] ~ div > ul > li > a {
+    color: #424D5C;
+    opacity: 1;
+}
+ul.nav hr {
+    margin: 8px;
+    padding: 0 5px;
+}
+.footer-logo {
+    text-align: center;
+    margin: 40px 0px;
+}
+.sidebar[data-color="white"]:after, .off-canvas-sidebar[data-color="white"]:after {
+    background: #FFFFFF;
+}
+.sidebar:after, .off-canvas-sidebar:after {
+    background: #66615B;
+    background: linear-gradient(#66615B 0%, #000 80%);
+    z-index: 3;
+}
+.sidebar:before, .sidebar:after, .off-canvas-sidebar:before, .off-canvas-sidebar:after {
+    display: block;
+    content: "";
+    opacity: 1;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+}

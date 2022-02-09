@@ -1,0 +1,97 @@
+<div class="login-page">
+    <div class="container-fluid">
+        <div class="row no-margin">
+            <div class="col-sm-12 no-padding login-box">
+                <div class="row no-margin w-100">
+                    <div class="col-lg-6 col-md-6 box-de">
+                        <div class="login-content">
+                            <div class="login-logo">
+                                <img src="assets/img/logo.png">
+                            </div>
+                            <div class="login-heading">
+                                <h2>{{language.login.loginHeading}}</h2>
+                            </div>
+                            <div class="login-con">
+                                <p>{{language.login.loginDesc}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 log-det">
+                        <div class="login_lang">
+                            <div class="dropdown lang-drop" (click)="onShow()">
+                                <button class="dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <img *ngIf="displayFlag=='de'" src="../../../assets/img/ge_ic.png">&nbsp;<span *ngIf="displayFlag=='de'">{{language.language.deutsch}}</span>
+                                    <img *ngIf="displayFlag=='en'" src="../../../assets/img/en_ic.png">&nbsp;<span *ngIf="displayFlag=='en'">{{language.language.english}}</span>
+                                    <img *ngIf="displayFlag=='ru'" src="../../../assets/img/ru_ic.png">&nbsp;<span *ngIf="displayFlag=='ru'">{{language.language.russian}}</span>
+                                    <img *ngIf="displayFlag=='tr'" src="../../../assets/img/tu_ic.png">&nbsp;<span *ngIf="displayFlag=='tr'">{{language.language.turkish}}</span>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                    <li>
+                                        <a (click)="onLanguageSelect('de')"><img src="../../../assets/img/ge_ic.png">&nbsp;{{language.language.deutsch}}</a>
+                                    </li>
+                                    <li>
+                                        <a (click)="onLanguageSelect('en')"><img src="../../../assets/img/en_ic.png">&nbsp;{{language.language.english}}</a>
+                                    </li>
+                                    <li>
+                                        <a (click)="onLanguageSelect('ru')"><img src="../../../assets/img/ru_ic.png">&nbsp;{{language.language.russian}}</a>
+                                    </li>
+                                    <li>
+                                        <a (click)="onLanguageSelect('tr')"><img src="../../../assets/img/tu_ic.png">&nbsp;{{language.language.turkish}}</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="login-content">
+                            <div class="login-logo">
+                                <img src="assets/img/logo.png">
+                            </div>
+                            <div class="login-heading">
+                                <h2>{{language.login.loginHeading}}</h2>
+                            </div>
+                            <div class="login-con">
+                                <p>{{language.login.loginDesc}}</p>
+                            </div>
+                        </div>
+                        <!-- <div class="login-form"> -->
+                        <form class="login-form" [formGroup]="loginForm" (ngSubmit)='loginProcess()'>
+                            <h2>{{language.login.signInHeading}}</h2>
+
+                            <div class="text-box-cont">
+                                <!-- <label [ngClass]="{ 'formError': formError}" class="error alert alert-danger" *ngIf="formError">{{ formError}}</label> -->
+                                <label class="error alert alert-danger" *ngIf="validError">{{ formError}}</label>
+                                <div class="input-group">
+                                    <label>{{language.login.userName}}</label>
+                                    <input type="text" class="form-control username" placeholder="Username" formControlName='username' aria-label="Username" aria-describedby="basic-addon1">
+                                    <span class="error" *ngIf="loginsubmitted && loginForm.controls['username'].errors">{{language.login.userNameError}}</span>
+                                </div>
+                                <div class="input-group">
+                                    <label>{{language.login.password}}</label>
+                                    <input type="password" class="form-control password" placeholder="Password" formControlName='password' aria-label="Username" aria-describedby="basic-addon1">
+                                    <span class="error" *ngIf="loginsubmitted && loginForm.controls['password'].errors">{{language.login.passwordError}}</span>
+                                </div>
+                                <p>
+                                    <label>
+                                        <input type="checkbox" class="rememberMe" formControlName='remember'>
+                                        <span class="checkmark"></span>{{language.login.rememberMe}}
+                                    </label> <a routerLink="/recover-password">{{language.login.recoverPassword}}</a>
+                                </p>
+                                <div class="input-group center  mb-3">
+                                    <button class="btn btn-success ">{{language.login.signIn}}</button>
+                                </div>
+                            </div>
+                        </form>
+                        <!-- </div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="authService.showLoader">
+    <div class="overlay">
+        <div class="overlay__inner">
+            <div class="overlay__content"><span class="spinner"></span></div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,90 @@
+<div class="sidebar sidebar-hr" data-color="white" data-active-color="danger">
+    <a class="sidebar-expand">
+    <div class="logo">
+    </div>
+    <div class="sidebar-wrapper">
+        <div class="nav-logo">
+            <a routerLink="/dashboard">
+                <img class="club-class" [src]="clubData.logourl != '' ? clubData.logourl : '../../../assets/img/nav-logo.png'">
+                <!-- <img src="../../../assets/img/nav-logo.png"> -->
+                <div class="club-name">{{clubData.name}}</div>
+            </a>
+        </div>
+        <ul class="nav">
+            <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact: false}">
+                <a routerLink="/dashboard">
+                    <p><img src="../../../assets/img/menu/home.svg">&nbsp;&nbsp;<span>{{language.menu.dashboard}}</span></p>
+                </a>
+            </li>
+            <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact: false}">
+                <a routerLink="/clubwall" class="club_ic">
+                    <p><img src="../../../assets/img/menu/grid .svg">&nbsp;&nbsp;<span>{{language.menu.club_wall}}</span></p>
+                </a>
+                <a routerLink="/create-news" style="display: none;"></a>
+                <a routerLink="/clubwall-news/1" style="display: none;"></a>
+                <a routerLink="/update-news/:newsid" style="display: none;"></a>
+            </li>
+            <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact: false}">
+                <a routerLink="/community" class="com_ic">
+                    <p><img src="../../../assets/img/menu/users.svg">&nbsp;&nbsp;<span>{{language.menu.community}}</span></p>
+                    <a routerLink="/create-group" style="display: none;"></a>
+                    <a routerLink="/create-message" style="display: none;"></a>
+                    <a routerLink="/create-chat" style="display: none;"></a>
+                    <a routerLink="/group-detail/:id" style="display: none;"></a>
+                </a>
+            </li>
+            <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact: false}">
+                <a routerLink="/organizer" class="org_ic">
+                    <p><img src="../../../assets/img/menu/org.svg">&nbsp;&nbsp;<span>{{language.menu.organizer}}</span></p>
+                </a>
+                <a routerLink="/create-event" style="display: none;"></a>
+            </li>
+            <li>
+                <a href="#" class="mar_ic">
+                    <p><img src="../../../assets/img/menu/market.svg">&nbsp;&nbsp;<span>{{language.menu.marketplace}}</span></p>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="mar_ic" routerLink="/vereins-faq">
+                    <p><img src="../../../assets/img/menu/info.svg">&nbsp;&nbsp;<span>Vereins FAQs</span></p>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="mar_ic" routerLink="/course">
+                    <p><img src="../../../assets/img/menu/book-open.svg">&nbsp;&nbsp;<span>Courses</span></p>
+                </a>
+            </li>
+            <!-- <li>
+                <a href="#" class="mar_ic" routerLink="/room">
+                    <p><img src="../../../assets/img/menu/book-open.svg">&nbsp;&nbsp;<span>Rooms</span></p>
+                </a>
+            </li> -->
+            <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact: true}">
+                <a routerLink="/profile" class="pro_ic">
+                    <p><img src="../../../assets/img/menu/user.svg">&nbsp;&nbsp;<span>{{language.menu.main_profile}}</span></p>
+                </a>
+                <a routerLink="/edit-profile" style="display: none;"></a>
+                <a routerLink="/profile-bank" style="display: none;"></a>
+                <a routerLink="/profile-edit-bank" style="display: none;"></a>
+                <a routerLink="/profile-club" style="display: none;"></a>
+                <a routerLink="/profile-my-club" style="display: none;"></a>
+            </li>
+            <li>
+                <a target="_blank" href="{{userDetails.Club.linkToVV}}" class="administration_ic">
+                    <p><img src="../../../assets/img/menu/home.svg">&nbsp;&nbsp;<span>{{language.header_club.club_administration}}</span></p>
+                </a>
+            </li>
+            <hr>
+            <li>
+                <a href="#" class="wid_ic">
+                    <p><img src="../../../assets/img/menu/plus.svg">&nbsp;&nbsp;<span>{{language.menu.widget}}</span></p>
+                </a>
+            </li>
+        </ul>
+        <div class="footer-logo">
+            <!-- <img src="assets/img/footer_menu_logo.png"> -->
+            <img src="../../../assets/img/footer_menu_logo.png">
+        </div>
+    </div>
+</a>
+</div>

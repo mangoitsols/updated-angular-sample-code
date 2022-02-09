@@ -1,0 +1,116 @@
+<div class="chat-navigation">
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active group_ic" routerLink="groups" data-toggle="tab" (click)="onGroups(1)" role="tab">{{language.community_groups.groups}}</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link per_ic" routerLink="groups-joined" data-toggle="tab" (click)="onGroups(2)" role="tab">{{language.community_groups.groups_u_joined}}</a>
+        </li>
+    </ul>
+    <!-- Tab panes -->
+</div>
+<div class="club_news_widget_group">
+    <!-- club news top widget start -->
+    <div class="row">
+        <div class="col-md-8 community-group-widget">
+            <div class="tab-content">
+                <div class="tab-pane active" id="tabs-1" role="tabpanel">
+                    <div class="card">
+                        <div class="card-header ">
+                            <!-- <h5 class="card-title">{{language.community_groups.all_groups}}</h5> -->
+                        </div>
+                        <div class="card-body ">
+                            <div class="row all-group-widget">
+                                <!-- group-col start -->
+                                <div class="col-lg-4 col-md-6 col-sm-6" *ngFor='let data of groupData'>
+                                    <div class="news-widget com-g-widget">
+                                        <div class="news-image" [ngClass]="data.image == null ? 'no_image' : ''">
+                                            <!-- <img src="{{data.image}}"> -->
+                                            <!-- <img [src]="(data.image!='' || data.image!= 'null') ? data.image : '../../assets/img/no_image.png'"> -->
+                                            <img *ngIf="data.image!= null" src="{{data.image}}">
+                                            <img class="imgggg" *ngIf="data.image == null" src="../../assets/img/no_image.png">
+                                            <!-- <div class="close_btn"><img src="assets/img/cancel.svg"></div> -->
+                                        </div>
+                                        <div class="news-content">
+                                            <a routerLink="/group-detail/{{data.id}}">
+                                                <h5>{{data.name}}</h5>
+                                            </a>
+                                            <span class="group-mem-count" [innerHTML]="data.description"></span>
+                                            <hr>
+                                            <button type="button" *ngIf='data.participants.length == 0' (click)="joinGroup(data.id)">+{{language.community_groups.join_group}}</button>
+                                            <button type="button" *ngIf='data.participants.length > 0 && data.participants[0].approved_status == 2' (click)="leaveGroup(data.id)">+
+                                                {{language.community_groups.leave_group}}</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- group-col End -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="tabs-2" role="tabpanel">
+                    <div class="card">
+                        <div class="card-header ">
+                            <!-- <h5 class="card-title">{{language.community_groups.groups_u_joined}}</h5> -->
+                        </div>
+                        <div class="card-body ">
+                            <div class="row all-group-widget">
+                                <!-- group-col start -->
+                                <div class="col-lg-4 col-md-6 col-sm-6" *ngFor='let data of groupJoinData'>
+                                    <div class="news-widget com-g-widget">
+                                        <div class="news-image" [ngClass]="data.image == null ? 'no_image' : ''">
+                                            <!-- <img src="{{data.image}}"> -->
+                                            <!-- <img [src]="data.image ? 'data.image' : '../../assets/img/no_image.png'"> -->
+                                            <img *ngIf="data.image!= null" src="{{data.image}}">
+                                            <img *ngIf="data.image == null" src="../../assets/img/no_image.png">
+                                            <!-- <div class="close_btn"><img src="assets/img/cancel.svg"></div> -->
+                                        </div>
+                                        <div class="news-content">
+                                            <a routerLink="/group-detail/{{data.id}}">
+                                                <h5>{{data.name}}</h5>
+                                            </a>
+                                            <span class="group-mem-count">{{data.totalMembers}} {{language.community_groups.members}} - {{data.totalNews}} {{language.community_groups.posts}} </span>
+                                            <hr>
+                                            <button type="button" (click)="leaveGroup(data.id)">-
+                                                {{language.community_groups.leave_group}}</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- group-col End -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 manage_group_widget">
+            <div class="card ">
+                <div class="card-header ">
+                    <h5 class="card-title">{{language.community_groups.groups_u_manage}}</h5>
+                </div>
+                <div class="card-body manage_g_widget">
+                    <!-- group news inner -->
+                    <div class="widget-group-news widget mg_widget" *ngFor='let data of groupsYouManageData'>
+                        <div class="widget-gn-content">
+                            <div class="gn-left">
+                                <!-- <img src="{{data.image}}"> -->
+                                <img *ngIf="data.image" src="{{data.image}}">
+                                <img *ngIf="data.image == null" src="../../assets/img/no_image.png">
+                            </div>
+                            <div class="gn-right">
+                                <a routerLink="/group-detail/{{data.id}}">
+                                    <h5>{{data.name}}</h5>
+                                </a>
+                                <span class="manage_g_cat">{{data.posts}}+
+                                    {{language.community_groups.posts_for_u}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- group news inner end -->
+                </div>
+            </div>
+        </div>
+        <!-- club news top widget start -->
+    </div>
+</div>
+<app-confirm-dialog></app-confirm-dialog>

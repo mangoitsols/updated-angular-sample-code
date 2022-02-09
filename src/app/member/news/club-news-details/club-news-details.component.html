@@ -1,0 +1,138 @@
+<div class="content n-detail-main">
+    <div class="news_details_main">
+        <div class="row">
+            <div class="col-md-12 news_detail_inner">
+                <div class="card">
+                    <div class="card-body">
+                        <!-- news details data start -->
+                        <div class="news_details" *ngIf="newsData">
+                            <div class="row">
+                                <div class="news_content col-md-12">
+                                    <div class="news_image">
+                                        <app-image-viewer *ngIf="newsData.imageUrls" [imageURL]="newsData.imageUrls" [open]="viewImage" (close)="viewImage = false"></app-image-viewer>
+                                        <div class="news_image_container" (click)="viewImage=true">
+                                           
+                                            <img [src]="newsData.imageUrls ? newsData.imageUrls : '../../assets/img/no_image.png'">
+                                        </div>
+                                    </div>
+                                    <!--Remove the tag-->
+                                    <!-- <div class="news_group_text">#{{newsData.title}}</div> -->
+                                    <div class="news_heading">
+                                        <h2>{{newsData.title}}</h2>
+
+                                        <!--Remove the tag and added the title-->
+                                        <!-- <h2 [innerHTML]="newsData.headline"></h2> -->
+                                    </div>
+                                    <div class="news_content_text" [innerHTML]="newsData.text">...<a href="#">{{language.dashboard.dashboardNewsContent}}</a></div>
+                                    <div class="author-info">
+                                         
+                                        <div  class="author-img" >
+                                            <img *ngIf="thumbnail == null"  src="assets/img/defaultProfile.jpeg">
+                                            <img *ngIf="thumbnail != null"  [src]="thumbnail" style="width: 100px;">
+                                        </div>
+                                       
+                                            <div class="author-des" data-bs-toggle="modal" data-bs-target="#exampleModal" (click)="getMemId(newsData.author)">
+                                                <span class="author-id" >
+                                                    {{language.dashboard.dashboardNewsAuthor}} {{newsData.user.firstname}}  {{newsData.user.lastname}}
+                                                </span>
+                                                <span class="author-date">{{newsData.created_at | date: 'd MMM y'}}</span>
+                                            </div>
+                                        
+                                    </div>
+
+                                    
+
+                                </div>
+                                <div class="dropdown action_group">
+                                    <button class="dropdown-toggle" type="button" (click)="onShow()">
+                                            <i class="nc-icon nc-bullet-list-67"></i>
+                                          </button>
+
+                                    <ul class="dropdown-menu bunch_drop" aria-labelledby="dropdownMenuLink">
+                                        <li><a class="dropdown-item" *ngIf="userDetails.id == newsData.user.keycloak_id || userDetails.isAdmin" (click)="updateNews(newsData.id)">{{language.club_news.Edit}}</a></li>
+                                        <li><a class="dropdown-item" *ngIf="userDetails.id == newsData.user.keycloak_id || userDetails.isAdmin" (click)="deleteNews(newsData.id)">{{language.club_news.Delete}}</a></li>
+                                        <li (click)="goBack()"><a class="dropdown-item">{{language.club_news.Back}}</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- news details data End -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade change_pass_section profile_popup news_popup" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog"> 
+        <div id="profileSpinner" class="overlay__content"><span class="spinner"></span></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">{{language.profile.member_profile}}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="nc-icon nc-simple-remove"></i></button>
+            </div>
+            <div class="empty-data-image" *ngIf="displayError == true"><img src="assets/img/no-event-img.png"><br><span>{{language.profile.member_not_found}}</span></div>
+
+            <div class="modal-body" *ngIf="displayError == false">
+                <div class="">
+                    <div class="card-body" >
+                        <!-- profile header start -->
+                        <div class="profile_main_head"  >
+                            <div class="profile_header">
+                                <div class="user-pic-inner">
+                                    <img *ngIf="thumbnail == null" src="assets/img/defaultProfile.jpeg">
+                                    <img *ngIf="thumbnail != null" [src]="thumbnail">
+                                </div>
+                                <div class="user_pro_info_model">
+                                    <h3 style="font-size: 18px;font-family: 'poppinssemibold';color: #192838;margin: 10px 0px 5px 0px;" *ngIf="profile_data">{{profile_data.firstName}} {{profile_data.lastName}} </h3>
+                                    <h4 style="font: 400 15px/24px Roboto, 'Helvetica Neue', sans-serif;color: #192838;margin: 10px 0px 5px 0px;" *ngIf="getclubInfo">{{getclubInfo.name}} </h4>
+                                    <span class="user-designation-mode" *ngIf="profile_data">{{profile_data.userRole}}</span>
+                                </div>
+
+                            </div>
+                            <!-- profile header end -->
+                            <!-- profile details data start -->
+                            <div class="profile_details">
+                                <div class="profile_title">{{language.profile.personal_data}}</div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="profile_field info_field">
+                                            <span class="info_label">{{language.profile.city}}</span>
+                                            <span class="info_detail" *ngIf="profile_data">{{profile_data.city}}</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6" *ngIf="birthdateStatus == true">
+                                        <div class="profile_field info_field">
+                                            <span class="info_label">{{language.profile.dob}}</span>
+                                            <span class="info_detail" *ngIf="profile_data">{{profile_data.birthDate| date: 'd MMM y'}}</span>
+                                            <!-- <span class="info_detail" *ngIf="profile_data">{{profile_data.birthDate}}</span> -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- profile details data End -->
+                            <div class="profile_details" *ngIf="memberStartDateStatus">
+                                <div class="profile_title" >{{language.profile.club_data}}</div>
+                                <div class="row">
+                                    <div class="col-md-6" >
+                                
+                                        <div class="profile_field info_field">
+                                           <span class="info_label">{{language.profile.membership_date}}</span>
+                                           <span class="info_detail" *ngIf="profile_data">{{profile_data.membershipStartDate| date: 'd MMM y'}}</span>
+                                       </div>
+                                    </div>
+                               
+                                </div>
+                            </div>
+                        
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+          
+        </div>
+    </div>
+</div>
+

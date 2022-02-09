@@ -1,0 +1,91 @@
+<div class="content">
+    <div class="row">
+        <div class="col-lg-3 col-md-6 col-sm-6 top-card">
+            <a routerLink="/clubwall">
+                <div class="card card-stats">
+                    <div class="card-body ">
+                        <div class="row">
+                            <div class="col-12 col-md-12">
+                                <div class="widget-top widget-col">
+                                    <img src="../../../assets/img/club_icon.png">
+                                    <h3>{{language.dashboard.club_wall}}</h3>
+                                    <div class="widget-top-sub-text">{{language.dashboard.club_wall_subtext}}</div>
+                                    <h3 class="count-dashboard">{{clubNewsCount}}</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6 top-card">
+            <a routerLink="/community">
+                <div class="card card-stats">
+                    <div class="card-body ">
+                        <div class="row">
+                            <div class="col-12 col-md-12">
+                                <div class="widget-top widget-col">
+                                    <img class="comm_icon" src="../../../assets/img/community_icon.png">
+                                    <h3>{{language.dashboard.community}}</h3>
+                                    <div class="widget-top-sub-text">{{language.dashboard.community_subtext}}</div>
+                                    <h3 class="count-dashboard">{{communityCount}}</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6 top-card">
+            <a routerLink="/organizer">
+                <div class="card card-stats">
+                    <div class="card-body ">
+                        <div class="row">
+                            <div class="col-12 col-md-12">
+                                <div class="widget-top widget-col">
+                                    <img src="../../../assets/img/organizer_icon.png">
+                                    <h3>{{language.dashboard.organizer}}</h3>
+                                    <div class="widget-top-sub-text">{{language.dashboard.organizer_subtext}}</div>
+                                    <h3 class="count-dashboard">{{organizerCount}}</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6 top-card">
+            <a routerLink="/dashboard">
+                <div class="card card-stats">
+                    <div class="card-body ">
+                        <div class="row">
+                            <div class="col-12 col-md-12">
+                                <div class="widget-top widget-col">
+                                    <img src="../../../assets/img/marketplace_icon.png">
+                                    <h3>{{language.dashboard.marketplace}}</h3>
+                                    <div class="widget-top-sub-text">{{language.dashboard.marketplace_subtext}}</div>
+                                    <h3 class="count-dashboard">--</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="row dash-widget dashboard_w_m">
+        <div class="club_widget" class="col-md-8">
+            <app-dashboard-event></app-dashboard-event>
+        </div>
+        <div class="col-md-4 appointment_widget"  *ngIf="participateAccess.appointments == 'Yes'">
+            <app-club-appointments></app-club-appointments>
+        </div>
+    </div>
+    
+    <div class="row dash-widget dashboard_w_m">
+        <div class="club_widget" class="col-md-12">
+            <app-club-news></app-club-news>
+        </div>       
+    </div>
+</div>

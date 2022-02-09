@@ -1,0 +1,128 @@
+<div class="content">
+    <div class="row">
+        <div class="col-md-12 page-main">
+            <div class="panel_heading">
+                <h3>Vereins FAQs</h3>
+            </div>
+            <div class="all_btn_group btn_collapse">
+                <div class="all_btn_group btn_collapse">
+                    <div class="title-btn-group">
+                        <button type="button" class="disabled" routerLink="/vereins-faq">Faqs</button>
+                        <button type="button" class="selected" >Faq Category</button>
+                        <!-- <button type="button" class="disabled" routerLink="/all-faq"> All FAQ's</button> -->
+                    </div>
+                    <!-- <div class="title-btn-group right-btn-group"  *ngIf="createAccess.event == 'Yes' || createAccess.task == 'Yes' || createAccess.document == 'Yes'"> -->
+                    <div class="title-btn-group right-btn-group">
+                        <button type="button" class="disabled" routerLink="/create-category"><img
+                                src="assets/img/Paper_w.svg">Create Category</button>
+                        <div>
+                        </div>
+                        <!-- </form> -->
+                    </div>
+                </div>
+            </div>
+            <!-- main content section start -->
+            <div class="main-card">
+                <div class="alert alert-danger" id="responseMessage"  *ngIf="responseMessage">{{responseMessage}}</div>
+                <!-- <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="category-content">
+                                <h5>Category Name</h5>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="category-content">
+                                <h5>Position</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+                <div class="category-listing" >
+                        <div class="cat_label text-left"><span class="category_label">Title</span></div>
+                        <div class="cat_label text-center"><span class="category_label">Position</span></div>
+                        <div class="cat_label text-right"><span class="category_label">Action</span></div>
+                    <!-- listing-list-start -->
+                    <div class="category-list" *ngFor="let item of FaqCategory ">
+                            <div class="category-content">
+                                <!-- <h5>Category Name</h5> -->
+                                <div class="category_left">
+                                <h5>{{item.category_title}}
+                                </h5> 
+                                </div>
+                                <div class="category_position">
+                                    <h5>{{item.category_position}}</h5>
+                                </div>
+                                <div class="category-action  right-btn-group">
+                                    <div class="cate_action_btn">
+                                    <a (click)="editFAQcategoryById(item.id)"><img
+                                            src="../../assets/img/menu/edit.svg" /></a>
+        
+                                    <a (click)="deleteCategory(item.id)"><img src="../../assets/img/menu/trash.svg" /></a>
+                                </div>
+                                </div>
+                            </div>
+                            <!-- <p>{{item.category_description}}</p> -->
+                    </div>
+                    <!-- listing-list-end -->
+                </div>
+            </div>
+            <!-- main content section End -->
+        </div>
+    </div>
+</div>
+<div class="modal fade change_pass_section faq_edit all_news" id="exModal" tabindex="-1"
+    aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog">
+        <!-- <div id="profileSpinner" class="overlay__content"><span class="spinner"></span></div> -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="editCat">Edit Category</h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="nc-icon nc-simple-remove"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger" id="responseMessage1" *ngIf="responseMessage1">{{responseMessage1}}</div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <form [formGroup]="editFaqForm" (ngSubmit)="editFAQCategory()">
+                            <div class="event_field">
+                                <label>Title</label>
+                                <input formControlName="category_title" type="text" placeholder="Add a Title">
+                                <span class="text-danger" *ngIf="editFormSubmit">
+                                    <span *ngIf="editFaqForm.controls['category_title'].errors">{{language.error_message.common_required}}</span>
+                                </span>
+                            </div>
+                            <div class="news-dropdown">
+                                <div class="event_field">  
+                                    <label>Position</label>
+                                    <ng-multiselect-dropdown  [formControl]="editFaqForm.controls['category_position']"  
+                                        [ngClass]="{ 'is-invalid': editFormSubmit && editFaqForm.controls.category_position.errors }"                                  
+                                        [placeholder]="language.header.position"
+                                        [settings]="positionDropdownSettings"
+                                        [data]="positionList"
+                                        (onSelect)="onPositionItemSelect($event)"
+                                        (onDeSelect)="onPositionItemDeSelect($event)">
+                                    </ng-multiselect-dropdown>
+                                    <span class="text-danger" *ngIf="editFormSubmit">
+                                        <span *ngIf="editFaqForm.controls['category_position'].errors">{{language.error_message.common_required}}</span>
+                                    </span>
+                                </div>
+                            </div>
+                            <!-- <div class="event_field task_area_field">
+                                <label>Description</label>
+                                <angular-editor formControlName="category_description" [config]=""></angular-editor>
+                                <span class="text-danger" *ngIf="editFormSubmit">
+                                    <span *ngIf="editFaqForm.controls['category_description'].errors">{{language.error_message.common_required}}</span>
+                                </span>
+                            </div> -->
+                            <div class="profile_sub_btn event_sub_btn ">
+                                <button type="submit " class="save_btn">Update</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

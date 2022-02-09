@@ -1,0 +1,74 @@
+.panel_heading h3{
+    font-size: 20px;
+    color: #424D5C;
+    font-weight: normal;
+    margin-bottom: 0;
+    margin-top: 15px;
+    font-family: 'poppinssemibold';
+    margin-bottom: 20px;
+}
+.main-card{
+    display: inline-block;
+    width: 100%;
+    background-color: #fff;
+    padding: 25px;
+}
+.category-list {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #E5E9F2;
+}
+.category-content h5 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #192838;
+    margin-top: 5px;
+    margin-bottom: 0px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-family: 'Poppins';
+}
+.category-content p{
+    color:#677180;
+    font-size: 14px;
+}
+.category-action a:first-child {
+    margin-right: 15px;
+}
+.category-content {
+    padding-top: 5px;
+}
+.faq_edit .modal-header {
+    justify-content: space-between;
+}
+.faq_edit .modal-header h3{
+    font-size: 20px;
+    color: #424D5C;
+    font-weight: normal;
+    margin-bottom: 0 !important;
+    margin-top: 0px;
+    font-family: 'poppinssemibold';
+    margin-bottom: 20px;
+}
+.faq_edit .modal-header button{
+    background-color: transparent;
+    border: none;
+    font-size: 20px;
+}
+.faq_edit .modal-dialog {
+    max-width: 750px;
+}
+.title-btn-group.right-btn-group button {
+    margin-right: 0px !important;
+}
+.title-btn-group.right-btn-group img {
+    margin-right: 10px;
+    margin-top: -2px;
+}
+@media only screen and (max-width:600px){
+    .category-list {
+        display: inline-block;
+    }
+}

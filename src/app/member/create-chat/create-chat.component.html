@@ -1,0 +1,180 @@
+<div class="content">
+    <div class="add_event_main event_main">
+        <div class="row">
+            <div class="col-md-12 add_event_content Payment_data_main">
+                <div class="card">
+                    <form [formGroup]="chatForm" (ngSubmit)='messageProcess()'>
+                        <div class="card-body">
+                            <!-- profile header start -->
+                            <div class="message_main_head">
+                                <div class="message_title">{{language.create_chat.title}}</div>
+                                <div class="message_close">
+                                    <a (click)="close()"><img src="assets/img/msg_close.svg"></a>
+                                </div>
+                            </div>
+                            <!-- profile header end -->
+                            <!-- profile details data start -->
+                            <div class="profile_details">
+                                <div class="alert alert-danger" *ngIf="responseMessage">{{responseMessage}}</div>
+                                <div class="row cm_row">
+                                    <div class="col-md-6">
+                                        <div class="news-dropdown">
+                                            <div class="multi_dropdown_main">
+                                                <span class="news-visible-dropdown">
+                                                    <label>{{language.create_chat.type}}</label>
+                                                    <ng-multiselect-dropdown formControlName="kind"
+                                                        [placeholder]="language.create_chat.select_placeholder"
+                                                        [settings]="visiblityDropdownSettings" [data]="visiblity"
+                                                        (onSelect)="onVisiblitySelect($event)"
+                                                        (onDeSelect)="onVisiblityDeSelect($event)">
+                                                    </ng-multiselect-dropdown>
+                                                    <div *ngIf="(chatForm.controls.kind.touched || chatFormSubmitted)&& (chatForm.controls.kind.errors?.required)" class="text-danger">
+                                                        <div *ngIf="chatForm.controls.kind.errors.required">
+                                                            {{language.error_message.common_required}}
+                                                        </div>
+                                                    </div>
+                                                    <!-- <label class="text-danger" *ngIf="messageSubmitted && messageForm.controls['kind'].errors">{{language.error_message.common_required}}</label> -->
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="news-dropdown" *ngIf="personalVisiable && alluserDetails && clubChatVisible">
+                                            <div class="multi_dropdown_main">
+                                                <label>{{language.create_chat.new_club_chat}}</label>
+                                                <!-- <ng-multiselect-dropdown formControlName="receiver_id" [placeholder]="language.create_message.participantsto" [settings]="userDropdownSettings" [data]="userDropdownList" (onSelect)="onReceiverSelect($event)" (onDeSelect)="onReceiverDeSelect($event)">
+                                                </ng-multiselect-dropdown> -->
+                                                <ng-multiselect-dropdown formControlName="friendUid" [placeholder]="language.create_chat.new_club_chat" [settings]="userDropdownSettings" [data]="userDropdownList" (onSelect)="onFriendSelect($event)" (onDeSelect)="onFriendDeSelect($event)">
+                                                </ng-multiselect-dropdown>
+                                                <div *ngIf="(chatForm.controls?.friendUid?.touched || chatFormSubmitted)&& (chatForm.controls.friendUid.errors?.required || clubChatVisible )" class="text-danger">
+                                                    <div *ngIf="chatForm.controls.friendUid.errors?.required">
+                                                        {{language.error_message.common_required}}
+                                                    </div>
+                                                </div>
+                                                <!-- <label class="text-danger" *ngIf="messageSubmitted && messageForm.controls['receiver_id'].errors">{{language.error_message.common_required}}</label> -->
+                                            </div>
+                                        </div>
+                                        <div class="news-dropdown" *ngIf="groupVisiable && groups && groupChatVisible">
+                                            <div class="multi_dropdown_main">
+                                                <label>{{language.create_chat.new_group_chat}}</label>
+                                                <!-- <ng-multiselect-dropdown formControlName="kind_id" [placeholder]="language.create_message.participantsto" [settings]="groupDropdownSettings" [data]="groups" (onSelect)="onKindIdSelect($event)" (onDeSelect)="onKindIdDeSelect($event)"> </ng-multiselect-dropdown> -->
+                                                <ng-multiselect-dropdown formControlName="groupId" [placeholder]="language.create_message.participantsto" [settings]="groupDropdownSettings" [data]="groups" (onSelect)="onGroupSelect($event)" (onDeSelect)="onGroupDeSelect($event)">
+                                                </ng-multiselect-dropdown>
+                                                <!-- <label class="text-danger" *ngIf="messageSubmitted && messageForm.controls['kind_id'].errors">{{language.error_message.common_required}}</label> -->
+                                            </div>
+                                        </div>
+                                        <div class="event_field task_area_field">
+                                            <label>{{language.create_message.content}}</label>
+                                            <!-- <textarea formControlName="content" placeholder="{{language.create_message.content_placeholder}}"></textarea> -->
+                                            <textarea formControlName="message" placeholder="{{language.create_message.content_placeholder}}"></textarea>
+                                            <div *ngIf="(chatForm.controls.message.touched || chatFormSubmitted)&& (chatForm.controls.message.errors?.required)" class="text-danger">
+                                                <div *ngIf="chatForm.controls.message.errors.required">
+                                                    {{language.error_message.common_required}}
+                                                </div>
+                                            </div>
+                                            <!-- <label class="text-danger" *ngIf="messageSubmitted && messageForm.controls['content'].errors">{{language.error_message.common_required}}</label> -->
+                                        </div>
+                                        <div class="event_upload news_pic_upload">
+                                            <div class="message-upload-list" style="display: none;">
+                                                <img class="preview_img" src="">
+                                                <label class="preview_txt" style="display: none;"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="event_field all_participants create_msg_main" *ngIf="receipientUsers.length > 0">
+                                            <div class="card">
+                                                <div class="card-header ">
+                                                    <h5 class="card-title">{{language.create_group.all_participants}}
+                                                    </h5>
+                                                </div>
+                                                <div class="card-body ">
+                                                    <!-- appointment inner -->
+                                                    <div class="widget-appointment widget" *ngIf="receipientUsers">
+                                                        <div class="widget-app-content" *ngFor="let touser of receipientUsers">
+                                                            <div class="app-left-content">
+                                                                <div class="parti_name">
+                                                                    {{touser.groupusers[0].firstname.charAt(0)}} {{touser.groupusers[0].lastname.charAt(0)}}
+                                                                </div>
+                                                                <div class="user-content">
+                                                                    <span class="user-name">{{touser.groupusers[0].firstname}}
+                                                                        {{touser.groupusers[0].lastname}}</span>
+                                                                    <span class="participant_email">{{touser.groupusers[0].email}}</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- appointment inner end -->
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- <div class="event_field all_participants create_msg_main" *ngIf="receiverUser.length > 0 || ccUser.length > 0">
+                                            <div class="card">
+                                                <div class="card-header ">
+                                                    <h5 class="card-title">{{language.create_group.all_participants}}
+                                                    </h5>
+                                                </div>
+                                                <div class="card-body" *ngIf="receiverUser.length > 0">
+                                                    <div class="card-header ">
+
+                                                    </div>
+                                                    <div class="widget-appointment widget">
+                                                        <h5 class="card-title" *ngIf="receiverUser.length > 0">
+                                                            {{language.create_message.participantsto}}</h5>
+
+                                                        <div class="widget-app-content" *ngFor="let touser of receiverUser">
+                                                            <div class="app-left-content">
+                                                                <div class="parti_name">
+                                                                    {{alluserInformation[touser].firstname.charAt(0)}} {{alluserInformation[touser].lastname.charAt(0)}}
+                                                                </div>
+                                                                <div class="user-content">
+                                                                    <span class="user-name">{{alluserInformation[touser].firstname}}
+                                                                        {{alluserInformation[touser].lastname}}</span>
+                                                                    <span class="participant_email">{{alluserInformation[touser].email}}</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <h5 class="card-title" *ngIf="ccUser.length > 0">
+                                                            {{language.create_message.participantscc}}</h5>
+
+                                                        <div class="widget-app-content" *ngFor="let touser of ccUser">
+                                                            <div class="app-left-content">
+                                                                <div class="parti_name">
+                                                                    {{alluserInformation[touser].firstname.charAt(0)}} {{alluserInformation[touser].lastname.charAt(0)}}
+                                                                </div>
+                                                                <div class="user-content">
+                                                                    <span class="user-name">{{alluserInformation[touser].firstname}}
+                                                                        {{alluserInformation[touser].lastname}}</span>
+                                                                    <span class="participant_email">{{alluserInformation[touser].email}}</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div> -->
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- profile details data End -->
+                            <div class="profile_sub_btn message_sub_btn">
+                                <button type="submit" class="save_btn">{{language.create_message.send}}</button>
+                                <div class="message_upload">
+                                    <input type="file" (change)="uploadFile($event)" id="add_image">
+                                    <span class="message_upload_overlay">
+                                        <div class="upload_label">
+                                            <img src="assets/img/attach.svg">
+                                            <div class="up_text">
+                                                {{language.create_message.add_file}}<br><span>({{language.create_message.max}}
+                                                    20Mb)</span></div>
+                            </div>
+                            </span>
+                        </div>
+                </div>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+</div>
+</div>

@@ -1,0 +1,110 @@
+.panel_heading h3{
+    font-size: 20px;
+    color: #424D5C;
+    font-weight: normal;
+    margin-bottom: 0;
+    margin-top: 15px;
+    font-family: 'poppinssemibold';
+    margin-bottom: 20px;
+}
+.main-card{
+    display: inline-block;
+    width: 100%;
+    background-color: #fff;
+    padding: 25px;
+}
+.category-list {
+    border-bottom: 1px solid #bac4dd;
+}
+.category-content h5 {
+    font-size: 14px;
+    font-weight: 500;
+    color: #192838;
+    margin-bottom: 0px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-family: 'poppinssemibold';
+}
+.category-content h5::first-letter {
+    display: inline-block;
+    text-transform: capitalize;
+}
+.category-list p{
+    color:#677180;
+    font-size: 14px;
+}
+.category-action a:first-child {
+    margin-right: 15px;
+}
+.category-action a{
+    cursor: pointer;
+}
+.category-content{
+    width: 100%;
+    vertical-align: middle;
+    display: flex;
+    align-items: center;
+}
+.category_left, .category_position, .category-action.right-btn-group, .cat_label  {
+    width: 33.3%;
+    float: left;
+}
+.faq_edit .modal-header {
+    justify-content: space-between;
+}
+.faq_edit .modal-header h3{
+    font-size: 20px;
+    color: #424D5C;
+    font-weight: normal;
+    margin-bottom: 0 !important;
+    margin-top: 0px;
+    font-family: 'poppinssemibold';
+    margin-bottom: 20px;
+}
+.faq_edit .modal-header button{
+    background-color: transparent;
+    border: none;
+    font-size: 20px;
+}
+.faq_edit .modal-dialog {
+    max-width: 750px;
+}
+.title-btn-group.right-btn-group button {
+    margin-right: 0px !important;
+}
+.title-btn-group.right-btn-group img {
+    margin-right: 5px;
+    margin-top: -2px;
+}
+.category-content h5{
+    font-size: 16px;
+    font-family: 'poppinssemibold';
+    width: 100%;
+    line-height: 40px;
+}
+.cat_label {
+    margin-bottom: 15px;
+}
+.category_position {
+    text-align: center;
+}
+.cate_action_btn {
+    float: right;
+}
+span.category_label {
+    font-size: 16px;
+    font-weight: 500;
+    color: #192838;
+    margin-bottom: 0;
+    display: inline-block;
+    width: 100%;
+    background: #f7f7f7;
+    padding: 8px 10px;
+}
+@media only screen and (max-width:600px){
+    .category-list {
+        display: inline-block;
+        width: 100%;
+    }
+}

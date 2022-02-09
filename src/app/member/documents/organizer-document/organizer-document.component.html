@@ -1,0 +1,63 @@
+
+<div class="row">
+    <!-- Club Documents start -->
+    <div class="col-md-12 document_widget">
+        <div class="card ">
+            <div class="card-header ">
+                <!-- <h5 class="card-title">{{language.club_document.title}}</h5> -->
+            </div>
+            <div class="tasks_navigation">
+                <ul class="nav nav-tabs" role="tablist">
+                    <!-- <li class="nav-item">
+                        <a class="nav-link" (click)="displayDocument('allDocument')"
+                            [ngClass]="displayAllDocument == true ? 'active' : ''" data-toggle="tab"
+                            role="tab">{{language.club_document.all}}</a>
+                    </li> -->
+                    <li class="nav-item">
+                        <a class="nav-link"  *ngIf="participateAccess.organizer_myDocument == 'Yes'" (click)="displayDocument('myDocument')" [ngClass]="displayMyDocument == true ? 'active' : ''" data-toggle="tab" role="tab">{{language.club_document.my_documents}}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" *ngIf="participateAccess.organizer_clubDocument == 'Yes'" (click)="displayDocument('clubDocument')" [ngClass]="displayClubDocument == true ? 'active' : ''" data-toggle="tab" role="tab">{{language.club_document.club_documents}}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" *ngIf="participateAccess.organizer_currentStatus == 'Yes'" (click)="displayDocument('currentStatus')" [ngClass]="displayCurrentStatus == true ? 'active' : ''" data-toggle="tab" role="tab">{{language.club_document.current_status}}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" *ngIf="participateAccess.organizer_archivedDocument == 'Yes'" (click)="displayDocument('archivedDocument')" [ngClass]="displayArchivedDocument == true ? 'active' : ''" data-toggle="tab" role="tab">{{language.club_document.archived_documents}}</a>
+                    </li>
+                </ul>
+                <!-- Tab panes -->
+                <!-- <div class="document-title" *ngIf="displayAllDocument == true">
+                    {{language.club_document.all}}
+                </div> -->
+                <!-- <div class="document-title" *ngIf="displayMyDocument == true">
+                    {{language.club_document.my_documents}}
+                </div>
+                <div class="document-title" *ngIf="displayClubDocument == true">
+                    {{language.club_document.club_documents}}
+                </div>
+                <div class="document-title" *ngIf="displayCurrentStatus == true">
+                    {{language.club_document.current_status}}
+                </div>
+                <div class="document-title" *ngIf="displayArchivedDocument == true">
+                    {{language.club_document.archived_documents}}
+                </div> -->
+            </div>
+            <div class="tab-content">
+                <div class="tab-pane" id="tabs-2" role="tabpanel" *ngIf="displayMyDocument == true" [ngClass]="displayMyDocument == true ? 'active' : ''">
+                    <app-my-document></app-my-document>
+                </div>
+                <div class="tab-pane" id="tabs-4" role="tabpanel" *ngIf="displayClubDocument == true" [ngClass]="displayClubDocument == true ? 'active' : ''">
+                    <app-club-document></app-club-document>
+                </div>
+                <div class="tab-pane" id="tabs-5" role="tabpanel" *ngIf="displayCurrentStatus == true" [ngClass]="displayCurrentStatus == true ? 'active' : ''">
+                    <app-current-status-document></app-current-status-document>
+                </div>
+                <div class="tab-pane" id="tabs-6" role="tabpanel" *ngIf="displayArchivedDocument == true" [ngClass]="displayArchivedDocument == true ? 'active' : ''">
+                    <app-archived-document></app-archived-document>
+                </div>
+            </div>
+        </div>
+        <!-- Club Documents End -->
+    </div>
+</div>
