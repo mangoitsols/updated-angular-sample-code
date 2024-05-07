@@ -1,0 +1,46 @@
+<span
+  *ngIf="!isDateBadge; else dateTemplate"
+  [ngStyle]="cssStyle"
+  [style.background-color]="backgroundColor"
+  [style.border-bottom-left-radius]="borderBottomLeftRadius"
+  [style.border-bottom-right-radius]="borderBottomRightRadius"
+  [style.border-color]="borderColor"
+  [style.border-top-left-radius]="borderTopLeftRadius"
+  [style.border-top-right-radius]="borderTopRightRadius"
+  [style.bottom]="positionBottom"
+  [style.color]="color"
+  [style.font-size]="fontSize"
+  [style.height]="height"
+  [style.left]="positionLeft"
+  [style.position]="positionStyle"
+  [style.right]="positionRight"
+  [style.top]="positionTop"
+  [style.width]="width"
+  class="vc-badge"
+>
+  {{ text }}
+</span>
+<ng-template #dateTemplate>
+  <span
+    [ngStyle]="cssStyle"
+    [style.background-color]="backgroundColor"
+    [style.border-bottom-left-radius]="borderBottomLeftRadius"
+    [style.border-bottom-right-radius]="borderBottomRightRadius"
+    [style.border-color]="borderColor"
+    [style.border-top-left-radius]="borderTopLeftRadius"
+    [style.border-top-right-radius]="borderTopRightRadius"
+    [style.bottom]="positionBottom"
+    [style.color]="color"
+    [style.font-size]="fontSize"
+    [style.height]="height"
+    [style.left]="positionLeft"
+    [style.position]="positionStyle"
+    [style.right]="positionRight"
+    [style.top]="positionTop"
+    [style.width]="width"
+    class="vc-date-badge"
+  >
+    <span class="vc-month">{{ dateText?.month || '--' }}</span> <br />
+    <span class="vc-day mt-1">{{ dateText?.day || '--' }}</span>
+  </span>
+</ng-template>

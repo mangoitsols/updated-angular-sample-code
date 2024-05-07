@@ -1,0 +1,40 @@
+<div class="group-news-list">
+  <ng-container *ngIf="!isLoading; else loading">
+    <ng-container *ngIf="groupNews.length; else noNews">
+      <div [ngClass]="groupNews?.length > 4 ? 'justify-content-between' : 'fixed-gap'" class="row row-cols-2 row-cols-sm-3 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-5">
+        <ng-container *ngFor="let news of groupNews">
+          <div class="col mb-4">
+            <vc-group-news-summary-card [news]="news" (refresh)="reloadData($event)"></vc-group-news-summary-card>
+          </div>
+        </ng-container>
+      </div>
+    </ng-container>
+  </ng-container>
+
+  <ng-template #noNews>
+    <div class="col text-center">
+      <h3 class="text-muted">{{ language.community_groups.no_news_found }}</h3>
+    </div>
+  </ng-template>
+
+  <vc-pagination-bar (pageChanged)="changePage($event)" (pageSizeChanged)="changePageSize($event)" [loading]="isLoading" [pagination]="pagination"></vc-pagination-bar>
+</div>
+
+<ng-template #loading>
+  <div class="row row-cols-2 row-cols-sm-3 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-5 mb-5 justify-content-between">
+    <ng-container *ngFor="let item of [].constructor(10)">
+      <div class="col mb-4">
+        <ngx-skeleton-loader
+          [theme]="{
+            'border-radius': '15px',
+            height: '290px',
+            width: '100%',
+            'margin-bottom': '50px',
+            background: 'var(--vc-skeleton-loader-background)'
+          }"
+          appearance="circle"
+        ></ngx-skeleton-loader>
+      </div>
+    </ng-container>
+  </div>
+</ng-template>

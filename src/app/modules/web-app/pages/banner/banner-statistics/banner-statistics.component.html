@@ -1,0 +1,51 @@
+<div class="content">
+  <ng-container *ngIf="participateAccess?.banner == 'Yes'">
+    <vc-page-header [breadcrumbs]="breadCrumbItems" [headerTitle]="language.banner.banner_statistics"></vc-page-header>
+
+    <ng-container *ngIf="allBanners?.length > 0">
+      <div style="display: block">
+        <div echarts id="main" #main class="demo-chart" style="width: 100%; height: 600px"></div>
+      </div>
+    </ng-container>
+    <div class="card-details" *ngIf="isSuccessFalse == true">
+      <div style="text-align: center">
+        <h3>{{ language.common.noDataFound }}</h3>
+      </div>
+    </div>
+    <br /><br />
+    <ng-container *ngIf="allBanners?.length > 0">
+      <div style="display: block">
+        <canvas baseChart style="width: 20px; height: 5px" [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions" [legend]="barChartLegend" [type]="barChartType"> </canvas>
+      </div>
+    </ng-container>
+
+    <br /><br />
+    <ng-container *ngIf="allMobBanners?.length > 0">
+      <h1>Mobile</h1>
+      <div style="display: block">
+        <div echarts id="main1" #main1 class="demo-chart" style="width: 100%; height: 600px"></div>
+      </div>
+    </ng-container>
+    <div class="card-details" *ngIf="isSuccessFalseMob == true">
+      <div style="text-align: center">
+        <h3>{{ language.common.noDataFound }}</h3>
+      </div>
+    </div>
+    <br /><br />
+    <ng-container *ngIf="allMobBanners?.length > 0">
+      <div style="display: block">
+        <canvas baseChart style="width: 20px; height: 5px" [datasets]="barChartData1" [labels]="barChartLabels1" [options]="barChartOptions1" [legend]="barChartLegend1" [type]="barChartType1"> </canvas>
+      </div>
+    </ng-container>
+  </ng-container>
+
+  <div class="not-f-main" *ngIf="participateAccess?.banner == 'No'">
+    <div class="page-not-available">
+      <div class="not-available-user">
+        <vc-icon color="blue" iconName="feature-locked" size="50px"></vc-icon>
+        <h1>{{ language.genral_message.feature_locked }}</h1>
+        <span>{{ language.genral_message.not_available_msg }}</span>
+      </div>
+    </div>
+  </div>
+</div>

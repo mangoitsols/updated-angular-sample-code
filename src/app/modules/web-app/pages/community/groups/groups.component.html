@@ -1,0 +1,53 @@
+<!--<div class="row row-cols-2 row-cols-sm-3 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-5 justify-content-end mb-4">-->
+<!--  <div class="col">-->
+<!--    <vc-dropdown (itemSelected)="onFilterChange($event)" [options]="dropDownItems" [selectedItemStyle]="{ backgroundColor: userTheme.button_bgcolor, color: userTheme.button_text }" [selectedItem]="selectedFilter" displayName="name"></vc-dropdown>-->
+<!--  </div>-->
+<!--</div>-->
+<ng-container *ngIf="participateAccess.group == 'Yes'">
+  <ng-container *ngIf="!isLoading; else loading">
+    <div class="row row-cols-2 row-cols-sm-3 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-5">
+      <ng-container *ngFor="let group of communityGroups">
+        <div class="col">
+          <vc-community-group-card
+            (clickGroupEvent)="openGroupDetail($event)"
+            (deleteGroupEvent)="deleteGroup($event)"
+            (editGroupEvent)="editGroup($event)"
+            (joinGroupEvent)="joinGroup($event)"
+            (leaveGroupEvent)="leaveGroup($event)"
+            [group]="group"
+          ></vc-community-group-card>
+        </div>
+      </ng-container>
+    </div>
+  </ng-container>
+  <vc-pagination-bar (pageChanged)="changePage($event)" (pageSizeChanged)="changePageSize($event)" [loading]="isLoading" [pagination]="pagination"></vc-pagination-bar>
+
+  <ng-template #loading>
+    <div class="row row-cols-2 row-cols-sm-3 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-5">
+      <ng-container *ngFor="let item of [].constructor(10)">
+        <div class="col">
+          <ngx-skeleton-loader
+            [theme]="{
+              'border-radius': '15px',
+              height: '290px',
+              width: '100%',
+              'margin-bottom': '50px',
+              background: 'var(--vc-skeleton-loader-background)'
+            }"
+            appearance="circle"
+          ></ngx-skeleton-loader>
+        </div>
+      </ng-container>
+    </div>
+  </ng-template>
+</ng-container>
+
+<div *ngIf="participateAccess.group == 'No'" class="not-f-main">
+  <div class="page-not-available">
+    <div class="not-available-user">
+      <vc-icon color="blue" iconName="feature-locked" size="50px"></vc-icon>
+      <h1>{{ language.genral_message.feature_locked }}</h1>
+      <span>{{ language.genral_message.not_available_msg }}</span>
+    </div>
+  </div>
+</div>

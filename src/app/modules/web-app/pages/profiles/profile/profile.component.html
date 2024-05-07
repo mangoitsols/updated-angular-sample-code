@@ -1,0 +1,220 @@
+<div class="content profile_section">
+  <div class="profile_main">
+    <div class="profile-section-content">
+      <app-profile-side-bar></app-profile-side-bar>
+      <div class="profile_content">
+        <div class="card">
+          <div class="card-body">
+            <!-- profile header start -->
+            <div class="profile_main_head">
+              <div class="alert alert-danger" role="alert" *ngIf="checkStatus?.status == 'pending'">
+                {{ language.profile.request_approval }}
+              </div>
+              <!-- profile header end -->
+              <!-- profile details data start -->
+              <div class="profile_details">
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="profile_field info_field">
+                      <span class="info_label">{{ language.profile.street }}</span>
+                      <span class="info_detail" *ngIf="userDetails">
+                        {{ userDetails?.street }}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="profile_field info_field">
+                      <span class="info_label">{{ language.profile.more_info }}</span>
+                      <span class="info_detail" *ngIf="userDetails">{{ userDetails.street2 }}</span>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="profile_field info_field">
+                      <span class="info_label">{{ language.profile.city }}</span>
+                      <span class="info_detail" *ngIf="userDetails">{{ userDetails.city }}</span>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="profile_field info_field">
+                      <span class="info_label">{{ language.profile.zip_code }}</span>
+                      <span class="info_detail" *ngIf="userDetails">{{ userDetails.postCode }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- profile details data End -->
+              <!-- profile contact details data start -->
+              <div class="profile_details">
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="profile_field info_field">
+                      <span class="info_label">{{ language.profile.userEmail }}</span>
+                      <span class="info_detail" *ngIf="userDetails">{{ userDetails.email }}</span>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="profile_field info_field">
+                      <span class="info_label">{{ language.profile.phone }}</span>
+                      <span class="info_detail" *ngIf="userDetails">{{ userDetails.phone }}</span>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="profile_field info_field">
+                      <span class="info_label">{{ language.profile.dob }}</span>
+                      <span class="info_detail" *ngIf="userDetails">
+                        {{ userDetails.birthDate | date: 'dd/MM/yyyy' }}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="profile_field info_field">
+                      <span class="info_label">{{ language.banner.view_Advertisment }}</span>
+                      <span class="info_detail" *ngIf="allowAdvertisment == 1">{{ language.button.no }}</span>
+                      <span class="info_detail" *ngIf="allowAdvertisment == 0">{{ language.button.yes }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- profile contact details data End -->
+              <div class="profile_header">
+                <div class="print_btn_group">
+                  <div class="title-btn-group rp_sec">
+                    <a (click)="inEdit()">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path
+                          d="M19.9934 3.89539C19.9866 4.52753 19.718 5.03849 19.2764 5.47741C18.2814 6.46702 17.2931 7.46201 16.3015 8.45498C12.9705 11.7893 9.63819 15.1224 6.3119 18.4614C6.06013 18.7146 5.78008 18.8795 5.43338 18.9636C4.09708 19.2874 2.76481 19.6274 1.42918 19.9553C0.496126 20.1835 -0.183806 19.5103 0.044409 18.5806C0.381682 17.2066 0.7304 15.8353 1.07104 14.4619C1.13971 14.1846 1.27839 13.9564 1.48035 13.7551C5.83393 9.41227 10.1848 5.06609 14.5398 0.72327C15.5085 -0.242772 16.795 -0.239406 17.7604 0.72327C18.2841 1.245 18.8031 1.77144 19.3249 2.29519C19.7658 2.73816 20.0035 3.26528 19.9934 3.89539ZM2.5541 17.4267C3.31886 17.2362 4.04726 17.0551 4.77633 16.874C4.85577 16.8545 4.90088 16.7905 4.95339 16.738C8.1282 13.57 11.301 10.4012 14.4792 7.23716C14.6118 7.10521 14.5882 7.04058 14.4691 6.92547C13.9992 6.46904 13.5333 6.00857 13.0789 5.53665C12.9463 5.39865 12.8796 5.40605 12.7477 5.53867C9.58568 8.70675 6.41827 11.8701 3.25288 15.0348C3.19499 15.0927 3.13171 15.1432 3.10882 15.2341C2.92975 15.9524 2.74596 16.6707 2.5541 17.4267ZM17.8405 3.86442C17.8115 3.82942 17.794 3.80249 17.7711 3.7796C17.2555 3.26393 16.7371 2.75028 16.2241 2.23191C16.1413 2.14844 16.0975 2.19893 16.0417 2.2548C15.5455 2.75432 15.0507 3.25518 14.5499 3.75065C14.4637 3.83615 14.465 3.88597 14.5505 3.97079C15.0453 4.46021 15.5361 4.95299 16.0228 5.45048C16.1137 5.54339 16.1662 5.55146 16.2611 5.45452C16.7485 4.95837 17.244 4.46963 17.7361 3.97752C17.7711 3.94386 17.8021 3.90684 17.8405 3.86442Z"
+                          fill="#CBD2EB"
+                        />
+                      </svg>
+                    </a>
+                    <button
+                      type="button"
+                      class="disabled"
+                      data-bs-toggle="modal"
+                      data-bs-target="#exampleModal"
+                      [ngStyle]="{
+                        'border-color': setTheme.default_status == true ? setTheme.cancel_button_bgcolor : setTheme.cancel_button_bgcolor,
+                        'background-color': setTheme.default_status == true ? setTheme.cancel_button_bgcolor : setTheme.cancel_button_bgcolor,
+                        color: setTheme.default_status == true ? setTheme.cancel_button_text : setTheme.cancel_button_text
+                      }"
+                    >
+                      <span [ngStyle]="{ color: setTheme.default_status == true ? setTheme.cancel_button_text : setTheme.cancel_button_text }">
+                        {{ language.profile.change_password }}
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade change_pass_section" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <form [formGroup]="changePasswordForm" (ngSubmit)="changePassword()">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">{{ language.profile.change_password }}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" (click)="closeModal()" aria-label="Close"><i class="nc-icon nc-simple-remove"></i></button>
+          </div>
+          <div class="modal-body">
+            <div id="change_password_main">
+              <div class="change_pass_inner">
+                <div class="pass_fields event_field">
+                  <label>{{ language.profile.old_password }}</label>
+                  <input type="password" name="" formControlName="oldPassword" placeholder="{{ language.profile.enter_old_password }}" [ngClass]="{ 'is-invalid': submitted && changePasswordForm.controls.oldPassword?.errors }" />
+                  <div
+                    *ngIf="
+                      (changePasswordForm.controls.oldPassword?.touched || submitted) &&
+                      (changePasswordForm.controls.oldPassword?.errors?.required || changePasswordForm.controls.oldPassword?.errors?.minlength || changePasswordForm.controls.oldPassword?.errors?.pattern)
+                    "
+                    class="text-danger"
+                  >
+                    <div *ngIf="changePasswordForm.controls.oldPassword.errors.required">
+                      {{ language.error_message.common_required }}
+                    </div>
+                    <div *ngIf="changePasswordForm.controls.oldPassword.errors?.minlength">
+                      {{ language.error_message.min_length }}
+                    </div>
+                    <div *ngIf="changePasswordForm.controls.oldPassword.errors?.pattern">
+                      {{ language.error_message.common_valid }}
+                    </div>
+                  </div>
+                </div>
+                <div class="pass_fields event_field">
+                  <label>{{ language.profile.new_password }}</label>
+                  <input type="password" name="" formControlName="newPassword" placeholder="{{ language.profile.enter_new_password }}" [ngClass]="{ 'is-invalid': submitted && changePasswordForm.controls.newPassword.errors }" />
+                  <div
+                    *ngIf="
+                      (changePasswordForm.controls.newPassword.touched || submitted) &&
+                      (changePasswordForm.controls.newPassword?.errors?.required || changePasswordForm.controls.newPassword?.errors?.minlength || changePasswordForm.controls.newPassword?.errors?.pattern)
+                    "
+                    class="text-danger"
+                  >
+                    <div *ngIf="changePasswordForm.controls.newPassword.errors.required">
+                      {{ language.error_message.common_required }}
+                    </div>
+                    <div *ngIf="changePasswordForm.controls.newPassword.errors?.minlength">
+                      {{ language.error_message.min_length }}
+                    </div>
+                    <div *ngIf="changePasswordForm.controls.newPassword.errors?.pattern">
+                      {{ language.error_message.common_valid }}
+                    </div>
+                  </div>
+                </div>
+                <div class="pass_fields event_field">
+                  <label>{{ language.profile.confirm_password }}</label>
+                  <input type="password" name="" formControlName="confirmPassword" placeholder="{{ language.profile.enter_confirm_password }}" [ngClass]="{ 'is-invalid': submitted && changePasswordForm.controls.confirmPassword?.errors }" />
+                  <div
+                    *ngIf="
+                      (changePasswordForm.controls.confirmPassword?.touched || submitted) &&
+                      (changePasswordForm.controls.confirmPassword?.errors?.required || changePasswordForm.controls.confirmPassword?.errors?.minlength || changePasswordForm.controls.confirmPassword?.errors?.pattern || c_password)
+                    "
+                    class="text-danger"
+                  >
+                    <div *ngIf="changePasswordForm.controls.confirmPassword.errors?.required">
+                      {{ language.error_message.common_required }}
+                    </div>
+                    <div *ngIf="changePasswordForm.controls.confirmPassword.errors?.minlength">
+                      {{ language.error_message.min_length }}
+                    </div>
+                    <div *ngIf="changePasswordForm.controls.confirmPassword.errors?.pattern">
+                      {{ language.error_message.common_valid }}
+                    </div>
+                    <div *ngIf="c_password">
+                      {{ language.error_message.confirm_password }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer profile_sub_btn event_sub_btn">
+            <button
+              type="submit"
+              class="save_btn"
+              [ngStyle]="{
+                'border-color': setTheme.default_status == true ? setTheme.create_button_bgcolor : setTheme.create_button_bgcolor,
+                'background-color': setTheme.default_status == true ? setTheme.create_button_bgcolor : setTheme.create_button_bgcolor,
+                color: setTheme.default_status == true ? setTheme.create_button_text : setTheme.create_button_text
+              }"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="18" viewBox="0 0 20 18" fill="none">
+                <path
+                  [ngStyle]="{ fill: setTheme.default_status == true ? setTheme.create_button_ic_color : setTheme.create_button_ic_color }"
+                  d="M20 5.58888C20 8.86343 20 12.1385 20 15.413C19.9208 15.5063 19.9312 15.6272 19.9015 15.7355C19.5321 17.086 18.3687 17.9592 16.9214 17.9597C12.3073 17.9613 7.69271 17.9603 3.07865 17.9603C3.00727 17.9603 2.93537 17.9592 2.86399 17.9561C1.56928 17.9019 0.461615 17.0214 0.108891 15.7731C0.0750254 15.6527 0.0854456 15.5178 0 15.413C0 11.1246 0 6.83618 0 2.54775C0.0729414 2.51023 0.0494959 2.43312 0.0625212 2.37633C0.384505 0.958666 1.5573 0.00573894 3.01925 0.00313389C6.3386 -0.00259722 9.65744 0.00157086 12.9768 0.000528842C13.3847 0.000528842 13.7823 0.060966 14.1543 0.229252C15.2375 0.720043 15.8653 1.55157 15.9788 2.74052C15.9992 2.95101 16.058 3.01249 16.2644 2.99477C16.5035 2.97445 16.7458 2.98748 16.9865 2.9906C18.3843 3.0078 19.5436 3.8982 19.9036 5.22574C19.937 5.34661 19.925 5.47947 20 5.58888ZM14.1564 15.9637C13.8938 15.0577 14.0058 14.1439 14.0021 13.2394C13.9902 9.86845 13.9881 6.497 14.0047 3.12607C14.0084 2.4102 13.503 1.98558 12.8705 1.98922C9.62305 2.00694 6.37507 2.00694 3.12762 1.98974C2.45291 1.9861 1.98869 2.45657 1.99078 3.12763C2.0038 7.03156 2.0038 10.9355 1.99078 14.8389C1.98869 15.4933 2.44093 15.9752 3.13283 15.9716C6.73197 15.9544 10.3311 15.9637 13.9302 15.9637C14.0011 15.9637 14.072 15.9637 14.1564 15.9637ZM16.0028 10.0753C16.0028 11.6607 16.0028 13.2462 16.0033 14.8316C16.0033 14.9676 15.9997 15.1041 16.0382 15.2375C16.1794 15.7246 16.6374 16.0231 17.1459 15.957C17.6367 15.8929 18.0014 15.4646 18.0019 14.9311C18.004 11.9619 18.0045 8.99264 18.0019 6.02288C18.0014 5.41643 17.5789 5.0017 16.9682 4.99232C16.7077 4.98816 16.4467 5.00274 16.1873 4.98763C16.0257 4.97826 15.9997 5.03765 15.9997 5.18301C16.0044 6.81325 16.0028 8.44453 16.0028 10.0753ZM7.99854 3.99042C8.96866 3.99042 9.93878 3.9899 10.9089 3.99042C11.5919 3.99094 11.9968 4.39629 11.9973 5.08194C11.9983 6.34903 11.9983 7.61613 11.9973 8.88322C11.9968 9.57721 11.5919 9.98047 10.8922 9.98099C8.96501 9.98203 7.03832 9.98203 5.11111 9.98099C4.40514 9.98047 3.99875 9.57304 3.99771 8.86707C3.99667 7.613 3.99667 6.35893 3.99771 5.10486C3.99823 4.39525 4.40253 3.99094 5.10798 3.99042C6.07133 3.99042 7.03467 3.99042 7.99854 3.99042ZM8.00323 7.97979C8.61437 7.97979 9.22604 7.97719 9.83718 7.98188C9.95389 7.98292 10.006 7.96781 10.0039 7.8287C9.99453 7.26445 9.99713 6.69967 10.0023 6.1349C10.0034 6.02184 9.98359 5.97964 9.85594 5.98016C8.62063 5.98537 7.38479 5.98537 6.14948 5.98068C6.02391 5.98016 5.99943 6.02184 6.00047 6.13646C6.00568 6.69446 6.00724 7.25298 5.99943 7.81099C5.99734 7.94593 6.03017 7.98552 6.16928 7.98344C6.78094 7.97562 7.39209 7.97979 8.00323 7.97979ZM10.9464 13.9719C11.1392 13.9724 11.3215 13.937 11.4893 13.8427C11.878 13.6239 12.078 13.1685 11.9728 12.747C11.8571 12.2839 11.4815 11.9801 10.9964 11.9796C8.99888 11.9765 7.00185 11.978 5.0043 11.9791C4.92667 11.9791 4.84747 11.9848 4.77245 12.0025C4.28531 12.1197 3.95342 12.5767 4.00448 13.0544C4.06023 13.5822 4.46662 13.9657 4.99336 13.9688C5.99526 13.9745 6.99716 13.9704 7.99906 13.9704C8.98169 13.9709 9.96431 13.9698 10.9464 13.9719Z"
+                  fill="white"
+                  ng-reflect-ng-style="[object Object]"
+                  style="fill: rgb(255, 255, 255)"
+                ></path>
+              </svg>
+              <span [ngStyle]="{ color: setTheme.default_status == true ? setTheme.create_button_text : setTheme.create_button_text }">{{ language.profile.submit }}</span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,531 @@
+<div class="content n-detail-main">
+  <div class="news_details_main">
+    <div class="news-details">
+      <div class="page-action">
+        <div class="page-heading">
+          <vc-page-header [breadcrumbs]="breadCrumbItems" [headerTitle]="language.Survey.survey_detail"></vc-page-header>
+          <span>
+            <div class="page-action-right">
+              <button
+                type="button"
+                [ngStyle]="{
+                  'border-color': setTheme.default_status == true ? setTheme.create_button_bgcolor : setTheme.create_button_bgcolor,
+                  'background-color': setTheme.default_status == true ? setTheme.create_button_bgcolor : setTheme.create_button_bgcolor,
+                  color: setTheme.default_status == true ? setTheme.create_button_text : setTheme.create_button_text
+                }"
+                (click)="goBack()"
+              >
+                <span [ngStyle]="{ color: setTheme.default_status == true ? setTheme.create_button_text : setTheme.create_button_text }">{{ language.club_news.Back }}</span>
+              </button>
+            </div>
+          </span>
+        </div>
+      </div>
+      <div class="news_detail_inner">
+        <mat-tab-group *ngIf="updateSurveyData">
+          <mat-tab label="{{ language.Survey.current_survey }}">
+            <div class="card-body">
+              <div class="news_details" *ngIf="surveyData">
+                <div class="survey-detail-main" *ngFor="let item of surveyData">
+                  <div class="news_content">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="group_detail_main">
+                          <div class="detail-big-img">
+                            <div *ngIf="showImage">
+                              <ng-container *ngIf="showImage">
+                                <img *ngIf="!showImage.isLoading && showImage.imageLoaded" [src]="showImage.url" alt="Image" loading="lazy" />
+                                <img *ngIf="showImage.isLoading" [src]="'../../../../assets/img/loading.gif'" alt="Image" />
+                              </ng-container>
+                              <ng-container *ngIf="!showImage">
+                                <img [src]="'../../../assets/img/no_image.png'" alt="Image" />
+                              </ng-container>
+                            </div>
+                            <div *ngIf="showFile">
+                              <img onContextMenu="return false;" src="../../../../assets/img/no_image.png" alt="" loading="lazy" />
+                            </div>
+                            <div *ngIf="!showImage && !showFile">
+                              <img onContextMenu="return false;" src="../../../../assets/img/no_image.png" alt="" loading="lazy" />
+                            </div>
+                            <div class="dropdown action_group" *ngIf="role != 'guest' && (userDetails.userId == item.user_id || userDetails.isAdmin)">
+                              <button class="dropdown-toggle" type="button" (click)="onShow()">
+                                <i class="fa fa-pencil"></i>
+                              </button>
+                              <ul class="dropdown-menu bunch_drop" aria-labelledby="dropdownMenuLink">
+                                <li *ngIf="userDetails.userId == item.user_id || userDetails.isAdmin">
+                                  <a class="dropdown-item" routerLink="/web/update-survey/{{ item.id }}">{{ language.club_news.Edit }}</a>
+                                </li>
+                                <li *ngIf="userDetails.userId == item.user_id || userDetails.isAdmin">
+                                  <a class="dropdown-item" (click)="surveyDelete(item.id)">{{ language.club_news.Delete }}</a>
+                                </li>
+                              </ul>
+                            </div>
+                          </div>
+
+                          <div class="survey-content">
+                            <div class="news_heading">
+                              <h2>{{ item.title }}</h2>
+                            </div>
+                            <div class="news_content_text" [innerHTML]="item.description">
+                              ...<a href="#">{{ language.dashboard.dashboardNewsContent }}</a>
+                            </div>
+                          </div>
+                          <div *ngIf="showFile">
+                            <div class="attach_btn preview_img">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#E12217" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-download">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" [ngStyle]="{ stroke: '#fff' }" />
+                                <polyline points="7 10 12 15 17 10" [ngStyle]="{ stroke: '#fff' }" />
+                                <line x1="12" y1="15" x2="12" y2="3" [ngStyle]="{ stroke: '#fff' }" />
+                              </svg>
+                              <a href="javascript:void(0)" (click)="downloadDoc(showFile, 0)">
+                                {{ language.create_event.download_attachment }}
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="group_detail_main">
+                          <div class="voting-main">
+                            <label class="voting-title">{{ language.Survey.voting_options }}</label>
+                            <div class="voting-option-info" *ngIf="item.surveyOption == 0">
+                              <span class="choice-title"> {{ language.Survey.single_selection }}</span>
+                              <div class="choice-option" *ngFor="let fields of item.surveyAnswer; let i = index">
+                                <label for="{{ i }}">- {{ fields.surveyAnswer }}</label>
+                              </div>
+                            </div>
+                            <div class="voting-option-info" *ngIf="item.surveyOption == 1">
+                              <span class="choice-title">{{ language.Survey.multiple_selection }}</span>
+                              <div class="choice-option" *ngFor="let fields of item.surveyAnswer; let i = index">
+                                <label for="{{ i }}">- {{ fields.surveyAnswer }}</label>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="msg-text-wrap">
+                            <p>{{ language.Survey.active_form }} = {{ item.surveyStartDate | date: 'dd.MM.YYYY' }}</p>
+                            <p>{{ language.Survey.active_until }} = {{ item.surveyEndDate | date: 'dd.MM.YYYY' }}</p>
+                          </div>
+                          <div class="author-info">
+                            <div class="author-img">
+                              <img onContextMenu="return false;" [src]="item?.user_name?.member_id | memberPhoto | async" alt="User Photo" loading="lazy" style="width: 100px" />
+                            </div>
+                            <div class="author-des">
+                              <span class="author-id"
+                                >{{ language.dashboard.dashboardNewsAuthor }}
+                                {{ item.user_name.firstname }}
+                                {{ item.user_name.lastname }}</span
+                              >
+                              <span class="author-date">{{ item.created_at | date: 'dd.MM.YYYY' }}</span>
+                              <span class="author-status" *ngIf="item.approved_status == 0">{{ language.theme.status }}:- {{ language.community_groups.waitingApproval }}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </mat-tab>
+          <mat-tab label="{{ language.Survey.update_survey }}">
+            <div class="card-body">
+              <div class="news_details" *ngIf="updateSurveyData">
+                <div class="survey-detail-main" *ngFor="let item of surveyData">
+                  <div class="news_content">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="group_detail_main">
+                          <div class="detail-big-img">
+                            <div *ngIf="showUpdatedImage || showImage">
+                              <ng-container *ngIf="showUpdatedImage || showImage">
+                                <img
+                                  *ngIf="(!showUpdatedImage || !showUpdatedImage?.isLoading) && (!showImage || !showImage.isLoading)"
+                                  [src]="showUpdatedImage && !showUpdatedImage?.isLoading ? showUpdatedImage?.url : showImage?.url"
+                                  alt=""
+                                  loading="lazy"
+                                  onContextMenu="return false;"
+                                />
+                                <img onContextMenu="return false;" *ngIf="(showUpdatedImage && showUpdatedImage?.isLoading) || (showImage && showImage.isLoading)" [src]="'../../../../assets/img/loading.gif'" alt="Image" />
+                              </ng-container>
+                            </div>
+                            <div *ngIf="showUpdatedFile">
+                              <img onContextMenu="return false;" src="../../../../assets/img/no_image.png" alt="" loading="lazy" />
+                            </div>
+                            <div *ngIf="!showUpdatedImage && !showImage && !showUpdatedFile">
+                              <img onContextMenu="return false;" src="../../../../assets/img/no_image.png" alt="" loading="lazy" />
+                            </div>
+
+                            <div class="dropdown action_group" *ngIf="role != 'guest' && (userDetails.userId == item?.user_id || userDetails.isAdmin)">
+                              <button class="dropdown-toggle" type="button" (click)="onShow()">
+                                <i class="fa fa-pencil"></i>
+                              </button>
+                              <ul class="dropdown-menu bunch_drop" aria-labelledby="dropdownMenuLink">
+                                <li *ngIf="userDetails.isAdmin && (item.deny_by_id == '' || item.deny_by_id == null)">
+                                  <a class="dropdown-item" (click)="approveUpdateSurvey(item.id)">{{ language.Survey.publish_survey }}</a>
+                                </li>
+                                <li *ngIf="userDetails.isAdmin && (item.deny_by_id == '' || item.deny_by_id == null)">
+                                  <a class="dropdown-item" (click)="denySurvey(item.id)">{{ language.Survey.deny_survey }}</a>
+                                </li>
+                                <li *ngIf="userDetails.userId == item.user_id">
+                                  <a class="dropdown-item" (click)="deleteUpdatedSurvey(item.id)">{{ language.Survey.RestUpdateSurvey }}</a>
+                                </li>
+                              </ul>
+                            </div>
+                          </div>
+                          <div class="survey-content">
+                            <div class="news_heading">
+                              <h2>{{ updateSurveyData.title }}</h2>
+                            </div>
+                            <div class="news_content_text" [innerHTML]="updateSurveyData.description">
+                              ...<a href="#">{{ language.dashboard.dashboardNewsContent }}</a>
+                            </div>
+                          </div>
+                          <div *ngIf="showUpdatedFile">
+                            <div class="attach_btn preview_img">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#E12217" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-download">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" [ngStyle]="{ stroke: '#fff' }" />
+                                <polyline points="7 10 12 15 17 10" [ngStyle]="{ stroke: '#fff' }" />
+                                <line x1="12" y1="15" x2="12" y2="3" [ngStyle]="{ stroke: '#fff' }" />
+                              </svg>
+                              <a href="javascript:void(0)" (click)="downloadDoc(showUpdatedFile, 1)">
+                                {{ language.create_event.download_attachment }}
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="group_detail_main">
+                          <div class="page-action-right" *ngIf="item.deny_by_id == '' || item.deny_by_id == null">
+                            <button *ngIf="userDetails.isAdmin" (click)="approveUpdateSurvey(item.id)" type="button">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="18" viewBox="0 0 20 18" fill="none">
+                                <path
+                                  [ngStyle]="{ fill: setTheme.button_ic_color }"
+                                  d="M20 5.58888C20 8.86343 20 12.1385 20 15.413C19.9208 15.5063 19.9312 15.6272 19.9015 15.7355C19.5321 17.086 18.3687 17.9592 16.9214 17.9597C12.3073 17.9613 7.69271 17.9603 3.07865 17.9603C3.00727 17.9603 2.93537 17.9592 2.86399 17.9561C1.56928 17.9019 0.461615 17.0214 0.108891 15.7731C0.0750254 15.6527 0.0854456 15.5178 0 15.413C0 11.1246 0 6.83618 0 2.54775C0.0729414 2.51023 0.0494959 2.43312 0.0625212 2.37633C0.384505 0.958666 1.5573 0.00573894 3.01925 0.00313389C6.3386 -0.00259722 9.65744 0.00157086 12.9768 0.000528842C13.3847 0.000528842 13.7823 0.060966 14.1543 0.229252C15.2375 0.720043 15.8653 1.55157 15.9788 2.74052C15.9992 2.95101 16.058 3.01249 16.2644 2.99477C16.5035 2.97445 16.7458 2.98748 16.9865 2.9906C18.3843 3.0078 19.5436 3.8982 19.9036 5.22574C19.937 5.34661 19.925 5.47947 20 5.58888ZM14.1564 15.9637C13.8938 15.0577 14.0058 14.1439 14.0021 13.2394C13.9902 9.86845 13.9881 6.497 14.0047 3.12607C14.0084 2.4102 13.503 1.98558 12.8705 1.98922C9.62305 2.00694 6.37507 2.00694 3.12762 1.98974C2.45291 1.9861 1.98869 2.45657 1.99078 3.12763C2.0038 7.03156 2.0038 10.9355 1.99078 14.8389C1.98869 15.4933 2.44093 15.9752 3.13283 15.9716C6.73197 15.9544 10.3311 15.9637 13.9302 15.9637C14.0011 15.9637 14.072 15.9637 14.1564 15.9637ZM16.0028 10.0753C16.0028 11.6607 16.0028 13.2462 16.0033 14.8316C16.0033 14.9676 15.9997 15.1041 16.0382 15.2375C16.1794 15.7246 16.6374 16.0231 17.1459 15.957C17.6367 15.8929 18.0014 15.4646 18.0019 14.9311C18.004 11.9619 18.0045 8.99264 18.0019 6.02288C18.0014 5.41643 17.5789 5.0017 16.9682 4.99232C16.7077 4.98816 16.4467 5.00274 16.1873 4.98763C16.0257 4.97826 15.9997 5.03765 15.9997 5.18301C16.0044 6.81325 16.0028 8.44453 16.0028 10.0753ZM7.99854 3.99042C8.96866 3.99042 9.93878 3.9899 10.9089 3.99042C11.5919 3.99094 11.9968 4.39629 11.9973 5.08194C11.9983 6.34903 11.9983 7.61613 11.9973 8.88322C11.9968 9.57721 11.5919 9.98047 10.8922 9.98099C8.96501 9.98203 7.03832 9.98203 5.11111 9.98099C4.40514 9.98047 3.99875 9.57304 3.99771 8.86707C3.99667 7.613 3.99667 6.35893 3.99771 5.10486C3.99823 4.39525 4.40253 3.99094 5.10798 3.99042C6.07133 3.99042 7.03467 3.99042 7.99854 3.99042ZM8.00323 7.97979C8.61437 7.97979 9.22604 7.97719 9.83718 7.98188C9.95389 7.98292 10.006 7.96781 10.0039 7.8287C9.99453 7.26445 9.99713 6.69967 10.0023 6.1349C10.0034 6.02184 9.98359 5.97964 9.85594 5.98016C8.62063 5.98537 7.38479 5.98537 6.14948 5.98068C6.02391 5.98016 5.99943 6.02184 6.00047 6.13646C6.00568 6.69446 6.00724 7.25298 5.99943 7.81099C5.99734 7.94593 6.03017 7.98552 6.16928 7.98344C6.78094 7.97562 7.39209 7.97979 8.00323 7.97979ZM10.9464 13.9719C11.1392 13.9724 11.3215 13.937 11.4893 13.8427C11.878 13.6239 12.078 13.1685 11.9728 12.747C11.8571 12.2839 11.4815 11.9801 10.9964 11.9796C8.99888 11.9765 7.00185 11.978 5.0043 11.9791C4.92667 11.9791 4.84747 11.9848 4.77245 12.0025C4.28531 12.1197 3.95342 12.5767 4.00448 13.0544C4.06023 13.5822 4.46662 13.9657 4.99336 13.9688C5.99526 13.9745 6.99716 13.9704 7.99906 13.9704C8.98169 13.9709 9.96431 13.9698 10.9464 13.9719Z"
+                                  fill="white"
+                                />
+                              </svg>
+                              &nbsp;
+                              <span [ngStyle]="{ color: '#ffffff' }">{{ language.Survey.publish_survey }}</span>
+                            </button>
+
+                            <button *ngIf="userDetails.isAdmin" (click)="denySurvey(item.id)" type="button">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="18" viewBox="0 0 20 18" fill="none">
+                                <path
+                                  [ngStyle]="{ fill: setTheme.button_ic_color }"
+                                  d="M20 5.58888C20 8.86343 20 12.1385 20 15.413C19.9208 15.5063 19.9312 15.6272 19.9015 15.7355C19.5321 17.086 18.3687 17.9592 16.9214 17.9597C12.3073 17.9613 7.69271 17.9603 3.07865 17.9603C3.00727 17.9603 2.93537 17.9592 2.86399 17.9561C1.56928 17.9019 0.461615 17.0214 0.108891 15.7731C0.0750254 15.6527 0.0854456 15.5178 0 15.413C0 11.1246 0 6.83618 0 2.54775C0.0729414 2.51023 0.0494959 2.43312 0.0625212 2.37633C0.384505 0.958666 1.5573 0.00573894 3.01925 0.00313389C6.3386 -0.00259722 9.65744 0.00157086 12.9768 0.000528842C13.3847 0.000528842 13.7823 0.060966 14.1543 0.229252C15.2375 0.720043 15.8653 1.55157 15.9788 2.74052C15.9992 2.95101 16.058 3.01249 16.2644 2.99477C16.5035 2.97445 16.7458 2.98748 16.9865 2.9906C18.3843 3.0078 19.5436 3.8982 19.9036 5.22574C19.937 5.34661 19.925 5.47947 20 5.58888ZM14.1564 15.9637C13.8938 15.0577 14.0058 14.1439 14.0021 13.2394C13.9902 9.86845 13.9881 6.497 14.0047 3.12607C14.0084 2.4102 13.503 1.98558 12.8705 1.98922C9.62305 2.00694 6.37507 2.00694 3.12762 1.98974C2.45291 1.9861 1.98869 2.45657 1.99078 3.12763C2.0038 7.03156 2.0038 10.9355 1.99078 14.8389C1.98869 15.4933 2.44093 15.9752 3.13283 15.9716C6.73197 15.9544 10.3311 15.9637 13.9302 15.9637C14.0011 15.9637 14.072 15.9637 14.1564 15.9637ZM16.0028 10.0753C16.0028 11.6607 16.0028 13.2462 16.0033 14.8316C16.0033 14.9676 15.9997 15.1041 16.0382 15.2375C16.1794 15.7246 16.6374 16.0231 17.1459 15.957C17.6367 15.8929 18.0014 15.4646 18.0019 14.9311C18.004 11.9619 18.0045 8.99264 18.0019 6.02288C18.0014 5.41643 17.5789 5.0017 16.9682 4.99232C16.7077 4.98816 16.4467 5.00274 16.1873 4.98763C16.0257 4.97826 15.9997 5.03765 15.9997 5.18301C16.0044 6.81325 16.0028 8.44453 16.0028 10.0753ZM7.99854 3.99042C8.96866 3.99042 9.93878 3.9899 10.9089 3.99042C11.5919 3.99094 11.9968 4.39629 11.9973 5.08194C11.9983 6.34903 11.9983 7.61613 11.9973 8.88322C11.9968 9.57721 11.5919 9.98047 10.8922 9.98099C8.96501 9.98203 7.03832 9.98203 5.11111 9.98099C4.40514 9.98047 3.99875 9.57304 3.99771 8.86707C3.99667 7.613 3.99667 6.35893 3.99771 5.10486C3.99823 4.39525 4.40253 3.99094 5.10798 3.99042C6.07133 3.99042 7.03467 3.99042 7.99854 3.99042ZM8.00323 7.97979C8.61437 7.97979 9.22604 7.97719 9.83718 7.98188C9.95389 7.98292 10.006 7.96781 10.0039 7.8287C9.99453 7.26445 9.99713 6.69967 10.0023 6.1349C10.0034 6.02184 9.98359 5.97964 9.85594 5.98016C8.62063 5.98537 7.38479 5.98537 6.14948 5.98068C6.02391 5.98016 5.99943 6.02184 6.00047 6.13646C6.00568 6.69446 6.00724 7.25298 5.99943 7.81099C5.99734 7.94593 6.03017 7.98552 6.16928 7.98344C6.78094 7.97562 7.39209 7.97979 8.00323 7.97979ZM10.9464 13.9719C11.1392 13.9724 11.3215 13.937 11.4893 13.8427C11.878 13.6239 12.078 13.1685 11.9728 12.747C11.8571 12.2839 11.4815 11.9801 10.9964 11.9796C8.99888 11.9765 7.00185 11.978 5.0043 11.9791C4.92667 11.9791 4.84747 11.9848 4.77245 12.0025C4.28531 12.1197 3.95342 12.5767 4.00448 13.0544C4.06023 13.5822 4.46662 13.9657 4.99336 13.9688C5.99526 13.9745 6.99716 13.9704 7.99906 13.9704C8.98169 13.9709 9.96431 13.9698 10.9464 13.9719Z"
+                                  fill="white"
+                                />
+                              </svg>
+                              &nbsp;
+                              <span [ngStyle]="{ color: '#ffffff' }">{{ language.Survey.deny_survey }}</span>
+                            </button>
+                          </div>
+                          <div class="page-action-right" *ngIf="userDetails.userId == item.user_id">
+                            <button class="delete-btn" (click)="deleteUpdatedSurvey(item.id)" type="button">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="18" viewBox="0 0 20 18" fill="none">
+                                <path
+                                  [ngStyle]="{ fill: setTheme.button_ic_color }"
+                                  d="M20 5.58888C20 8.86343 20 12.1385 20 15.413C19.9208 15.5063 19.9312 15.6272 19.9015 15.7355C19.5321 17.086 18.3687 17.9592 16.9214 17.9597C12.3073 17.9613 7.69271 17.9603 3.07865 17.9603C3.00727 17.9603 2.93537 17.9592 2.86399 17.9561C1.56928 17.9019 0.461615 17.0214 0.108891 15.7731C0.0750254 15.6527 0.0854456 15.5178 0 15.413C0 11.1246 0 6.83618 0 2.54775C0.0729414 2.51023 0.0494959 2.43312 0.0625212 2.37633C0.384505 0.958666 1.5573 0.00573894 3.01925 0.00313389C6.3386 -0.00259722 9.65744 0.00157086 12.9768 0.000528842C13.3847 0.000528842 13.7823 0.060966 14.1543 0.229252C15.2375 0.720043 15.8653 1.55157 15.9788 2.74052C15.9992 2.95101 16.058 3.01249 16.2644 2.99477C16.5035 2.97445 16.7458 2.98748 16.9865 2.9906C18.3843 3.0078 19.5436 3.8982 19.9036 5.22574C19.937 5.34661 19.925 5.47947 20 5.58888ZM14.1564 15.9637C13.8938 15.0577 14.0058 14.1439 14.0021 13.2394C13.9902 9.86845 13.9881 6.497 14.0047 3.12607C14.0084 2.4102 13.503 1.98558 12.8705 1.98922C9.62305 2.00694 6.37507 2.00694 3.12762 1.98974C2.45291 1.9861 1.98869 2.45657 1.99078 3.12763C2.0038 7.03156 2.0038 10.9355 1.99078 14.8389C1.98869 15.4933 2.44093 15.9752 3.13283 15.9716C6.73197 15.9544 10.3311 15.9637 13.9302 15.9637C14.0011 15.9637 14.072 15.9637 14.1564 15.9637ZM16.0028 10.0753C16.0028 11.6607 16.0028 13.2462 16.0033 14.8316C16.0033 14.9676 15.9997 15.1041 16.0382 15.2375C16.1794 15.7246 16.6374 16.0231 17.1459 15.957C17.6367 15.8929 18.0014 15.4646 18.0019 14.9311C18.004 11.9619 18.0045 8.99264 18.0019 6.02288C18.0014 5.41643 17.5789 5.0017 16.9682 4.99232C16.7077 4.98816 16.4467 5.00274 16.1873 4.98763C16.0257 4.97826 15.9997 5.03765 15.9997 5.18301C16.0044 6.81325 16.0028 8.44453 16.0028 10.0753ZM7.99854 3.99042C8.96866 3.99042 9.93878 3.9899 10.9089 3.99042C11.5919 3.99094 11.9968 4.39629 11.9973 5.08194C11.9983 6.34903 11.9983 7.61613 11.9973 8.88322C11.9968 9.57721 11.5919 9.98047 10.8922 9.98099C8.96501 9.98203 7.03832 9.98203 5.11111 9.98099C4.40514 9.98047 3.99875 9.57304 3.99771 8.86707C3.99667 7.613 3.99667 6.35893 3.99771 5.10486C3.99823 4.39525 4.40253 3.99094 5.10798 3.99042C6.07133 3.99042 7.03467 3.99042 7.99854 3.99042ZM8.00323 7.97979C8.61437 7.97979 9.22604 7.97719 9.83718 7.98188C9.95389 7.98292 10.006 7.96781 10.0039 7.8287C9.99453 7.26445 9.99713 6.69967 10.0023 6.1349C10.0034 6.02184 9.98359 5.97964 9.85594 5.98016C8.62063 5.98537 7.38479 5.98537 6.14948 5.98068C6.02391 5.98016 5.99943 6.02184 6.00047 6.13646C6.00568 6.69446 6.00724 7.25298 5.99943 7.81099C5.99734 7.94593 6.03017 7.98552 6.16928 7.98344C6.78094 7.97562 7.39209 7.97979 8.00323 7.97979ZM10.9464 13.9719C11.1392 13.9724 11.3215 13.937 11.4893 13.8427C11.878 13.6239 12.078 13.1685 11.9728 12.747C11.8571 12.2839 11.4815 11.9801 10.9964 11.9796C8.99888 11.9765 7.00185 11.978 5.0043 11.9791C4.92667 11.9791 4.84747 11.9848 4.77245 12.0025C4.28531 12.1197 3.95342 12.5767 4.00448 13.0544C4.06023 13.5822 4.46662 13.9657 4.99336 13.9688C5.99526 13.9745 6.99716 13.9704 7.99906 13.9704C8.98169 13.9709 9.96431 13.9698 10.9464 13.9719Z"
+                                  fill="white"
+                                />
+                              </svg>
+                              &nbsp;
+                              <span [ngStyle]="{ color: '#ffffff' }">{{ language.Survey.delete_survey }}</span>
+                            </button>
+                          </div>
+                          <div class="voting-main">
+                            <label class="voting-title">{{ language.Survey.voting_options }}</label>
+                            <div class="voting-option-info" *ngIf="updateSurveyData.surveyOption == 0">
+                              <span class="choice-title">{{ language.Survey.single_selection }}</span>
+                              <div class="choice-option" *ngFor="let fields of updateSurveyData.survey_Answers; let i = index">
+                                <label for="{{ i }}">- {{ fields }}</label>
+                              </div>
+                            </div>
+                            <div class="voting-option-info" *ngIf="updateSurveyData.surveyOption == 1">
+                              <span class="choice-title">{{ language.Survey.multiple_selection }}</span>
+                              <div class="choice-option" *ngFor="let fields of updateSurveyData.survey_Answers; let i = index">
+                                <label for="{{ i }}">- {{ fields }}</label>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="msg-text-wrap">
+                            <p>
+                              {{ language.Survey.active_form }} =
+                              {{ updateSurveyData.surveyStartDate | date: 'dd.MM.YYYY' }}
+                            </p>
+                            <p>
+                              {{ language.Survey.active_until }} =
+                              {{ updateSurveyData.surveyEndDate | date: 'dd.MM.YYYY' }}
+                            </p>
+                          </div>
+                          <div class="author-info">
+                            <div class="author-img">
+                              <img onContextMenu="return false;" [src]="item?.user_name?.member_id | memberPhoto | async" alt="User Photo" loading="lazy" style="width: 100px" />
+                            </div>
+                            <div class="author-des">
+                              <span class="author-id">
+                                {{ language.dashboard.dashboardNewsAuthor }}
+                                {{ item.user_name.firstname }} {{ item.user_name.lastname }}
+                              </span>
+                              <span class="author-date">{{ item.created_at | date: 'dd.MM.YYYY' }}</span
+                              ><br />
+                              <span class="author-status" *ngIf="item.approved_status == 0">{{ language.theme.status }}:- {{ language.community_groups.waitingApproval }}</span>
+                              <span class="author-status" *ngIf="item.approved_status == 0 && !item.deny_by_id">{{ language.theme.status }}:-{{ language.community_groups.waitingApproval }}</span>
+                              <span class="deny-reason" *ngIf="item.approved_status == 0 && item.deny_by_id">{{ language.theme.status }}:-{{ language.community_groups.admin_deny }}</span>
+                              <span class="author-status" *ngIf="item.approved_status == 1 && !item.deny_by_id">{{ language.theme.status }}:-{{ language.community_groups.waitingApproval }}</span>
+                              <span class="deny-reason" *ngIf="item.approved_status == 1 && item.deny_by_id">{{ language.theme.status }}:-{{ language.community_groups.admin_deny }}</span>
+                              <span class="author-id" *ngIf="item.deny_by_id >= 1">
+                                {{ language.dashboard.denyBy }}:-
+                                {{ item.denybyuser.firstname }}
+                                {{ item.denybyuser.lastname }}
+                              </span>
+                              <span class="deny-reason" *ngIf="item.deny_by_id >= 1"> {{ language.dashboard.denyReason }}:- {{ item.deny_reason }} </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </mat-tab>
+        </mat-tab-group>
+        <div class="card-body" *ngIf="!updateSurveyData">
+          <div class="news_details" *ngIf="surveyData">
+            <div class="survey-detail-main" *ngFor="let item of surveyData">
+              <div class="page-action-right" *ngIf="item.approved_status == 0 && userDetails.isAdmin && (item.deny_by_id == '' || item.deny_by_id == null)">
+                <button *ngIf="userDetails.isAdmin" (click)="approveSurvey(item.id)" type="button">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="18" viewBox="0 0 20 18" fill="none">
+                    <path
+                      [ngStyle]="{ fill: setTheme.button_ic_color }"
+                      d="M20 5.58888C20 8.86343 20 12.1385 20 15.413C19.9208 15.5063 19.9312 15.6272 19.9015 15.7355C19.5321 17.086 18.3687 17.9592 16.9214 17.9597C12.3073 17.9613 7.69271 17.9603 3.07865 17.9603C3.00727 17.9603 2.93537 17.9592 2.86399 17.9561C1.56928 17.9019 0.461615 17.0214 0.108891 15.7731C0.0750254 15.6527 0.0854456 15.5178 0 15.413C0 11.1246 0 6.83618 0 2.54775C0.0729414 2.51023 0.0494959 2.43312 0.0625212 2.37633C0.384505 0.958666 1.5573 0.00573894 3.01925 0.00313389C6.3386 -0.00259722 9.65744 0.00157086 12.9768 0.000528842C13.3847 0.000528842 13.7823 0.060966 14.1543 0.229252C15.2375 0.720043 15.8653 1.55157 15.9788 2.74052C15.9992 2.95101 16.058 3.01249 16.2644 2.99477C16.5035 2.97445 16.7458 2.98748 16.9865 2.9906C18.3843 3.0078 19.5436 3.8982 19.9036 5.22574C19.937 5.34661 19.925 5.47947 20 5.58888ZM14.1564 15.9637C13.8938 15.0577 14.0058 14.1439 14.0021 13.2394C13.9902 9.86845 13.9881 6.497 14.0047 3.12607C14.0084 2.4102 13.503 1.98558 12.8705 1.98922C9.62305 2.00694 6.37507 2.00694 3.12762 1.98974C2.45291 1.9861 1.98869 2.45657 1.99078 3.12763C2.0038 7.03156 2.0038 10.9355 1.99078 14.8389C1.98869 15.4933 2.44093 15.9752 3.13283 15.9716C6.73197 15.9544 10.3311 15.9637 13.9302 15.9637C14.0011 15.9637 14.072 15.9637 14.1564 15.9637ZM16.0028 10.0753C16.0028 11.6607 16.0028 13.2462 16.0033 14.8316C16.0033 14.9676 15.9997 15.1041 16.0382 15.2375C16.1794 15.7246 16.6374 16.0231 17.1459 15.957C17.6367 15.8929 18.0014 15.4646 18.0019 14.9311C18.004 11.9619 18.0045 8.99264 18.0019 6.02288C18.0014 5.41643 17.5789 5.0017 16.9682 4.99232C16.7077 4.98816 16.4467 5.00274 16.1873 4.98763C16.0257 4.97826 15.9997 5.03765 15.9997 5.18301C16.0044 6.81325 16.0028 8.44453 16.0028 10.0753ZM7.99854 3.99042C8.96866 3.99042 9.93878 3.9899 10.9089 3.99042C11.5919 3.99094 11.9968 4.39629 11.9973 5.08194C11.9983 6.34903 11.9983 7.61613 11.9973 8.88322C11.9968 9.57721 11.5919 9.98047 10.8922 9.98099C8.96501 9.98203 7.03832 9.98203 5.11111 9.98099C4.40514 9.98047 3.99875 9.57304 3.99771 8.86707C3.99667 7.613 3.99667 6.35893 3.99771 5.10486C3.99823 4.39525 4.40253 3.99094 5.10798 3.99042C6.07133 3.99042 7.03467 3.99042 7.99854 3.99042ZM8.00323 7.97979C8.61437 7.97979 9.22604 7.97719 9.83718 7.98188C9.95389 7.98292 10.006 7.96781 10.0039 7.8287C9.99453 7.26445 9.99713 6.69967 10.0023 6.1349C10.0034 6.02184 9.98359 5.97964 9.85594 5.98016C8.62063 5.98537 7.38479 5.98537 6.14948 5.98068C6.02391 5.98016 5.99943 6.02184 6.00047 6.13646C6.00568 6.69446 6.00724 7.25298 5.99943 7.81099C5.99734 7.94593 6.03017 7.98552 6.16928 7.98344C6.78094 7.97562 7.39209 7.97979 8.00323 7.97979ZM10.9464 13.9719C11.1392 13.9724 11.3215 13.937 11.4893 13.8427C11.878 13.6239 12.078 13.1685 11.9728 12.747C11.8571 12.2839 11.4815 11.9801 10.9964 11.9796C8.99888 11.9765 7.00185 11.978 5.0043 11.9791C4.92667 11.9791 4.84747 11.9848 4.77245 12.0025C4.28531 12.1197 3.95342 12.5767 4.00448 13.0544C4.06023 13.5822 4.46662 13.9657 4.99336 13.9688C5.99526 13.9745 6.99716 13.9704 7.99906 13.9704C8.98169 13.9709 9.96431 13.9698 10.9464 13.9719Z"
+                      fill="white"
+                    />
+                  </svg>
+                  &nbsp;<span [ngStyle]="{ color: '#ffffff' }">{{ language.Survey.publish_survey }}</span>
+                </button>
+
+                <button *ngIf="userDetails.isAdmin" (click)="denySurvey(item.id)" type="button">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="18" viewBox="0 0 20 18" fill="none">
+                    <path
+                      [ngStyle]="{ fill: setTheme.button_ic_color }"
+                      d="M20 5.58888C20 8.86343 20 12.1385 20 15.413C19.9208 15.5063 19.9312 15.6272 19.9015 15.7355C19.5321 17.086 18.3687 17.9592 16.9214 17.9597C12.3073 17.9613 7.69271 17.9603 3.07865 17.9603C3.00727 17.9603 2.93537 17.9592 2.86399 17.9561C1.56928 17.9019 0.461615 17.0214 0.108891 15.7731C0.0750254 15.6527 0.0854456 15.5178 0 15.413C0 11.1246 0 6.83618 0 2.54775C0.0729414 2.51023 0.0494959 2.43312 0.0625212 2.37633C0.384505 0.958666 1.5573 0.00573894 3.01925 0.00313389C6.3386 -0.00259722 9.65744 0.00157086 12.9768 0.000528842C13.3847 0.000528842 13.7823 0.060966 14.1543 0.229252C15.2375 0.720043 15.8653 1.55157 15.9788 2.74052C15.9992 2.95101 16.058 3.01249 16.2644 2.99477C16.5035 2.97445 16.7458 2.98748 16.9865 2.9906C18.3843 3.0078 19.5436 3.8982 19.9036 5.22574C19.937 5.34661 19.925 5.47947 20 5.58888ZM14.1564 15.9637C13.8938 15.0577 14.0058 14.1439 14.0021 13.2394C13.9902 9.86845 13.9881 6.497 14.0047 3.12607C14.0084 2.4102 13.503 1.98558 12.8705 1.98922C9.62305 2.00694 6.37507 2.00694 3.12762 1.98974C2.45291 1.9861 1.98869 2.45657 1.99078 3.12763C2.0038 7.03156 2.0038 10.9355 1.99078 14.8389C1.98869 15.4933 2.44093 15.9752 3.13283 15.9716C6.73197 15.9544 10.3311 15.9637 13.9302 15.9637C14.0011 15.9637 14.072 15.9637 14.1564 15.9637ZM16.0028 10.0753C16.0028 11.6607 16.0028 13.2462 16.0033 14.8316C16.0033 14.9676 15.9997 15.1041 16.0382 15.2375C16.1794 15.7246 16.6374 16.0231 17.1459 15.957C17.6367 15.8929 18.0014 15.4646 18.0019 14.9311C18.004 11.9619 18.0045 8.99264 18.0019 6.02288C18.0014 5.41643 17.5789 5.0017 16.9682 4.99232C16.7077 4.98816 16.4467 5.00274 16.1873 4.98763C16.0257 4.97826 15.9997 5.03765 15.9997 5.18301C16.0044 6.81325 16.0028 8.44453 16.0028 10.0753ZM7.99854 3.99042C8.96866 3.99042 9.93878 3.9899 10.9089 3.99042C11.5919 3.99094 11.9968 4.39629 11.9973 5.08194C11.9983 6.34903 11.9983 7.61613 11.9973 8.88322C11.9968 9.57721 11.5919 9.98047 10.8922 9.98099C8.96501 9.98203 7.03832 9.98203 5.11111 9.98099C4.40514 9.98047 3.99875 9.57304 3.99771 8.86707C3.99667 7.613 3.99667 6.35893 3.99771 5.10486C3.99823 4.39525 4.40253 3.99094 5.10798 3.99042C6.07133 3.99042 7.03467 3.99042 7.99854 3.99042ZM8.00323 7.97979C8.61437 7.97979 9.22604 7.97719 9.83718 7.98188C9.95389 7.98292 10.006 7.96781 10.0039 7.8287C9.99453 7.26445 9.99713 6.69967 10.0023 6.1349C10.0034 6.02184 9.98359 5.97964 9.85594 5.98016C8.62063 5.98537 7.38479 5.98537 6.14948 5.98068C6.02391 5.98016 5.99943 6.02184 6.00047 6.13646C6.00568 6.69446 6.00724 7.25298 5.99943 7.81099C5.99734 7.94593 6.03017 7.98552 6.16928 7.98344C6.78094 7.97562 7.39209 7.97979 8.00323 7.97979ZM10.9464 13.9719C11.1392 13.9724 11.3215 13.937 11.4893 13.8427C11.878 13.6239 12.078 13.1685 11.9728 12.747C11.8571 12.2839 11.4815 11.9801 10.9964 11.9796C8.99888 11.9765 7.00185 11.978 5.0043 11.9791C4.92667 11.9791 4.84747 11.9848 4.77245 12.0025C4.28531 12.1197 3.95342 12.5767 4.00448 13.0544C4.06023 13.5822 4.46662 13.9657 4.99336 13.9688C5.99526 13.9745 6.99716 13.9704 7.99906 13.9704C8.98169 13.9709 9.96431 13.9698 10.9464 13.9719Z"
+                      fill="white"
+                    />
+                  </svg>
+                  &nbsp;<span [ngStyle]="{ color: '#ffffff' }">{{ language.Survey.deny_survey }}</span>
+                </button>
+              </div>
+              <div class="news_content">
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="group_detail_main">
+                      <div class="detail-big-img">
+                        <div *ngIf="showImage">
+                          <ng-container *ngIf="showImage">
+                            <img *ngIf="!showImage.isLoading && showImage.imageLoaded" [src]="showImage.url" alt="Image" loading="lazy" />
+                            <img *ngIf="showImage.isLoading" [src]="'../../../../assets/img/loading.gif'" alt="Image" />
+                          </ng-container>
+                          <ng-container *ngIf="!showImage">
+                            <img [src]="'../../../assets/img/no_image.png'" alt="Image" />
+                          </ng-container>
+                        </div>
+                        <div *ngIf="showFile">
+                          <img onContextMenu="return false;" src="../../../../assets/img/no_image.png" alt="" loading="lazy" />
+                        </div>
+                        <div *ngIf="!showImage && !showFile">
+                          <img onContextMenu="return false;" src="../../../../assets/img/no_image.png" alt="" loading="lazy" />
+                        </div>
+                        <div class="dropdown action_group" *ngIf="role != 'guest' && (userDetails.userId == item.user_id || userDetails.isAdmin)">
+                          <button class="dropdown-toggle" type="button" (click)="onShow()">
+                            <i class="fa fa-pencil"></i>
+                          </button>
+                          <ul class="dropdown-menu bunch_drop" aria-labelledby="dropdownMenuLink">
+                            <li *ngIf="item.approved_status == 0 && userDetails.isAdmin && (item.deny_by_id == '' || item.deny_by_id == null)">
+                              <a class="dropdown-item" (click)="approveSurvey(item.id)">{{ language.Survey.publish_survey }}</a>
+                            </li>
+                            <li *ngIf="item.approved_status == 0 && userDetails.isAdmin && (item.deny_by_id == '' || item.deny_by_id == null)">
+                              <a class="dropdown-item" (click)="denySurvey(item.id)">{{ language.Survey.deny_survey }}</a>
+                            </li>
+                            <li *ngIf="userDetails.userId == item.user_id || userDetails.isAdmin">
+                              <a class="dropdown-item" routerLink="/web/update-survey/{{ item.id }}">{{ language.club_news.Edit }}</a>
+                            </li>
+                            <li *ngIf="userDetails.userId == item.user_id || userDetails.isAdmin">
+                              <a class="dropdown-item" (click)="surveyDelete(item.id)">{{ language.club_news.Delete }}</a>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                      <div class="survey-content">
+                        <div class="news_heading">
+                          <h2>{{ item.title }}</h2>
+                        </div>
+                        <div class="news_content_text" [innerHTML]="item.description">
+                          ...<a href="#">{{ language.dashboard.dashboardNewsContent }}</a>
+                        </div>
+                      </div>
+
+                      <div *ngIf="showFile">
+                        <div class="attach_btn preview_img">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#E12217" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-download">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" [ngStyle]="{ stroke: '#fff' }" />
+                            <polyline points="7 10 12 15 17 10" [ngStyle]="{ stroke: '#fff' }" />
+                            <line x1="12" y1="15" x2="12" y2="3" [ngStyle]="{ stroke: '#fff' }" />
+                          </svg>
+                          <a href="javascript:void(0)" (click)="downloadDoc(showFile, 0)">
+                            {{ language.create_event.download_attachment }}
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="group_detail_main">
+                      <div class="voting-main">
+                        <label class="voting-title">{{ language.Survey.voting_options }}</label>
+                        <div class="voting-option-info" *ngIf="item.surveyOption == 0">
+                          <span class="choice-title">{{ language.Survey.single_selection }}</span>
+                          <div class="choice-option" *ngFor="let fields of item.surveyAnswer; let i = index">
+                            <label for="{{ i }}">- {{ fields.surveyAnswer }}</label>
+                          </div>
+                        </div>
+                        <div class="voting-option-info" *ngIf="item.surveyOption == 1">
+                          <span class="choice-title">{{ language.Survey.multiple_selection }}</span>
+                          <div class="choice-option" *ngFor="let fields of item.surveyAnswer; let i = index">
+                            <label for="{{ i }}">- {{ fields.surveyAnswer }}</label>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="msg-text-wrap">
+                        <p>{{ language.Survey.active_form }} = {{ item.surveyStartDate | date: 'dd.MM.YYYY' }}</p>
+                        <p>{{ language.Survey.active_until }} = {{ item.surveyEndDate | date: 'dd.MM.YYYY' }}</p>
+                      </div>
+                      <div class="author-info">
+                        <div class="author-img">
+                          <img onContextMenu="return false;" [src]="item?.user_name?.member_id | memberPhoto | async" alt="User Photo" loading="lazy" style="width: 100px" />
+                        </div>
+                        <div class="author-des">
+                          <span class="author-id"> {{ language.dashboard.dashboardNewsAuthor }} {{ item.user_name.firstname }} {{ item.user_name.lastname }}</span>
+                          <span class="author-date">{{ item.created_at | date: 'dd.MM.YYYY' }}</span
+                          ><br />
+                          <span class="author-status" *ngIf="item.approved_status == 0 && !item.deny_by_id">{{ language.theme.status }}:-{{ language.community_groups.waitingApproval }}</span>
+                          <span class="deny-reason" *ngIf="item.approved_status == 0 && item.deny_by_id">{{ language.theme.status }}:-{{ language.community_groups.admin_deny }}</span>
+                          <span class="author-id" *ngIf="item.deny_by_id >= 1">
+                            {{ language.dashboard.denyBy }}:- {{ item.denybyuser.firstname }}
+                            {{ item.denybyuser.lastname }}
+                          </span>
+                          <span class="deny-reason" *ngIf="item.deny_by_id >= 1"> {{ language.dashboard.denyReason }}:- {{ item.deny_reason }} </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="empty-data-image" *ngIf="!surveyData || surveyData?.length == 0">
+            <span>{{ language.Survey.no_survey }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade change_pass_section profile_popup news_popup" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div id="profileSpinner" class="overlay__content"><span class="spinner"></span></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="exampleModalLabel">{{ language.profile.member_profile }}</h3>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <path d="M32 3.72111L28.2789 0L16 12.2789L3.72111 0L0 3.72111L12.2789 16L0 28.2789L3.72111 32L16 19.7211L28.2789 32L32 28.2789L19.7211 16L32 3.72111Z" fill="#98A5C6" />
+          </svg>
+        </button>
+      </div>
+      <div class="empty-data-image" *ngIf="displayError == true">
+        <span>{{ language.profile.member_not_found }}</span>
+      </div>
+      <div class="modal-body">
+        <div class="">
+          <div class="card-body">
+            <!-- profile header start -->
+            <div class="profile_main_head">
+              <div class="profile_header">
+                <div class="user-pic-inner" *ngIf="thumb">
+                  <img onContextMenu="return false;" [src]="thumb != null && thumb != '' ? thumb : 'assets/img/defaultProfile.jpeg'" alt="" loading="lazy" />
+                </div>
+                <div class="user_pro_info_model">
+                  <h3 style="font-size: 18px; color: #192838; margin: 10px 0px 5px 0px" *ngIf="profile_data?.firstName">{{ profile_data.firstName }} {{ profile_data.lastName }}</h3>
+                  <h4 style="color: #192838; margin: 10px 0px 5px 0px" *ngIf="getclubInfo?.name">
+                    {{ getclubInfo.name }}
+                  </h4>
+                  <span class="user-designation-mode" *ngIf="profile_data?.userRole">{{ profile_data.userRole }}</span>
+                </div>
+              </div>
+              <!-- profile header end -->
+              <!-- profile details data start -->
+              <div class="profile_details" *ngIf="profile_data">
+                <div class="profile_title">{{ language.profile.personal_data }}</div>
+                <div class="row">
+                  <div class="col-md-12" *ngIf="profile_data?.city">
+                    <div class="profile_field info_field">
+                      <span class="info_label">{{ language.profile.city }}</span>
+                      <span class="info_detail">{{ profile_data.city }}</span>
+                    </div>
+                  </div>
+                  <div class="col-md-12" *ngIf="birthdateStatus == true">
+                    <div class="profile_field info_field">
+                      <span class="info_label">{{ language.profile.dob }}</span>
+                      <span class="info_detail" *ngIf="profile_data">{{ profile_data.birthDate | date: 'dd.MM.YYYY' }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- profile details data End -->
+              <div class="profile_details" *ngIf="memberStartDateStatus">
+                <div class="profile_title">{{ language.profile.club_data }}</div>
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="profile_field info_field">
+                      <span class="info_label">{{ language.profile.membership_date }}</span>
+                      <span class="info_detail" *ngIf="profile_data">{{ profile_data.membershipStartDate | date: 'dd.MM.YYYY' }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="profile_data">
+                <div class="row" *ngFor="let key of profile_data.currentFunctions">
+                  <div class="col-md-6">
+                    <div class="profile_field info_field">
+                      <span class="info_label">{{ language.profile.current_functions }}</span>
+                      <span class="info_detail">{{ key.function }}</span>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="profile_field info_field">
+                      <span class="info_label">{{ language.profile.since }}</span>
+                      <span class="info_detail">{{ key.since | date: 'dd.MM.YYYY' }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="dowloading">
+  <div class="overlay download-overlay">
+    <div class="overlay__inner">
+      <div class="overlay__content">
+        <div class="loading" data-loading-text="Downloading..."></div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,195 @@
+.events-card-wrapper {
+  .card {
+    box-shadow: var(--vc-box-shadow);
+
+    .card-image-wrapper {
+      position: relative;
+      max-height: 270px;
+      overflow: hidden;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: top;
+      }
+
+      &__content-top {
+        display: flex;
+        top: 0;
+        left: 0;
+        right: 0;
+        position: absolute;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      &__content-bottom {
+        display: flex;
+        height: 36px;
+        align-items: center;
+
+        span {
+          line-height: 14px;
+        }
+
+        &__left-text {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          color: var(--vc-color-white);
+          text-align: center;
+          font-size: 14px;
+          font-style: normal;
+          font-weight: 700;
+          height: 100%;
+          margin: 0;
+          width: 50%;
+          background-color: var(--vc-color-grey);
+        }
+
+        &__right-text {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          color: var(--vc-color-white);
+          text-align: center;
+          font-size: 14px;
+          font-style: normal;
+          font-weight: 700;
+          height: 100%;
+          margin: 0;
+          width: 50%;
+          background-color: var(--vc-color-dark-pink);
+        }
+      }
+
+      .box-position {
+        position: absolute;
+        bottom: 0;
+      }
+    }
+
+    .card-body-area {
+      padding: 0.9rem 0.8rem;
+
+      &__heading {
+        font-size: 16px;
+        color: var(--vc-color-grey-900);
+        font-style: normal;
+        font-weight: 700;
+        margin-bottom: 0;
+      }
+
+      &__link {
+        color: var(--vc-color-grey);
+        font-size: 13px;
+        font-style: normal;
+        font-weight: 700;
+      }
+
+      .text-alignment {
+        text-align: right;
+      }
+    }
+  }
+}
+
+.mobile-events-card-wrapper {
+  cursor: pointer;
+
+  .card {
+    box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.1);
+
+    .card-image-wrapper {
+      position: relative;
+      max-height: 180px;
+      overflow: hidden;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+      }
+
+      &__content-top {
+        display: flex;
+        top: 0;
+        left: 0;
+        right: 0;
+        position: absolute;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      &__content-bottom {
+        display: flex;
+        height: 36px;
+        align-items: center;
+
+        span {
+          line-height: 14px;
+        }
+
+        &__left-text {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          color: var(--vc-color-white);
+          text-align: center;
+          font-size: 14px;
+          font-style: normal;
+          font-weight: 600;
+          height: 100%;
+          margin: 0;
+          width: 50%;
+          background-color: var(--vc-color-grey);
+        }
+
+        &__right-text {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          color: var(--vc-color-white);
+          text-align: center;
+          font-size: 14px;
+          font-style: normal;
+          font-weight: 600;
+          height: 100%;
+          margin: 0;
+          width: 50%;
+          background-color: var(--vc-color-dark-pink);
+        }
+      }
+
+      .box-position {
+        position: absolute;
+        bottom: 0;
+      }
+    }
+
+    .card-body-area {
+      padding: 11px 20px 15px 20px;
+
+      &__heading {
+        font-size: 14px;
+        color: var(--vc-color-darker-grey);
+        font-style: normal;
+        font-weight: 600;
+        margin-bottom: 0;
+      }
+
+      &__link {
+        color: var(--vc-color-grey);
+        font-size: 13px;
+        font-style: normal;
+        font-weight: 600;
+      }
+
+      .text-alignment {
+        text-align: right;
+      }
+    }
+  }
+}

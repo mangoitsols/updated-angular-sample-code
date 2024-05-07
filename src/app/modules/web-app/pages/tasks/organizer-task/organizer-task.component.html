@@ -1,0 +1,39 @@
+<div class="row">
+  <!-- tasks widget start -->
+  <div class="col-md-12 task_widget">
+    <div class="card">
+      <div class="tasks_navigation">
+        <ul class="nav nav-tabs" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active" id="head-allTask" (click)="onTasks(1)" [ngStyle]="displayAllTasks == true ? { color: '#68759F' } : { color: '#C4CBE0' }"> {{ language.organizer_task.all_task }}</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="head-personalTask" (click)="onTasks(2)" [ngStyle]="displayPersonalTasks == true ? { color: '#68759F' } : { color: '#C4CBE0' }"> {{ language.organizer_task.personal_task }}</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="head-groupTask" (click)="onTasks(3)" [ngStyle]="displayGroupTasks == true ? { color: '#68759F' } : { color: '#C4CBE0' }"> {{ language.organizer_task.group_task }}</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="head-createdTask" (click)="onTasks(4)" [ngStyle]="displayCreatedTasks == true ? { color: '#68759F' } : { color: '#C4CBE0' }"> {{ language.organizer_task.created_task }}</a>
+          </li>
+        </ul>
+        <!-- Tab panes -->
+      </div>
+      <div class="tab-content">
+        <div class="active" id="tabs-1" *ngIf="displayAllTasks">
+          <app-organizer-all-task *ngIf="organizerTask" [organizerTask]="organizerTask"></app-organizer-all-task>
+        </div>
+        <div class="" id="tabs-2" *ngIf="displayPersonalTasks">
+          <app-organizer-personal-task *ngIf="organizerTask" [organizerTask]="organizerTask"></app-organizer-personal-task>
+        </div>
+        <div class="" id="tabs-3" *ngIf="displayGroupTasks">
+          <app-organizer-group-task *ngIf="organizerTask" [organizerTask]="organizerTask"></app-organizer-group-task>
+        </div>
+        <div class="" id="tabs-4" *ngIf="displayCreatedTasks">
+          <app-organizer-created-task *ngIf="organizerTask" [organizerTask]="organizerTask"></app-organizer-created-task>
+        </div>
+      </div>
+    </div>
+    <!-- tasks widget End -->
+  </div>
+</div>

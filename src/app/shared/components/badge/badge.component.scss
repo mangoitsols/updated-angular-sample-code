@@ -1,0 +1,37 @@
+.vc-badge {
+  display: inline-block;
+  padding: 0 12px;
+  border-radius: var(--vc-border-radius);
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--vc-color-yellow);
+  transition: all 0.3s ease-in-out;
+  border: none;
+  outline: none;
+}
+.vc-date-badge {
+  display: block;
+  padding: 0 12px;
+  border-radius: var(--vc-border-radius);
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--vc-color-yellow);
+  transition: all 0.3s ease-in-out;
+  border: none;
+  outline: none;
+  .vc-month {
+    font-size: 8px;
+    font-weight: 600;
+    text-transform: uppercase;
+    transition: all 0.3s ease-in-out;
+  }
+  .vc-day {
+    font-size: 36px;
+    font-weight: 700;
+    text-transform: uppercase;
+    transition: all 0.3s ease-in-out;
+  }
+}

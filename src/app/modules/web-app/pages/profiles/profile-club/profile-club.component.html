@@ -1,0 +1,104 @@
+<div class="content profile_section">
+  <div class="profile_main">
+    <div class="profile-section-content">
+      <app-profile-side-bar></app-profile-side-bar>
+      <div class="profile_content">
+        <div class="card">
+          <div class="card-body">
+            <!-- profile details data start -->
+            <div class="profile_details">
+              <div class="profile_title">{{ language.profile.club_address }}</div>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="profile_field info_field">
+                    <span class="info_label">{{ language.profile.street }}</span>
+                    <span class="info_detail" *ngIf="clubData">{{ clubData.street }} {{ clubData.street2 }}</span>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="profile_field info_field">
+                    <span class="info_label">{{ language.profile.city }}</span>
+                    <span class="info_detail" *ngIf="clubData">{{ clubData.city }}</span>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="profile_field info_field">
+                    <span class="info_label">{{ language.profile.country }}</span>
+                    <span class="info_detail" *ngIf="clubData">{{ clubData.country }}</span>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="profile_field info_field">
+                    <span class="info_label">{{ language.profile.zip_code }}</span>
+                    <span class="info_detail" *ngIf="clubData">{{ clubData.postalcode }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- profile details data End -->
+            <!-- profile contact details data start -->
+            <div class="profile_details profile_top">
+              <div class="profile_title">{{ language.profile.contact_data }}</div>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="profile_field info_field">
+                    <span class="info_label">{{ language.profile.userEmail }}</span>
+                    <span class="info_detail"
+                      ><a *ngIf="clubData" href="mailto:clubData.email">{{ clubData.email }}</a></span
+                    >
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="profile_field info_field">
+                    <span class="info_label">{{ language.profile.phone }}</span>
+                    <span class="info_detail"
+                      ><a *ngIf="clubData" href="tel:clubData.phone">{{ clubData.phone }}</a></span
+                    >
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="profile_field info_field">
+                    <span class="info_label">{{ language.profile.homepage }}</span>
+                    <span class="info_detail"
+                      ><a *ngIf="clubData" target="_blank" href="{{ clubData.homepage }}">{{ clubData.homepage }}</a></span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- profile Social link details data End -->
+            <div class="profile_details profile_top">
+              <div class="profile_title">{{ language.social_link.social_links }}</div>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="profile_field info_field">
+                    <span class="info_label">{{ language.social_link.facebook_link }}</span>
+                    <span class="info_detail"
+                      ><a *ngIf="clubData" target="_blank" href="{{ clubData.facebookLink }}">{{ clubData.facebookLink }}</a></span
+                    >
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="profile_field info_field">
+                    <span class="info_label">{{ language.social_link.twitter_link }}</span>
+                    <span class="info_detail"
+                      ><a *ngIf="clubData" target="_blank" href="{{ clubData.twitterLink }}">{{ clubData.twitterLink }}</a></span
+                    >
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="profile_field info_field">
+                    <span class="info_label">{{ language.social_link.instagram_link }}</span>
+                    <span class="info_detail"
+                      ><a *ngIf="clubData" target="_blank" href="{{ clubData.instagramLink }}">{{ clubData.instagramLink }}</a></span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,22 @@
+<div *ngIf="data?.type === 'confirm'" class="modal-body">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="confirmation-logo">
+        <img src="../../../../assets/img/Verein-Cloud-FIN_2.png" />
+      </div>
+      <p [innerHTML]="data.text" class="text-center confirm-message"></p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <p class="confirm-button">
+        <a (click)="close(true)" class="mr-2">
+          <button class="btn btn-yes">{{ language.button.yes }}</button>
+        </a>
+        <a (click)="close(false)">
+          <button class="btn btn-no">{{ language.button.no }}</button>
+        </a>
+      </p>
+    </div>
+  </div>
+</div>

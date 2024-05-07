@@ -1,0 +1,271 @@
+<div class="content">
+  <div class="content">
+    <vc-page-header [breadcrumbs]="breadCrumbItems" [headerTitle]="language.courses.rooms">
+      <ng-container *ngIf="createAccess.news == 'Yes' || createAccess.event == 'Yes'">
+        <button class="vc-button-with-icon disabled vc-button-create dynamic_btn" routerLink="/web/create-instructor">
+          <vc-icon color="#ffffff" iconName="add-event" size="20px"></vc-icon>
+          &nbsp;<span> {{ language.instructor.create_instructor }}</span>
+        </button>
+        <button class="vc-button-with-icon disabled vc-button-create dynamic_btn" routerLink="/web/create-course">
+          <vc-icon color="#ffffff" iconName="add-event" size="20px"></vc-icon>
+          &nbsp;<span> {{ language.courses.create_course }}</span>
+        </button>
+        <button class="vc-button-with-icon disabled vc-button-create dynamic_btn" routerLink="/web/create-room">
+          <vc-icon color="#ffffff" iconName="add-event" size="20px"></vc-icon>
+          &nbsp;<span> {{ language.room.create_room }}</span>
+        </button>
+      </ng-container>
+    </vc-page-header>
+    <div class="row">
+      <div class="col-md-12 page-main">
+        <div class="page-action">
+          <div class="page-action-left">
+            <div class="tab-button">
+              <button
+                type="button"
+                class="disabled"
+                (click)="onCourse()"
+                routerLink="/web/course"
+                [ngStyle]="
+                  displayCourse == true
+                    ? {
+                        'border-color': setTheme.default_status == true ? '#68759F' : setTheme.button_bgcolor,
+                        'background-color': setTheme.default_status == true ? '#68759F' : setTheme.button_bgcolor,
+                        color: setTheme.default_status == true ? '#fff' : setTheme.button_text
+                      }
+                    : { 'border-color': setTheme.button_bgcolor, 'background-color': '#fff', color: '#68759F' }
+                "
+              >
+                <Span>{{ language.courses.courses }}</Span>
+              </button>
+              <button
+                type="button"
+                class="disabled"
+                (click)="onInstructor()"
+                routerLink="/web/instructor"
+                *ngIf="createAccess.instructor == 'Yes'"
+                [ngStyle]="
+                  displayInstructor == true
+                    ? {
+                        'border-color': setTheme.default_status == true ? '#68759F' : setTheme.button_bgcolor,
+                        'background-color': setTheme.default_status == true ? '#68759F' : setTheme.button_bgcolor,
+                        color: setTheme.default_status == true ? '#fff' : setTheme.button_text
+                      }
+                    : { 'border-color': setTheme.button_bgcolor, 'background-color': '#fff', color: '#68759F' }
+                "
+              >
+                <Span>{{ language.courses.instructor }}</Span>
+              </button>
+              <button
+                type="button"
+                class="selected"
+                (click)="onRoom()"
+                routerLink="/web/room"
+                *ngIf="createAccess.room == 'Yes'"
+                [ngStyle]="
+                  displayRoom == true
+                    ? {
+                        'border-color': setTheme.default_status == true ? '#FBC52D' : setTheme.button_bgcolor,
+                        'background-color': setTheme.default_status == true ? '#FBC52D' : setTheme.button_bgcolor,
+                        color: setTheme.default_status == true ? '#fff' : setTheme.button_text
+                      }
+                    : { 'border-color': setTheme.button_bgcolor, 'background-color': '#fff', color: '#68759F' }
+                "
+              >
+                <span>{{ language.courses.rooms }}</span>
+              </button>
+            </div>
+          </div>
+          <div class="page-action-right" *ngIf="createAccess.news == 'Yes' || createAccess.event == 'Yes'">
+            <div class="date-bar">
+              <div class="filter-box">
+                <mat-form-field appearance="fill">
+                  <mat-select matNativeControl placeholder="Themen" [(value)]="selectedTag" multiple (selectionChange)="getAllRooms(1)" disableOptionCentering>
+                    <mat-option *ngFor="let item of tags" [value]="item">{{ item.tag_name }}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="filter-box">
+                <mat-form-field appearance="fill">
+                  <mat-select matNativeControl placeholder="Intern/Extern" [(value)]="selectedIns" disableOptionCentering (selectionChange)="getAllRooms(1)" disableOptionCentering>
+                    <mat-option value="all">{{ language.courses.all }}</mat-option>
+                    <mat-option value="intern">{{ language.courses.intern }}</mat-option>
+                    <mat-option value="extern">{{ language.courses.extern }}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="main-card">
+          <div class="room-card" *ngIf="!isLoading; else loading">
+            <div class="card-body club_all_news">
+              <div class="room-main-grid">
+                <div class="room-grid-list" *ngFor="let item of allRooms">
+                  <div class="news-widget">
+                    <div class="news-image">
+                      <ng-container *ngIf="item.token">
+                        <div data-bs-toggle="modal" data-bs-target="#view-rooms" (click)="roomsById(item.id)">
+                          <ng-container *ngIf="!item.token.isLoading && item.token.imageLoaded">
+                            <img [src]="item.token.url" alt="Image" />
+                          </ng-container>
+                          <ng-container *ngIf="item.token.isLoading">
+                            <img [src]="'../../../../assets/img/loading.gif'" alt="Image" />
+                          </ng-container>
+                        </div>
+                      </ng-container>
+
+                      <div class="new-action" *ngIf="item.author == userData.userId || userData.isAdmin">
+                        <a class="green" (click)="updateRooms(item.id)"> {{ language.club_news.Edit }}</a>
+                        <a class="red" (click)="deleteRoom(item.id)"> {{ language.club_news.Delete }}</a>
+                      </div>
+                      <span class="news-badge">{{ item['no_of_persons'] }} {{ language.room.people }}</span>
+                    </div>
+                    <div class="news-content" data-bs-toggle="modal" data-bs-target="#view-rooms" (click)="roomsById(item.id)">
+                      <h5 class="news-content-heading">{{ item['name'] }}</h5>
+                      <div class="room_info">
+                        <span *ngIf="item?.room_email">{{ item?.room_email }}</span
+                        ><br />
+                        <span *ngIf="item?.room_address">{{ item?.room_address }}</span>
+                      </div>
+                    </div>
+                    <div class="card-footer course_footer" data-bs-toggle="modal" data-bs-target="#view-rooms" (click)="roomsById(item.id)">
+                      <p class="course-time" *ngFor="let val of item.room_availablity">
+                        <span>
+                          <vc-icon color="#647895" iconName="calender" size="17px" style="margin: 3px 10px 0px 0px"></vc-icon>
+                          <span>{{ getDayName(val.weekday) }}</span>
+                        </span>
+                        <span>
+                          <vc-icon color="#647895" iconName="clock" size="17px" style="margin: 3px 10px 0px 0px"></vc-icon>
+                          {{ val.time_from.split(':').slice(0, 2).join(':') }} - {{ val.time_to.split(':').slice(0, 2).join(':') }} {{ language.login.o_clock }}
+                        </span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-12 col-md-12 col-sm-12 empty-data-image" *ngIf="allRooms && allRooms.length == 0">
+            <span>{{ language.room.no_rooms }}</span>
+          </div>
+        </div>
+        <!-- main content section End -->
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade change_pass_section all_news instructor-details-modal view-course-modal" id="view-rooms" tabindex="-1" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>{{ language.instructor.instructor_detail }}</h3>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+              <path d="M32 3.72111L28.2789 0L16 12.2789L3.72111 0L0 3.72111L12.2789 16L0 28.2789L3.72111 32L16 19.7211L28.2789 32L32 28.2789L19.7211 16L32 3.72111Z" fill="#98A5C6"></path>
+            </svg>
+          </button>
+        </div>
+        <div class="modal-body" *ngIf="roomsByIdData">
+          <div class="instructor-modal-content">
+            <!-- instructor description -->
+            <div class="instructor-m-description">
+              <div class="ins-image">
+                <ng-container *ngIf="roomsByIdData.token">
+                  <ng-container *ngIf="!roomsByIdData.token.isLoading && roomsByIdData.token.imageLoaded">
+                    <img [src]="roomsByIdData.token.url" alt="Image" />
+                  </ng-container>
+                  <ng-container *ngIf="roomsByIdData.token.isLoading">
+                    <img [src]="'../../../../assets/img/loading.gif'" alt="Image" />
+                  </ng-container>
+                </ng-container>
+              </div>
+              <div class="ins-description">
+                <h3>{{ roomsByIdData.name }}</h3>
+                <p [innerHTML]="roomsByIdData.description"></p>
+              </div>
+            </div>
+            <!-- room contact info -->
+            <div class="instructor-contact-info">
+              <div class="inst-contact-box">
+                <vc-icon color="#ffffff" iconName="mobile" size="35px" style="margin: 3px 14px 0px 0px"></vc-icon>
+                <div class="inst-contact-text">
+                  <small>{{ language.courses.telephone }}:</small>
+                  <span>{{ roomsByIdData.phone_no != '' ? roomsByIdData.phone_no : '--' }}</span>
+                </div>
+              </div>
+              <div class="inst-contact-box">
+                <vc-icon color="#ffffff" iconName="email" size="35px" style="margin: 3px 14px 0px 0px"></vc-icon>
+                <div class="inst-contact-text">
+                  <small>{{ language.instructor.mail }}</small>
+                  <span>{{ roomsByIdData.room_email }}</span>
+                </div>
+              </div>
+            </div>
+            <!-- room information tab group -->
+            <div class="instructor-info-tab">
+              <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
+                <mat-tab label="{{ language.instructor.available_time }}">
+                  <div class="schedule" *ngIf="roomsByIdData.room_availablity">
+                    <div class="schedule_list" *ngFor="let val of roomsByIdData.room_availablity">
+                      <ul>
+                        <li>
+                          <span>{{ getDayName(val.weekday) }}</span>
+                        </li>
+                        <li>{{ val.time_from.split(':').slice(0, 2).join(':') }} - {{ val.time_to.split(':').slice(0, 2).join(':') }}</li>
+                      </ul>
+                    </div>
+                  </div>
+                </mat-tab>
+                <mat-tab label="{{ language.instructor.themen }}">
+                  <div class="schedule qualification" *ngIf="roomsByIdData && roomsByIdData?.roomTags.length > 0">
+                    <div class="schedule_list" *ngFor="let item of roomsByIdData?.roomTags">
+                      <ul>
+                        <li>{{ item.tag_name }}</li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="col-lg-12 col-md-12 col-sm-12 empty-data-image" *ngIf="roomsByIdData && roomsByIdData?.roomTags.length == 0">
+                    <span>No Themen Founds</span>
+                  </div>
+                </mat-tab>
+                <mat-tab label="{{ language.courses.room_details }}">
+                  <div class="schedule qualification">
+                    <div class="schedule_list">
+                      <ul>
+                        <li>
+                          <span>Address</span>
+                        </li>
+                        <li>{{ roomsByIdData.room_address }}</li>
+                      </ul>
+                      <ul>
+                        <li>
+                          <span>{{ language.room.people }}</span>
+                        </li>
+                        <li>{{ roomsByIdData.no_of_persons }} {{ language.room.people }}</li>
+                      </ul>
+                    </div>
+                  </div>
+                </mat-tab>
+              </mat-tab-group>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <vc-pagination-bar (pageChanged)="changePage($event)" [defaultItemsPerPage]="8" [itemsPerPageOptions]="[8, 16, 32, 64]" (pageSizeChanged)="changePageSize($event)" [loading]="isLoading" [pagination]="pagination"></vc-pagination-bar>
+</div>
+<ng-template #loading>
+  <ngx-skeleton-loader
+    [theme]="{
+      'border-radius': '15px',
+      height: '200px',
+      width: '100%',
+      background: 'var(--vc-skeleton-loader-background)'
+    }"
+    appearance="circle"
+    count="3"
+  ></ngx-skeleton-loader>
+</ng-template>

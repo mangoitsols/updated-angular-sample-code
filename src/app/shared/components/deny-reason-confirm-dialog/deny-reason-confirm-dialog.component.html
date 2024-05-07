@@ -1,0 +1,23 @@
+<form [formGroup]="denyGroupForm">
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-md-12">
+            </div>
+            <div class="modal-body">
+                <div class="event_field">
+                    <label>{{language.header.messages}}</label>
+                    <textarea class="form-control" id="message-text" formControlName="reason"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <p class="confirm-button">
+                    <a (click)="deleteFunction()">
+                        <button class="btn btn-no">{{language.Survey.close}}</button>
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+</form>

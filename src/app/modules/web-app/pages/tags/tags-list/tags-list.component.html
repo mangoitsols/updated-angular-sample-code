@@ -1,0 +1,72 @@
+<div class="content">
+  <ng-container *ngIf="participateAccess?.tags == 'Yes'">
+    <vc-page-header class="tag-list" [breadcrumbs]="breadCrumbItems" [headerTitle]="language.tags.tagss">
+      <div class="page-action-right">
+        <button type="button" class="disabled button-create" style="margin-right: 0" (click)="openModal({ type: currentSection })">
+          <vc-icon color="#ffffff" iconName="add-event" size="20px"></vc-icon>
+          &nbsp;<span>{{ language.tags.create_tag }}</span>
+        </button>
+      </div>
+    </vc-page-header>
+    <div class="row">
+      <div class="col-md-12 page-main">
+        <div class="page-action"></div>
+        <div class="survey-tabs-wrapper">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="card">
+                <mat-tab-group class="main-tab-group" id="mat-tabgroup" (selectedTabChange)="onTabClick($event)">
+                  <mat-tab *ngFor="let item of tabsData" [label]="item | uppercase">
+                    <div class="card-body">
+                      <table *ngIf="tagsList?.length > 0" class="table active-survey-data table-responsive">
+                        <thead>
+                          <tr>
+                            <th>#</th>
+                            <th>{{ language.tags.tags }}</th>
+                            <th>{{ language.create_faq.action }}</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let item of tagsList | paginate: { itemsPerPage: itemPerPage, currentPage: currentPageNmuber, totalItems: totalBanners }; let i = index">
+                            <td>
+                              <span>{{ i + 1 }}</span>
+                            </td>
+                            <td>
+                              <span>{{ item.tag_name }}</span>
+                            </td>
+                            <td>
+                              <div class="event-action text-center">
+                                <button mat-button [matMenuTriggerFor]="menu">
+                                  <img onContextMenu="return false;" src="../../../../assets/img/new-design/dashboard/event-action.svg" alt="" loading="lazy" />
+                                </button>
+                                <mat-menu #menu="matMenu" xPosition="before">
+                                  <button mat-menu-item (click)="openModal(item)">{{ language.theme.edit }}</button>
+                                  <button mat-menu-item (click)="deleteTag(item.id)">{{ language.theme.delete }}</button>
+                                </mat-menu>
+                              </div>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <mat-paginator [length]="totalTags" [pageIndex]="currentPageNumber" [pageSize]="itemPerPage" [pageSizeOptions]="[10, 25, 50, 100]" aria-label="Select page" (page)="pageChanged($event)"></mat-paginator>
+                    </div>
+                  </mat-tab>
+                </mat-tab-group>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <div class="not-f-main" *ngIf="participateAccess?.tags == 'No'">
+    <div class="page-not-available">
+      <div class="not-available-user">
+        <vc-icon color="blue" iconName="feature-locked" size="50px"></vc-icon>
+        <h1>{{ language.genral_message.feature_locked }}</h1>
+        <span>{{ language.genral_message.not_available_msg }}</span>
+      </div>
+    </div>
+  </div>
+</div>

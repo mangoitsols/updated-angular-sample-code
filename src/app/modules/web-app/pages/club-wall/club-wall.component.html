@@ -1,0 +1,32 @@
+<div class="content">
+  <vc-page-header [breadcrumbs]="breadCrumbItems" [headerTitle]="language.club_wall.club_news" style="padding-left: 15px; padding-right: 15px">
+    <div class="club-wall-action" *ngIf="createAccess.news == 'Yes' || createAccess.event == 'Yes'">
+      <button *ngIf="createAccess.news == 'Yes'" type="button" class="vc-button-with-icon disabled vc-button-create" routerLink="/web/create-news">
+        <vc-icon color="#ffffff" iconName="news" size="20px"></vc-icon>
+        &nbsp;<span>{{ language.club_wall.create_news }}</span>
+      </button>
+    </div>
+  </vc-page-header>
+
+  <div class="club_news_widget_group" *ngIf="userRole != 'guest'">
+    <!-- club news top widget start -->
+    <div class="row dash-widget" *ngIf="displayNews == true">
+      <div class="col-md-12 club_widget club-wall-news">
+        <app-club-news (dataLoaded)="onChildDataLoaded()"></app-club-news>
+      </div>
+    </div>
+    <!-- club news top widget start -->
+
+    <app-club-dates *ngIf="displayDates == true"></app-club-dates>
+    <app-events-calendar *ngIf="displayEvents == true"></app-events-calendar>
+  </div>
+
+  <div class="club_news_widget_group" *ngIf="userRole == 'guest'">
+    <!-- club news top widget start -->
+    <div class="row dash-widget" *ngIf="displayNews == true">
+      <div class="col-md-12 club_widget">
+        <app-club-news></app-club-news>
+      </div>
+    </div>
+  </div>
+</div>

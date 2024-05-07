@@ -1,0 +1,47 @@
+<div *ngIf="data?.title === 'Success'" class="success-modal-body">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="confirmation-logo">
+        <img src="../../../../assets/img/Verein-Cloud-FIN_2.png" />
+      </div>
+      <span>{{ language.confirmation_message.thank_you }}</span>
+      <p [innerHTML]="data?.message" class="text-center confirm-message"></p>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="data?.title === 'Error'" class="error-modal-body">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="confirmation-logo">
+        <img src="../../../../assets/img/Verein-Cloud-FIN_2.png" />
+      </div>
+      <span>{{ language.confirmation_message.sorry }}</span>
+      <p [innerHTML]="data?.message" class="text-center confirm-message"></p>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="data?.title === 'Information'" class="info-modal-body">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="confirmation-logo">
+        <img src="../../../../assets/img/Verein-Cloud-FIN_2.png" />
+      </div>
+      <span>{{ language.confirmation_message.sorry }}</span>
+      <p [innerHTML]="data?.message" class="text-center confirm-message"></p>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="data?.title === 'Warning'" class="warning-modal-body">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="confirmation-logo">
+        <img src="../../../../assets/img/Verein-Cloud-FIN_2.png" />
+      </div>
+      <span>{{ language.confirmation_message.sorry }}</span>
+      <p [innerHTML]="data?.message" class="text-center confirm-message"></p>
+    </div>
+  </div>
+</div>

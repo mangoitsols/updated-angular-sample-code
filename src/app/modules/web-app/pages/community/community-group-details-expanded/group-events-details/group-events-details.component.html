@@ -1,0 +1,228 @@
+<div class="group-events-detail mt-1">
+  <!--  Top Header Row  -->
+  <ng-container *ngIf="!loadings.details; else loadingHeader">
+    <div class="row align-items-center">
+      <div class="col-lg-6">
+        <vc-page-header [breadcrumbs]="breadcrumbs" [headerTitleStyles]="{ textTransform: 'unset' }" [headerTitle]="groupEventDetails?.name"> </vc-page-header>
+      </div>
+      <div class="col-lg-6">
+        <div class="text-right"></div>
+      </div>
+    </div>
+  </ng-container>
+  <!--  Main Body Row  -->
+  <div class="row mt-3">
+    <div class="col-lg-6">
+      <ng-container *ngIf="!loadings.details; else loadingDetails">
+        <div class="player-details-card">
+          <div class="position-relative">
+            <div class="img-wrapper vc-radius">
+              <ng-container *ngIf="groupEventDetails.token">
+                <ng-container *ngIf="!groupEventDetails.token.isLoading && groupEventDetails.token.imageLoaded">
+                  <img [src]="groupEventDetails.token.url" alt="Image" />
+                </ng-container>
+                <ng-container *ngIf="groupEventDetails.token.isLoading">
+                  <img [src]="'../../../../assets/img/loading.gif'" alt="Image" />
+                </ng-container>
+              </ng-container>
+
+              <img [src]="groupEventDetails?.eventImages ? groupEventDetails?.eventImages[0]?.eventImage : 'assets/img/no-image.png'" alt="Event-image" />
+            </div>
+
+            <div class="group-events-detail__content">
+              <vc-badge *ngIf="groupEventDetails?.audience == '1'" backgroundColor="var(--vc-color-soft-red)" text="{{ language.create_news.title }}"></vc-badge>
+              <vc-badge *ngIf="groupEventDetails?.audience == '2'" backgroundColor="var(--vc-color-soft-red)" text="{{ language.create_news.group_news }}"></vc-badge>
+              <vc-badge *ngIf="groupEventDetails?.audience == '3'" backgroundColor="var(--vc-color-soft-red)" text="{{ language.create_news.chairman }}"></vc-badge>
+            </div>
+
+            <div class="w-100 d-flex align-items-center box-position">
+              <p class="group-events-detail__rightText d-flex justify-content-center align-items-center">
+                <vc-icon cssClass="mt-1" iconName="calender" size="32px"></vc-icon>
+                <span>{{ eventDate ? eventDate : '' }} {{ language.create_event.date }} </span>
+              </p>
+              <p class="text d-flex justify-content-center align-items-center">
+                <vc-icon cssClass="mt-1" iconName="watch" size="32px"></vc-icon>
+                <span
+                  >{{
+                    groupEventDetails?.recurringDates && groupEventDetails?.recurringDates.length
+                      ? groupEventDetails?.recurringDates[0]?.startTime + '-' + groupEventDetails?.recurringDates[0]?.endTime
+                      : groupEventDetails?.startTime + ' - ' + groupEventDetails?.endTime
+                  }}
+                  {{ language.login.o_clock }}</span
+                >
+              </p>
+            </div>
+          </div>
+          <div class="my-3">
+            <div class="d-flex justify-content-between align-items-center">
+              <p class="group-events-detail__title mb-1">{{ groupEventDetails?.name }}</p>
+              <div class="group-events-detail__location">
+                <div class="d-flex justify-content-between align-items-center">
+                  <vc-icon [cssStyle]="{ marginBottom: '-3px' }" cssClass="cursor-pointer" iconName="location" size="15px"></vc-icon>
+                  <p class="location-text m-0">{{ groupEventDetails?.place }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p [innerHTML]="groupEventDetails?.description" class="group-events-detail__description my-3">...</p>
+          <h2 class="group-events-detail__info">{{ language.club_events.organizer }}</h2>
+
+          <div class="row">
+            <div class="col-lg-6 mb-md-3">
+              <div class="player-summary-card vc-card-shadow vc-radius-light">
+                <div class="vc-radius-light">
+                  <div class="d-flex align-items-center">
+                    <img class="player-summary-card__player" src="../../../../assets/img/new-design/community/group-events/team-member.png" />
+                    <div>
+                      <h2 class="player-summary-card__name ml-2">{{ groupEventDetails?.user?.firstName }}</h2>
+                      <a class="mail-text ml-2" href="mailto:{{ groupEventDetails?.user?.email }}">{{ groupEventDetails?.user?.email }}</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+
+    <div class="col-lg-6">
+      <!-- First Promised -->
+      <ng-container *ngIf="!loadings.approved; else loadingParticipants">
+        <h2 class="group-events-detail__heading">{{ language.create_group.approved }}</h2>
+        <div class="row">
+          <ng-container *ngIf="approvedUsers.length; else noParticipants">
+            <ng-container *ngFor="let user of approvedUsers">
+              <div class="col-lg-4 mb-3">
+                <vc-player-summary-card
+                  [badgeStyle]="{ backgroundColor: '#41AE4C', color: 'var(--vc-color-white)' }"
+                  [badgeText]="language.community_groups.approved"
+                  [cssStyle]="{ backgroundColor: 'var(--vc-color-white)' }"
+                  [user]="user"
+                ></vc-player-summary-card>
+              </div>
+            </ng-container>
+          </ng-container>
+        </div>
+      </ng-container>
+      <!-- Second Pending -->
+      <ng-container *ngIf="!loadings.unapproved; else loadingParticipants">
+        <h2 class="group-events-detail__heading mt-3">{{ language.create_group.pending }}</h2>
+        <div class="row">
+          <ng-container *ngIf="unApprovedEventUsers.length; else noParticipants">
+            <ng-container *ngFor="let user of unApprovedEventUsers">
+              <div class="col-lg-4 mb-3">
+                <vc-player-summary-card [badgeText]="language.community_groups.pending" [cssStyle]="{ backgroundColor: 'var(--vc-color-white)' }" [user]="user"></vc-player-summary-card>
+              </div>
+            </ng-container>
+          </ng-container>
+        </div>
+      </ng-container>
+      <!--            &lt;!&ndash; Third Cancelled &ndash;&gt;-->
+      <ng-container *ngIf="!loadings.approved; else loadingParticipants">
+        <h2 class="group-events-detail__heading mt-3">{{ language.create_group.cancelled }}:</h2>
+        <div class="row position-relative">
+          <ng-container *ngIf="cancelledUsers.length; else noParticipants">
+            <ng-container *ngFor="let user of cancelledUsers">
+              <div class="col-lg-4 mb-3">
+                <vc-player-summary-card
+                  [badgeStyle]="{ backgroundColor: 'var(--vc-color-dark-pink)', color: 'var(--vc-color-white)', backdropFilter: 'blur(24px)' }"
+                  [badgeText]="language.create_group.cancelled"
+                  [cssStyle]="{ backgroundColor: 'var(--vc-cancelled-user)' }"
+                  [user]="user"
+                ></vc-player-summary-card>
+              </div>
+            </ng-container>
+          </ng-container>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>
+
+<ng-template #loadingParticipants>
+  <div class="row justify-content-between">
+    <ng-container *ngFor="let c of [].constructor(3)">
+      <div class="col-lg-4 mb-3">
+        <ngx-skeleton-loader
+          [count]="3"
+          [theme]="{
+            height: '70px',
+            borderRadius: '5px',
+            backgroundColor: 'var(--vc-skeleton-loader-background)'
+          }"
+        ></ngx-skeleton-loader>
+      </div>
+    </ng-container>
+  </div>
+</ng-template>
+
+<ng-template #noParticipants>
+  <div class="col">
+    <p class="m-0 text-center">{{ language.club_events.no_participants || 'No Participants' }}</p>
+  </div>
+</ng-template>
+
+<ng-template #loadingHeader>
+  <div class="row">
+    <div class="col-lg-6">
+      <ngx-skeleton-loader
+        [count]="1"
+        [theme]="{
+          height: '50px',
+          borderRadius: '5px',
+          backgroundColor: 'var(--vc-skeleton-loader-background)'
+        }"
+      ></ngx-skeleton-loader>
+    </div>
+    <div class="col-lg-6">
+      <ngx-skeleton-loader
+        [count]="1"
+        [theme]="{
+          height: '50px',
+          borderRadius: '5px',
+          backgroundColor: 'var(--vc-skeleton-loader-background)'
+        }"
+      ></ngx-skeleton-loader>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #loadingDetails>
+  <div class="row">
+    <div class="col-lg-12">
+      <ngx-skeleton-loader
+        [count]="1"
+        [theme]="{
+          height: '390px',
+          borderRadius: '5px',
+          backgroundColor: 'var(--vc-skeleton-loader-background)'
+        }"
+      ></ngx-skeleton-loader>
+    </div>
+  </div>
+  <div class="row mt-2">
+    <div class="col-lg-12">
+      <ngx-skeleton-loader
+        [count]="1"
+        [theme]="{
+          height: '150px',
+          borderRadius: '5px',
+          backgroundColor: 'var(--vc-skeleton-loader-background)'
+        }"
+      ></ngx-skeleton-loader>
+    </div>
+  </div>
+  <div class="row mt-1">
+    <div class="col-lg-12">
+      <ngx-skeleton-loader
+        [count]="1"
+        [theme]="{
+          height: '80px',
+          borderRadius: '5px',
+          backgroundColor: 'var(--vc-skeleton-loader-background)'
+        }"
+      ></ngx-skeleton-loader>
+    </div>
+  </div>
+</ng-template>

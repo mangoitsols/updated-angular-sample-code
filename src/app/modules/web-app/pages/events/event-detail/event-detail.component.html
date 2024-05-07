@@ -1,0 +1,1587 @@
+<div class="content detail-component">
+  <div class="page_heading club-wall-top-heading">
+    <div class="heading-box">
+      <h1>{{ language.header.event_details }}</h1>
+      <span routerLink="/web/clubwall">{{ language.club_events.clubwall }} &nbsp; >&nbsp; {{ language.club_events.events }}</span>
+    </div>
+    <div class="button-box">
+      <div class="page-action-right" *ngIf="eventDetails?.deny_by_id == null && eventDetails?.approved_by == null">
+        <button
+          *ngIf="userDetails?.isAdmin && eventDetails?.author != userDetails?.userId && eventDetails?.approved_status == 0 && eventDetails?.deny_by_id == null && eventDetails?.approved_by == null"
+          (click)="approvedEvents(eventDetails?.id)"
+          type="button"
+        >
+          <span [ngStyle]="{ color: '#ffffff' }">{{ language.create_event.PublishEvent }}</span>
+        </button>
+        <button
+          *ngIf="userDetails?.isAdmin && eventDetails?.author != userDetails?.userId && eventDetails?.approved_status == 0 && eventDetails?.deny_by_id == null && eventDetails?.approved_by == null"
+          (click)="unapprovedEvent(eventDetails?.id)"
+          type="button"
+        >
+          <span [ngStyle]="{ color: '#ffffff' }">{{ language.create_event.DenyEvent }}</span>
+        </button>
+      </div>
+
+      <!-- Accept & Deny buttons -->
+      <div class="page-action-right" *ngIf="userDetails?.userId != eventDetails?.author && eventDetails?.deny_by_id == null && eventDetails?.approved_status == 1">
+        <button type="button" class="disabled" (click)="acceptEvent(eventDetails.id)" *ngIf="showAccept">
+          <span [ngStyle]="{ color: '#ffffff' }">+ {{ language.header.accept }}</span>
+        </button>
+        <button type="button" class="disabled" (click)="rejectEvent(eventDetails.id)" *ngIf="showDeny">
+          <span [ngStyle]="{ color: '#ffffff' }">- {{ language.header.deny }}</span>
+        </button>
+      </div>
+
+      <!-- Participate & Deny buttons -->
+      <div class="page-action-right" *ngIf="userDetails?.userId != eventDetails?.author && eventDetails?.deny_by_id == null && eventDetails?.approved_status == 1">
+        <button type="button" class="disabled" (click)="acceptEvent(eventDetails.id)" *ngIf="showParticipatebtn">
+          <span [ngStyle]="{ color: '#ffffff' }">+ {{ language.club_events.participate }}</span>
+        </button>
+        <button type="button" class="disabled" (click)="rejectEvent(eventDetails.id)" *ngIf="showDeny2">
+          <span [ngStyle]="{ color: '#ffffff' }">- {{ language.header.deny }}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="add_event_main event_main">
+    <div class="event-detail-main">
+      <div class="add_event_content event_detail_main">
+        <div class="card">
+          <mat-tab-group *ngIf="updateEventData">
+            <!-- CURRENT EVENT START -->
+            <mat-tab label="{{ language.club_events.currentEvent }}">
+              <div class="card-body">
+                <div class="profile_details" *ngIf="eventDetails">
+                  <div class="event-details-inner">
+                    <div class="left-side-box">
+                      <div class="group_detail_main">
+                        <div class="group_img_sec">
+                          <div class="group_detail_img news_image_container">
+                            <div class="image-section">
+                              <!-- <img onContextMenu="return false;" [src]="showImage ? imageurl : '../../../assets/img/no_image.png'" alt="" loading="lazy" /> -->
+                              <ng-container *ngIf="eventDetails.token">
+                                <ng-container *ngIf="!eventDetails.token.isLoading && eventDetails.token.imageLoaded">
+                                  <img [src]="imageurl" alt="Image" alt="" loading="lazy" />
+                                </ng-container>
+                                <ng-container *ngIf="eventDetails.token.isLoading">
+                                  <img [src]="'../../../../assets/img/loading.gif'" alt="Image" />
+                                </ng-container>
+                              </ng-container>
+                              <ng-container *ngIf="!eventDetails.token">
+                                <img src="../../../../../../assets/img/no-image.png" />
+                              </ng-container>
+
+                              <div class="image-badge" *ngIf="eventDetails.type == 1">
+                                <span>{{ language.create_event.club_event }}</span>
+                              </div>
+                              <div class="image-badge" *ngIf="eventDetails.type == 2">
+                                <span>{{ language.create_event.group_event }}</span>
+                              </div>
+                              <div class="image-badge" *ngIf="eventDetails.type == 3">
+                                <span>{{ language.create_event.functionaries_event }}</span>
+                              </div>
+                              <div class="image-badge" *ngIf="eventDetails.type == 4">
+                                <span>{{ language.create_event.courses }}</span>
+                              </div>
+                              <div class="image-badge" *ngIf="eventDetails.type == 5">
+                                <span>{{ language.create_event.seminar }}</span>
+                              </div>
+                            </div>
+                            <div class="event-img-bottom">
+                              <div>
+                                <div class="event-time">
+                                  <span class="img-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="33" height="33" viewBox="0 0 33 33" fill="none">
+                                      <path
+                                        d="M16.0735 32.1542C13.4295 32.1542 10.7855 32.1623 8.14255 32.1522C4.13322 32.1371 0.918911 29.4971 0.130951 25.5815C0.0291813 25.0747 0.0029831 24.5608 0.0029831 24.0449C0.00399072 19.2698 -0.00608549 14.4957 0.00600597 9.72054C0.0160822 5.82104 2.56033 2.64502 6.3379 1.78451C6.81652 1.67569 7.30421 1.60616 7.79593 1.60818C7.98335 1.60918 8.04582 1.55377 8.0831 1.36736C8.2544 0.505839 8.85796 -0.00200208 9.67212 1.31611e-05C10.4782 0.0020284 11.109 0.533045 11.2541 1.38146C11.2914 1.59709 11.377 1.60314 11.5402 1.60314C14.5873 1.60112 17.6333 1.59911 20.6804 1.60616C20.888 1.60616 20.9353 1.54268 20.9706 1.34519C21.1167 0.53506 21.7565 0.00303603 22.5485 1.31611e-05C23.3496 -0.0030097 23.9803 0.514908 24.1315 1.32907C24.1708 1.54369 24.2403 1.60213 24.463 1.61019C28.7313 1.76335 32.1592 5.19329 32.2035 9.45654C32.2539 14.407 32.2539 19.3574 32.2035 24.3079C32.1592 28.6024 28.6789 32.0656 24.3824 32.1401C21.6134 32.1875 18.8435 32.1492 16.0735 32.1492C16.0735 32.1512 16.0735 32.1522 16.0735 32.1542ZM16.1189 28.95C18.775 28.95 21.4311 28.958 24.0872 28.948C26.8228 28.9369 28.9751 26.8904 28.9973 24.1779C29.0356 19.3161 29.0315 14.4533 28.9993 9.59156C28.9822 7.05336 26.969 4.96356 24.5497 4.82854C24.2141 4.80939 24.1547 4.91015 24.1688 5.21143C24.1899 5.67494 24.201 6.14449 24.1486 6.60396C24.0448 7.5078 23.3193 8.08013 22.4175 8.01967C21.5903 7.96526 20.9595 7.27303 20.9474 6.40042C20.9414 5.97319 20.9283 5.54495 20.9524 5.11974C20.9676 4.85776 20.8678 4.81846 20.635 4.81947C17.6263 4.82652 14.6175 4.82954 11.6088 4.81644C11.3085 4.81544 11.2571 4.90914 11.2702 5.17415C11.2914 5.58727 11.2813 6.00342 11.2742 6.41755C11.2591 7.28612 10.6193 7.97332 9.788 8.02169C8.90129 8.07308 8.18991 7.50982 8.07504 6.62613C8.02667 6.25533 8.04884 5.87445 8.04783 5.4976C8.04481 4.73684 8.04683 4.73684 7.28305 4.87892C4.83856 5.33134 3.2173 7.26496 3.21427 9.75782C3.20823 14.5067 3.21125 19.2567 3.21629 24.0056C3.21629 24.3431 3.24047 24.6867 3.30697 25.0162C3.78358 27.366 5.72325 28.9419 8.1496 28.949C10.8067 28.956 13.4628 28.95 16.1189 28.95ZM8.17983 11.2521C7.17423 11.2531 6.45075 11.9182 6.44269 12.8421C6.43463 13.7843 7.1581 14.4664 8.18285 14.4745C8.91237 14.4795 9.6429 14.4755 10.3734 14.4755C14.9047 14.4755 19.436 14.4735 23.9672 14.4775C24.5073 14.4775 24.996 14.3566 25.3598 13.9374C25.8021 13.4286 25.915 12.8452 25.6399 12.2215C25.3588 11.5846 24.8459 11.2572 24.1526 11.2551C21.4714 11.2481 18.7901 11.2521 16.1098 11.2521C13.4658 11.2511 10.8228 11.2501 8.17983 11.2521ZM24.1486 25.7266C25.0343 25.7115 25.7296 25.0676 25.7779 24.2202C25.8273 23.3607 25.2328 22.6151 24.3501 22.5335C23.7022 22.474 23.0402 22.474 22.3913 22.5304C21.4945 22.608 20.888 23.3718 20.9494 24.2434C21.0089 25.0868 21.7071 25.7155 22.6009 25.7276C22.8528 25.7306 23.1037 25.7286 23.3556 25.7276C23.6196 25.7266 23.8836 25.7306 24.1486 25.7266Z"
+                                        fill="white"
+                                      />
+                                    </svg>
+                                  </span>
+                                  <span>{{ eventDetails?.date_from | date: 'dd.MM.YYYY' }}</span>
+                                </div>
+                              </div>
+                              <div>
+                                <div class="event-time">
+                                  <span class="img-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+                                      <path
+                                        d="M16.0005 32C7.14952 31.999 -0.0269483 24.8137 7.60743e-05 15.9799C0.0271004 7.12515 7.16253 -0.00100259 16.0005 1.05801e-07C24.8545 0.0010028 32.026 7.1813 31.9999 16.019C31.9739 24.8738 24.8395 32 16.0005 32ZM3.18995 16C3.19095 23.053 8.93013 28.7954 15.9925 28.8104C23.0368 28.8245 28.784 23.0901 28.8121 16.017C28.8401 8.9681 23.0459 3.17152 15.9905 3.18857C8.92512 3.20662 3.18895 8.94705 3.18995 16ZM14.384 12.7453C14.384 13.8071 14.383 14.869 14.385 15.9308C14.386 16.384 14.5162 16.7941 14.8415 17.119C15.9104 18.1889 16.9834 19.2537 18.0564 20.3186C18.3506 20.6104 18.7059 20.7788 19.1233 20.7989C19.7829 20.831 20.3845 20.461 20.6567 19.8624C20.936 19.2457 20.8279 18.5789 20.3274 18.0666C19.5067 17.2263 18.6729 16.3991 17.8352 15.5749C17.662 15.4044 17.5879 15.2329 17.5899 14.9863C17.5999 13.2616 17.5969 11.537 17.5929 9.81337C17.5929 9.60281 17.5919 9.38422 17.5409 9.18167C17.3527 8.44169 16.6161 7.9263 15.8844 7.9995C15.0547 8.08172 14.4311 8.70439 14.4151 9.52259C14.3951 10.5965 14.4101 11.6714 14.4101 12.7463C14.4011 12.7453 14.3921 12.7453 14.384 12.7453Z"
+                                        fill="white"
+                                      />
+                                    </svg>
+                                  </span>
+                                  <span>
+                                    {{
+                                      eventDetails?.recurring_dates
+                                        ? eventDetails?.recurring_dates[0].start_time + '
+                                                                        - ' + eventDetails?.recurring_dates[0].end_time
+                                        : eventDetails.start_time + ' - ' + eventDetails.end_time
+                                    }}
+                                    {{ language.login.o_clock }}</span
+                                  >
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="overbar-section">
+                              <div class="overimage-bar">
+                                <ul>
+                                  <li>
+                                    <div class="event-time">
+                                      <span class="img-icon"> <img src="../../../assets/img/calender.svg" onContextMenu="return false;" alt="calender" loading="lazy" /></span>
+                                      <span>{{ eventDetails?.date_from | date: 'dd.MM.YYYY' }}</span>
+                                    </div>
+                                  </li>
+                                  <li>
+                                    <div class="event-time">
+                                      <span class="img-icon">
+                                        <img src="../../../../assets/img/dayicon.svg" onContextMenu="return false;" alt="euro" loading="lazy" />
+                                      </span>
+                                      <span> {{ eventDetails?.date_from | date: 'EEEE' }}</span>
+                                    </div>
+                                  </li>
+                                  <li>
+                                    <div class="event-time">
+                                      <span class="img-icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="21" viewBox="0 0 20 21" fill="none">
+                                          <path
+                                            d="M10.0003 20.124C4.46845 20.1233 -0.0168427 15.6047 4.75464e-05 10.0494C0.0169378 4.48082 4.47658 -0.000630502 10.0003 6.65356e-08C15.5341 0.000630635 20.0162 4.51613 20 10.074C19.9837 15.6425 15.5247 20.124 10.0003 20.124ZM1.99372 10.062C1.99435 14.4974 5.58133 18.1087 9.99531 18.1181C14.398 18.127 17.99 14.5207 18.0075 10.0727C18.0251 5.63981 14.4037 1.99449 9.99406 2.00521C5.5782 2.01656 1.99309 5.62656 1.99372 10.062ZM8.99003 8.01516C8.99003 8.68293 8.9894 9.3507 8.99065 10.0185C8.99128 10.3035 9.0726 10.5614 9.27591 10.7657C9.94401 11.4385 10.6146 12.1082 11.2852 12.7778C11.4691 12.9613 11.6912 13.0673 11.9521 13.0799C12.3643 13.1001 12.7403 12.8674 12.9104 12.4909C13.085 12.1031 13.0174 11.6838 12.7046 11.3616C12.1917 10.8332 11.6706 10.3129 11.147 9.79462C11.0388 9.68742 10.9925 9.5796 10.9937 9.42448C11 8.3399 10.9981 7.25532 10.9956 6.17137C10.9956 6.03896 10.995 5.90149 10.9631 5.77412C10.8455 5.30876 10.385 4.98464 9.92775 5.03068C9.40916 5.08238 9.01943 5.47397 9.00942 5.98851C8.99691 6.66385 9.00629 7.33982 9.00629 8.01579C9.00066 8.01516 8.99503 8.01516 8.99003 8.01516Z"
+                                            fill="#fff"
+                                          />
+                                        </svg>
+                                      </span>
+                                      <span>
+                                        {{
+                                          eventDetails?.recurring_dates
+                                            ? eventDetails?.recurring_dates[0].start_time + '
+                                        - ' + eventDetails?.recurring_dates[0].end_time
+                                            : eventDetails.start_time + ' - ' + eventDetails.end_time
+                                        }}
+                                        {{ language.login.o_clock }}</span
+                                      >
+                                    </div>
+                                  </li>
+                                  <li>
+                                    <span class="img-icon"
+                                      ><svg xmlns="http://www.w3.org/2000/svg" width="20" height="21" viewBox="0 0 17 20" fill="none">
+                                        <path
+                                          d="M0 8.20461C0.107715 5.39839 1.25625 2.98295 3.74183 1.30586C7.0265 -0.910431 11.4835 -0.239719 14.0198 2.81762C15.5554 4.66819 16.2067 6.80369 15.9925 9.1897C15.8522 10.7534 15.2742 12.18 14.4814 13.5227C13.3172 15.4941 11.7872 17.1524 10.0657 18.6467C9.61729 19.0362 9.15763 19.4119 8.67479 19.7583C8.23078 20.077 7.80994 20.0839 7.3772 19.7589C5.21727 18.1369 3.31598 16.2657 1.85056 13.9836C0.996987 12.6535 0.364476 11.2306 0.114603 9.65688C0.0457161 9.22351 0.0206662 8.78827 0 8.20461ZM7.89636 1.98785C7.58449 2.02417 7.29516 2.04671 7.01022 2.09368C6.73342 2.1394 6.46225 2.21392 6.1961 2.30535C3.76688 3.14327 2.07413 5.51174 2.01527 8.13384C1.97957 9.72451 2.49622 11.1517 3.28718 12.495C4.47955 14.5203 6.10091 16.168 7.90701 17.6491C8.01472 17.7374 8.06921 17.7073 8.15876 17.6347C8.86329 17.0623 9.53651 16.4567 10.1703 15.8073C11.4929 14.4527 12.6533 12.9816 13.4023 11.2256C14.2835 9.16152 14.3029 7.10617 13.1857 5.12785C12.0302 3.08002 10.2392 2.03544 7.89636 1.98785ZM4.02302 7.99231C4.02615 5.7779 5.81784 3.9956 8.03664 4.00061C10.2423 4.00499 12.024 5.78854 12.0258 7.99356C12.0277 10.2061 10.2348 12.0022 8.02349 12.0016C5.81346 12.0009 4.01989 10.2036 4.02302 7.99231ZM8.02036 9.99756C9.12005 9.99944 10.0193 9.10954 10.03 8.00922C10.0406 6.90702 9.13132 6.00147 8.0166 6.0046C6.91378 6.00836 6.01637 6.90452 6.01824 8.00108C6.02075 9.09576 6.92317 9.99568 8.02036 9.99756Z"
+                                          fill="#fff"
+                                        ></path>
+                                      </svg>
+                                    </span>
+                                    <span>
+                                      <span *ngIf="eventDetails?.roomData?.name">{{ eventDetails.roomData.name }}&nbsp;/&nbsp;</span>{{ eventDetails.place }}
+                                    </span>
+                                  </li>
+                                  <li>
+                                    <div class="course-price">
+                                      <span class="img-icon"><img src="../../../../assets/img/euro.svg" onContextMenu="return false;" alt="dollor" loading="lazy" /></span>
+                                      <span *ngIf="eventDetails.price_per_participant != null">{{ eventDetails.price_per_participant }}</span>
+                                      <span *ngIf="eventDetails.price_per_participant == null">{{ language.organizer.free }}</span>
+                                    </div>
+                                  </li>
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="event-top-description"></div>
+                        <div class="event-content">
+                          <div class="event-title">
+                            <h5>{{ eventDetails.name }}</h5>
+                            <div>
+                              <div class="dropdown action_group" *ngIf="role != 'guest'">
+                                <button class="dropdown-toggle" type="button" (click)="onShow()">
+                                  <span *ngIf="userDetails.userId == eventDetails.author || userDetails.isAdmin" routerLink="/web/update-event/{{ eventDetails.id }}"
+                                    ><svg xmlns="http://www.w3.org/2000/svg" width="19" height="18" viewBox="0 0 19 18" fill="none">
+                                      <g clip-path="url(#clip0_4109_7762)">
+                                        <path
+                                          fill-rule="evenodd"
+                                          clip-rule="evenodd"
+                                          d="M11.2331 0.529704L1.94254 9.92699L0.656827 15.8413C0.593034 16.1331 0.603635 16.4363 0.687655 16.723C0.771676 17.0097 0.92642 17.2706 1.13766 17.4819C1.3489 17.6931 1.60985 17.8479 1.89653 17.9319C2.18321 18.0159 2.48641 18.0265 2.77826 17.9627L8.69254 16.677L17.996 7.26428C18.3274 6.92929 18.5127 6.47674 18.5115 6.00552C18.5103 5.5343 18.3227 5.08271 17.9895 4.74942L13.7634 0.52199C13.5971 0.355803 13.3995 0.224126 13.1821 0.134526C12.9647 0.0449257 12.7318 -0.000830637 12.4967 -0.000113776C12.2615 0.000603086 12.0288 0.047779 11.812 0.138703C11.5952 0.229627 11.3984 0.362506 11.2331 0.529704ZM4.17454 16.0264L2.58797 14.4411L3.39797 10.7216L7.89797 15.2216L4.17454 16.0264Z"
+                                          fill="#BDBDBD"
+                                        />
+                                      </g>
+                                      <defs>
+                                        <clipPath id="clip0_4109_7762">
+                                          <rect width="18" height="18" fill="white" transform="translate(0.561523)" />
+                                        </clipPath>
+                                      </defs>
+                                    </svg>
+                                  </span>
+                                </button>
+                              </div>
+                              <a class="dropdown-item delet-icon" *ngIf="userDetails.userId == eventDetails.author || userDetails.isAdmin" (click)="deleteEvents(eventDetails.id)">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="19" height="20" viewBox="0 0 19 20" fill="none">
+                                  <path
+                                    d="M17.5143 1.20815H12.6V0.971716C12.6 0.201917 11.9649 0.0644531 11.1896 0.0644531H7.15227C6.37697 0.0644531 5.74739 0.201917 5.74739 0.971716V1.20815H0.852294C0.742306 1.20797 0.633364 1.2295 0.531714 1.27151C0.430064 1.31352 0.337705 1.37517 0.259931 1.45295C0.182158 1.53072 0.120501 1.62308 0.0784938 1.72473C0.0364869 1.82638 0.0149568 1.93532 0.0151379 2.04531V3.66189C0.0151379 3.88392 0.103338 4.09685 0.260335 4.25385C0.417332 4.41084 0.630266 4.49904 0.852294 4.49904H17.5143C17.7363 4.49904 17.9493 4.41084 18.1063 4.25385C18.2633 4.09685 18.3515 3.88392 18.3515 3.66189V2.04531C18.3515 1.82328 18.2633 1.61035 18.1063 1.45335C17.9493 1.29635 17.7363 1.20815 17.5143 1.20815Z"
+                                    fill="#FB5F5F"
+                                  />
+                                  <path
+                                    d="M15.7574 6.72327H2.60898C2.49079 6.72431 2.37414 6.75032 2.26671 6.79961C2.15927 6.8489 2.06347 6.92035 1.98559 7.00926C1.90771 7.09818 1.8495 7.20256 1.8148 7.31555C1.78009 7.42854 1.76966 7.54759 1.7842 7.6649L3.13272 17.8675C3.18302 18.2641 3.37564 18.6289 3.67476 18.8942C3.97388 19.1594 4.35915 19.307 4.75892 19.3095H13.6075C14.0084 19.3087 14.3954 19.1618 14.6959 18.8964C14.9965 18.631 15.1901 18.2653 15.2406 17.8675L16.5877 7.6649C16.6025 7.54709 16.5921 7.42749 16.5572 7.31402C16.5222 7.20055 16.4635 7.09581 16.385 7.00675C16.3065 6.9177 16.2099 6.84637 16.1017 6.79749C15.9935 6.74861 15.8761 6.72331 15.7574 6.72327Z"
+                                    fill="#FB5F5F"
+                                  />
+                                </svg>
+                              </a>
+                            </div>
+                          </div>
+                          <div class="loaction-box">
+                            <span class="img-icon"
+                              ><svg xmlns="http://www.w3.org/2000/svg" width="10" height="12" viewBox="0 0 10 12" fill="none">
+                                <path
+                                  d="M0 4.92277C0.0671864 3.23904 0.783581 1.78977 2.33395 0.783517C4.38274 -0.546258 7.16277 -0.143831 8.74478 1.69057C9.70258 2.80091 10.1088 4.08222 9.97523 5.51382C9.88773 6.45206 9.52719 7.30802 9.03267 8.11362C8.30651 9.29648 7.35222 10.2915 6.27841 11.188C5.99873 11.4217 5.71202 11.6472 5.41085 11.855C5.1339 12.0462 4.87141 12.0503 4.60149 11.8553C3.25424 10.8821 2.06833 9.75941 1.15428 8.39018C0.621865 7.59209 0.22734 6.73838 0.0714832 5.79413C0.0285152 5.53411 0.0128904 5.27296 0 4.92277ZM4.92531 1.19271C4.73078 1.2145 4.55032 1.22803 4.37259 1.25621C4.19993 1.28364 4.03079 1.32835 3.86478 1.38321C2.34957 1.88596 1.29373 3.30705 1.25701 4.88031C1.23475 5.83471 1.55701 6.69104 2.05036 7.49702C2.7941 8.71219 3.80541 9.70079 4.93195 10.5894C4.99914 10.6424 5.03312 10.6244 5.08898 10.5808C5.52843 10.2374 5.94834 9.87401 6.34365 9.48436C7.16863 8.67161 7.89245 7.78898 8.35963 6.73538C8.90923 5.49691 8.92134 4.2637 8.22448 3.07671C7.50378 1.84801 6.38661 1.22126 4.92531 1.19271ZM2.50933 4.79539C2.51129 3.46674 3.62885 2.39736 5.01281 2.40036C6.38857 2.40299 7.49988 3.47313 7.50105 4.79614C7.50222 6.12366 6.38388 7.20131 5.00461 7.20093C3.62611 7.20056 2.50738 6.12216 2.50933 4.79539ZM5.00265 5.99854C5.68858 5.99966 6.24951 5.46572 6.25615 4.80553C6.26279 4.14422 5.69561 3.60088 5.00031 3.60276C4.31243 3.60501 3.75267 4.14271 3.75384 4.80065C3.75541 5.45746 4.31829 5.99741 5.00265 5.99854Z"
+                                  fill="#EF4968"
+                                />
+                              </svg>
+                            </span>
+                            <span>
+                              <span *ngIf="eventDetails?.roomData?.name">{{ eventDetails.roomData.name }}&nbsp;/&nbsp;</span>{{ eventDetails.place }}
+                            </span>
+                          </div>
+                          <p [innerHTML]="eventDetails.description"></p>
+                        </div>
+                        <ng-template #noRecurrence>
+                          <div class="schedule_list">
+                            <ul>
+                              <!-- <li>{{language.courses.start_date}}</li> -->
+                              <li>{{ eventDetails.date_from | date: 'dd.MM.YYYY' }}</li>
+                              <li>{{ eventDetails.date_from | date: ' H:mm' }} - {{ eventDetails.date_to | date: ' H:mm' }}</li>
+                            </ul>
+                            <ul>
+                              <!-- <li>{{language.courses.end_date}}</li> -->
+                              <li>{{ eventDetails.date_to | date: 'dd.MM.YYYY' }}</li>
+                              <li>{{ eventDetails.date_from | date: ' H:mm' }} - {{ eventDetails.date_to | date: ' H:mm' }}</li>
+                            </ul>
+                          </div>
+                        </ng-template>
+
+                        <!-- Start Veranstalter -->
+                        <div class="organizer_card">
+                          <div class="card-header">
+                            <h5 class="card-title">{{ language.club_events.orgainzer }}</h5>
+                          </div>
+                          <div class="card-body" *ngIf="organizerDetails">
+                            <div class="widget-appointment widget" *ngFor="let organizer of organizerDetails">
+                              <div class="widget-app-content">
+                                <div class="app-left-content">
+                                  <div class="author-img">
+                                    <img onContextMenu="return false;" [src]="organizer?.member_id | memberPhoto | async" style="width: 100px" alt="User Photo" loading="lazy" />
+                                  </div>
+                                  <div class="user-content">
+                                    <span class="user-name">{{ organizer.firstname }} {{ organizer.lastname }}</span>
+                                    <span class="participant_email">{{ organizer.email }}</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="attach_btn" *ngIf="docFile" (click)="download(docFile, updateType)">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#E12217" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-download">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                <polyline points="7 10 12 15 17 10" />
+                                <line x1="12" y1="15" x2="12" y2="3" />
+                              </svg>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- Stop Veranstalter -->
+                      </div>
+                    </div>
+                    <div class="all_participants">
+                      <div class="page-action-right" *ngIf="eventDetails.deny_by_id == null && eventDetails.approved_by == null">
+                        <button
+                          *ngIf="userDetails.isAdmin && eventDetails.author != userDetails.userId && eventDetails.approved_status == 0 && eventDetails.deny_by_id == null && eventDetails.approved_by == null"
+                          (click)="approvedEvents(eventDetails.id)"
+                          type="button"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="18" viewBox="0 0 20 18" fill="none">
+                            <path
+                              [ngStyle]="{ fill: setTheme.button_ic_color }"
+                              d="M20 5.58888C20 8.86343 20 12.1385 20 15.413C19.9208 15.5063 19.9312 15.6272 19.9015 15.7355C19.5321 17.086 18.3687 17.9592 16.9214 17.9597C12.3073 17.9613 7.69271 17.9603 3.07865 17.9603C3.00727 17.9603 2.93537 17.9592 2.86399 17.9561C1.56928 17.9019 0.461615 17.0214 0.108891 15.7731C0.0750254 15.6527 0.0854456 15.5178 0 15.413C0 11.1246 0 6.83618 0 2.54775C0.0729414 2.51023 0.0494959 2.43312 0.0625212 2.37633C0.384505 0.958666 1.5573 0.00573894 3.01925 0.00313389C6.3386 -0.00259722 9.65744 0.00157086 12.9768 0.000528842C13.3847 0.000528842 13.7823 0.060966 14.1543 0.229252C15.2375 0.720043 15.8653 1.55157 15.9788 2.74052C15.9992 2.95101 16.058 3.01249 16.2644 2.99477C16.5035 2.97445 16.7458 2.98748 16.9865 2.9906C18.3843 3.0078 19.5436 3.8982 19.9036 5.22574C19.937 5.34661 19.925 5.47947 20 5.58888ZM14.1564 15.9637C13.8938 15.0577 14.0058 14.1439 14.0021 13.2394C13.9902 9.86845 13.9881 6.497 14.0047 3.12607C14.0084 2.4102 13.503 1.98558 12.8705 1.98922C9.62305 2.00694 6.37507 2.00694 3.12762 1.98974C2.45291 1.9861 1.98869 2.45657 1.99078 3.12763C2.0038 7.03156 2.0038 10.9355 1.99078 14.8389C1.98869 15.4933 2.44093 15.9752 3.13283 15.9716C6.73197 15.9544 10.3311 15.9637 13.9302 15.9637C14.0011 15.9637 14.072 15.9637 14.1564 15.9637ZM16.0028 10.0753C16.0028 11.6607 16.0028 13.2462 16.0033 14.8316C16.0033 14.9676 15.9997 15.1041 16.0382 15.2375C16.1794 15.7246 16.6374 16.0231 17.1459 15.957C17.6367 15.8929 18.0014 15.4646 18.0019 14.9311C18.004 11.9619 18.0045 8.99264 18.0019 6.02288C18.0014 5.41643 17.5789 5.0017 16.9682 4.99232C16.7077 4.98816 16.4467 5.00274 16.1873 4.98763C16.0257 4.97826 15.9997 5.03765 15.9997 5.18301C16.0044 6.81325 16.0028 8.44453 16.0028 10.0753ZM7.99854 3.99042C8.96866 3.99042 9.93878 3.9899 10.9089 3.99042C11.5919 3.99094 11.9968 4.39629 11.9973 5.08194C11.9983 6.34903 11.9983 7.61613 11.9973 8.88322C11.9968 9.57721 11.5919 9.98047 10.8922 9.98099C8.96501 9.98203 7.03832 9.98203 5.11111 9.98099C4.40514 9.98047 3.99875 9.57304 3.99771 8.86707C3.99667 7.613 3.99667 6.35893 3.99771 5.10486C3.99823 4.39525 4.40253 3.99094 5.10798 3.99042C6.07133 3.99042 7.03467 3.99042 7.99854 3.99042ZM8.00323 7.97979C8.61437 7.97979 9.22604 7.97719 9.83718 7.98188C9.95389 7.98292 10.006 7.96781 10.0039 7.8287C9.99453 7.26445 9.99713 6.69967 10.0023 6.1349C10.0034 6.02184 9.98359 5.97964 9.85594 5.98016C8.62063 5.98537 7.38479 5.98537 6.14948 5.98068C6.02391 5.98016 5.99943 6.02184 6.00047 6.13646C6.00568 6.69446 6.00724 7.25298 5.99943 7.81099C5.99734 7.94593 6.03017 7.98552 6.16928 7.98344C6.78094 7.97562 7.39209 7.97979 8.00323 7.97979ZM10.9464 13.9719C11.1392 13.9724 11.3215 13.937 11.4893 13.8427C11.878 13.6239 12.078 13.1685 11.9728 12.747C11.8571 12.2839 11.4815 11.9801 10.9964 11.9796C8.99888 11.9765 7.00185 11.978 5.0043 11.9791C4.92667 11.9791 4.84747 11.9848 4.77245 12.0025C4.28531 12.1197 3.95342 12.5767 4.00448 13.0544C4.06023 13.5822 4.46662 13.9657 4.99336 13.9688C5.99526 13.9745 6.99716 13.9704 7.99906 13.9704C8.98169 13.9709 9.96431 13.9698 10.9464 13.9719Z"
+                              fill="white"
+                            />
+                          </svg>
+                          &nbsp;
+                          <span [ngStyle]="{ color: '#ffffff' }">{{ language.create_event.PublishEvent }}</span>
+                        </button>
+                        <button
+                          *ngIf="userDetails.isAdmin && eventDetails.author != userDetails.userId && eventDetails.approved_status == 0 && eventDetails.deny_by_id == null && eventDetails.approved_by == null"
+                          (click)="unapprovedEvent(eventDetails.id)"
+                          type="button"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="18" viewBox="0 0 20 18" fill="none">
+                            <path
+                              [ngStyle]="{ fill: setTheme.button_ic_color }"
+                              d="M20 5.58888C20 8.86343 20 12.1385 20 15.413C19.9208 15.5063 19.9312 15.6272 19.9015 15.7355C19.5321 17.086 18.3687 17.9592 16.9214 17.9597C12.3073 17.9613 7.69271 17.9603 3.07865 17.9603C3.00727 17.9603 2.93537 17.9592 2.86399 17.9561C1.56928 17.9019 0.461615 17.0214 0.108891 15.7731C0.0750254 15.6527 0.0854456 15.5178 0 15.413C0 11.1246 0 6.83618 0 2.54775C0.0729414 2.51023 0.0494959 2.43312 0.0625212 2.37633C0.384505 0.958666 1.5573 0.00573894 3.01925 0.00313389C6.3386 -0.00259722 9.65744 0.00157086 12.9768 0.000528842C13.3847 0.000528842 13.7823 0.060966 14.1543 0.229252C15.2375 0.720043 15.8653 1.55157 15.9788 2.74052C15.9992 2.95101 16.058 3.01249 16.2644 2.99477C16.5035 2.97445 16.7458 2.98748 16.9865 2.9906C18.3843 3.0078 19.5436 3.8982 19.9036 5.22574C19.937 5.34661 19.925 5.47947 20 5.58888ZM14.1564 15.9637C13.8938 15.0577 14.0058 14.1439 14.0021 13.2394C13.9902 9.86845 13.9881 6.497 14.0047 3.12607C14.0084 2.4102 13.503 1.98558 12.8705 1.98922C9.62305 2.00694 6.37507 2.00694 3.12762 1.98974C2.45291 1.9861 1.98869 2.45657 1.99078 3.12763C2.0038 7.03156 2.0038 10.9355 1.99078 14.8389C1.98869 15.4933 2.44093 15.9752 3.13283 15.9716C6.73197 15.9544 10.3311 15.9637 13.9302 15.9637C14.0011 15.9637 14.072 15.9637 14.1564 15.9637ZM16.0028 10.0753C16.0028 11.6607 16.0028 13.2462 16.0033 14.8316C16.0033 14.9676 15.9997 15.1041 16.0382 15.2375C16.1794 15.7246 16.6374 16.0231 17.1459 15.957C17.6367 15.8929 18.0014 15.4646 18.0019 14.9311C18.004 11.9619 18.0045 8.99264 18.0019 6.02288C18.0014 5.41643 17.5789 5.0017 16.9682 4.99232C16.7077 4.98816 16.4467 5.00274 16.1873 4.98763C16.0257 4.97826 15.9997 5.03765 15.9997 5.18301C16.0044 6.81325 16.0028 8.44453 16.0028 10.0753ZM7.99854 3.99042C8.96866 3.99042 9.93878 3.9899 10.9089 3.99042C11.5919 3.99094 11.9968 4.39629 11.9973 5.08194C11.9983 6.34903 11.9983 7.61613 11.9973 8.88322C11.9968 9.57721 11.5919 9.98047 10.8922 9.98099C8.96501 9.98203 7.03832 9.98203 5.11111 9.98099C4.40514 9.98047 3.99875 9.57304 3.99771 8.86707C3.99667 7.613 3.99667 6.35893 3.99771 5.10486C3.99823 4.39525 4.40253 3.99094 5.10798 3.99042C6.07133 3.99042 7.03467 3.99042 7.99854 3.99042ZM8.00323 7.97979C8.61437 7.97979 9.22604 7.97719 9.83718 7.98188C9.95389 7.98292 10.006 7.96781 10.0039 7.8287C9.99453 7.26445 9.99713 6.69967 10.0023 6.1349C10.0034 6.02184 9.98359 5.97964 9.85594 5.98016C8.62063 5.98537 7.38479 5.98537 6.14948 5.98068C6.02391 5.98016 5.99943 6.02184 6.00047 6.13646C6.00568 6.69446 6.00724 7.25298 5.99943 7.81099C5.99734 7.94593 6.03017 7.98552 6.16928 7.98344C6.78094 7.97562 7.39209 7.97979 8.00323 7.97979ZM10.9464 13.9719C11.1392 13.9724 11.3215 13.937 11.4893 13.8427C11.878 13.6239 12.078 13.1685 11.9728 12.747C11.8571 12.2839 11.4815 11.9801 10.9964 11.9796C8.99888 11.9765 7.00185 11.978 5.0043 11.9791C4.92667 11.9791 4.84747 11.9848 4.77245 12.0025C4.28531 12.1197 3.95342 12.5767 4.00448 13.0544C4.06023 13.5822 4.46662 13.9657 4.99336 13.9688C5.99526 13.9745 6.99716 13.9704 7.99906 13.9704C8.98169 13.9709 9.96431 13.9698 10.9464 13.9719Z"
+                              fill="white"
+                            />
+                          </svg>
+                          &nbsp;
+                          <span [ngStyle]="{ color: '#ffffff' }">{{ language.create_event.DenyEvent }}</span>
+                        </button>
+                      </div>
+                      <!-- approved membar list area -->
+                      <div class="membar-list-main-zone approved-area" *ngIf="approvedParticipantsNew?.length > 0">
+                        <div class="membar-list-zone-inner">
+                          <h2 class="widget-heading">{{ language.club_events.approved }}</h2>
+                          <div class="membar-zone">
+                            <div class="membar-list" *ngFor="let participant of approvedParticipantsNew.slice(0, 12)">
+                              <div class="membar-badge success-badge" *ngIf="participant.approved_status == 1">
+                                <span>{{ language.organizer.approved }}</span>
+                              </div>
+                              <div class="membar-img">
+                                <img onContextMenu="return false;" [src]="participant?.users?.member_id | memberPhoto | async" style="width: 100px" alt="User Photo" loading="lazy" />
+                              </div>
+                              <div class="membar_id">
+                                <span
+                                  >{{ participant.users.firstname }}<br />
+                                  {{ participant.users.lastname }}</span
+                                >
+                              </div>
+                            </div>
+                            <div class="membar-modal-action" data-bs-toggle="modal" data-bs-target="#approvedParticipantsModal">
+                              <span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="27" height="40" viewBox="0 0 27 40" fill="none">
+                                  <g filter="url(#filter0_d_4125_915)">
+                                    <path d="M7 29L20 16L7 3" stroke="#EF4968" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" shape-rendering="crispEdges" />
+                                  </g>
+                                  <defs>
+                                    <filter id="filter0_d_4125_915" x="0.5" y="0.5" width="26" height="39" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                                      <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                                      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                                      <feOffset dy="4" />
+                                      <feGaussianBlur stdDeviation="2" />
+                                      <feComposite in2="hardAlpha" operator="out" />
+                                      <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
+                                      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_4125_915" />
+                                      <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_4125_915" result="shape" />
+                                    </filter>
+                                  </defs>
+                                </svg>
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- approved membar list area End-->
+
+                      <!-- Pending membar list area -->
+                      <div class="membar-list-main-zone pending-area" *ngIf="unapprovedParticipants?.length > 0">
+                        <div class="membar-list-zone-inner">
+                          <h2 class="widget-heading">{{ language.club_events.pending }}</h2>
+                          <div class="membar-zone">
+                            <div class="membar-list" *ngFor="let participant of unapprovedParticipants.slice(0, 9)">
+                              <div class="membar-badge info-badge">
+                                <span>{{ language.organizer.pending }}</span>
+                              </div>
+                              <div class="membar-img">
+                                <img onContextMenu="return false;" [src]="participant?.member_id | memberPhoto | async" style="width: 100px" alt="User Photo" loading="lazy" />
+                              </div>
+                              <div class="membar_id">
+                                <span
+                                  >{{ participant.firstname }}<br />
+                                  {{ participant.lastname }}</span
+                                >
+                              </div>
+                            </div>
+                            <div class="membar-modal-action" data-bs-toggle="modal" data-bs-target="#pendingParticipantsModal">
+                              <span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="27" height="40" viewBox="0 0 27 40" fill="none">
+                                  <g filter="url(#filter0_d_4125_915)">
+                                    <path d="M7 29L20 16L7 3" stroke="#EF4968" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" shape-rendering="crispEdges" />
+                                  </g>
+                                  <defs>
+                                    <filter id="filter0_d_4125_915" x="0.5" y="0.5" width="26" height="39" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                                      <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                                      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                                      <feOffset dy="4" />
+                                      <feGaussianBlur stdDeviation="2" />
+                                      <feComposite in2="hardAlpha" operator="out" />
+                                      <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
+                                      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_4125_915" />
+                                      <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_4125_915" result="shape" />
+                                    </filter>
+                                  </defs>
+                                </svg>
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- Pending membar list area End-->
+
+                      <!-- Denied membar list area -->
+                      <div class="membar-list-main-zone denied-area" *ngIf="deniedParticipants?.length > 0">
+                        <div class="membar-list-zone-inner">
+                          <h2 class="widget-heading">{{ language.club_events.denied }}</h2>
+                          <div class="membar-zone">
+                            <div class="membar-list" *ngFor="let participant of deniedParticipants.slice(0, 6)">
+                              <div class="membar-badge danger-badge" *ngIf="participant.approved_status == 3">
+                                <span>{{ language.create_event.cancelled }}</span>
+                              </div>
+                              <div class="membar-img">
+                                <img onContextMenu="return false;" [src]="participant?.users?.member_id | memberPhoto | async" style="width: 100px" alt="User Photo" loading="lazy" />
+                              </div>
+                              <div class="membar_id">
+                                <span
+                                  >{{ participant.users.firstname }}<br />
+                                  {{ participant.users.lastname }}</span
+                                >
+                              </div>
+                            </div>
+                            <div class="membar-modal-action" data-bs-toggle="modal" data-bs-target="#deniedParticipantsModal">
+                              <span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="27" height="40" viewBox="0 0 27 40" fill="none">
+                                  <g filter="url(#filter0_d_4125_915)">
+                                    <path d="M7 29L20 16L7 3" stroke="#EF4968" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" shape-rendering="crispEdges" />
+                                  </g>
+                                  <defs>
+                                    <filter id="filter0_d_4125_915" x="0.5" y="0.5" width="26" height="39" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                                      <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                                      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                                      <feOffset dy="4" />
+                                      <feGaussianBlur stdDeviation="2" />
+                                      <feComposite in2="hardAlpha" operator="out" />
+                                      <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
+                                      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_4125_915" />
+                                      <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_4125_915" result="shape" />
+                                    </filter>
+                                  </defs>
+                                </svg>
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- Denied membar list area End-->
+
+                      <!-- Assigned task section start -->
+
+                      <div class="event-task-zone" *ngIf="eventDetails.eventTask && eventDetails.eventTask.id">
+                        <h2 class="widget-heading">{{ language.club_events.assigned_task }}</h2>
+                        <div class="event-task-list-zone">
+                          <div class="event-task-list">
+                            <div class="event-task-header">
+                              <div class="event-t-header-inner">
+                                <input
+                                  *ngIf="eventDetails.eventTask.status == 0"
+                                  class="check-style"
+                                  id="styled-checkbox-{{ eventDetails.eventTask.id }}"
+                                  type="checkbox"
+                                  style="opacity: 1; margin-top: 0px"
+                                  (change)="mainTaskMarkComplete(eventDetails.eventTask.id)"
+                                />
+                                <input *ngIf="eventDetails.eventTask.status == 1" class="check-style" id="styled-checkbox-{{ eventDetails.eventTask.id }}" type="checkbox" style="opacity: 1; margin-top: 0px" checked="checked" disabled="disabled" />
+                                <h3 *ngIf="eventDetails.eventTask.status != 2">
+                                  {{ eventDetails.eventTask.title }}
+                                </h3>
+                                <h3 *ngIf="eventDetails.eventTask.status == 2" class="">
+                                  {{ eventDetails.eventTask.title }}
+                                </h3>
+                              </div>
+                              <div class="dropdown action_group" *ngIf="role != 'guest' && (userDetails.userId == eventDetails.author || userDetails.isAdmin)">
+                                <button class="dropdown-toggle" type="button" (click)="onShowTask()">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="6" height="18" viewBox="0 0 6 18" fill="none">
+                                    <path
+                                      d="M2.77615 17.4836C2.52652 17.3973 2.26679 17.3468 2.02694 17.2241C1.10857 16.7553 0.596367 15.717 0.76142 14.6385C0.914482 13.6381 1.75837 12.7978 2.74711 12.6619C4.25185 12.4554 5.52305 13.6478 5.45362 15.2015C5.4047 16.2974 4.58353 17.2423 3.50264 17.4474C3.4695 17.4539 3.42595 17.4361 3.40733 17.4836C3.19683 17.4836 2.98665 17.4836 2.77615 17.4836ZM2.80771 0.923208C2.79698 0.957184 2.76794 0.950388 2.74333 0.953625C1.65328 1.10764 0.779725 2.08449 0.729861 3.20564C0.660747 4.75908 1.93163 5.95143 3.43668 5.74467C4.42479 5.60909 5.26931 4.76847 5.42206 3.768C5.5868 2.68923 5.07491 1.65123 4.15654 1.18238C3.91669 1.06008 3.65696 1.0096 3.40733 0.922884C3.20756 0.923208 3.00779 0.923208 2.80771 0.923208ZM3.09237 6.77814C1.79214 6.77781 0.72639 7.86985 0.726074 9.20326C0.725759 10.5364 1.79088 11.629 3.09142 11.6294C4.39166 11.6297 5.4574 10.5377 5.45772 9.20423C5.45772 7.87082 4.3926 6.77846 3.09237 6.77814Z"
+                                      fill="#F2F2F5"
+                                    />
+                                  </svg>
+                                </button>
+                                <ul class="dropdown-menu Task-toggle" aria-labelledby="dropdownMenuLink">
+                                  <li>
+                                    <a class="dropdown-item" routerLink="/web/update-task/{{ eventDetails?.eventTask?.id }}">{{ language.organizer.Edit }}</a>
+                                  </li>
+                                  <!-- <li>
+                                    <a class="dropdown-item">{{ language.organizer.Delete }}</a>
+                                  </li> -->
+                                  <li>
+                                    <a class="dropdown-item" (click)="goBack()">{{ language.organizer.Back }}</a>
+                                  </li>
+                                </ul>
+                              </div>
+                            </div>
+                            <div class="event-task-description">
+                              <div class="event-task-badge" *ngIf="eventDetails.eventTask.group_id == 0">{{ language.create_news.chairman }}</div>
+                              <div class="event-task-badge" *ngIf="eventDetails.eventTask.group_id != 0">{{ language.header.group }}</div>
+                              <p [innerHTML]="eventDetails.eventTask.description.length > 0 ? (eventDetails.eventTask.description | slice: 0:100) + '...' : eventDetails.eventTask.description"></p>
+                            </div>
+                            <div class="survey-timeline">
+                              <div class="timeline-label">
+                                <span>{{ language.organizer_task.progress }} : 0% </span>
+                              </div>
+                              <div class="timeline">
+                                <mat-progress-bar mode="determinate"></mat-progress-bar>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="membar-modal-action" data-bs-toggle="modal" data-bs-target="#taskDetailsModal" (click)="getTaskDetails(eventDetails.eventTask)">
+                            <span>
+                              <svg xmlns="http://www.w3.org/2000/svg" width="27" height="40" viewBox="0 0 27 40" fill="none">
+                                <g filter="url(#filter0_d_4125_915)">
+                                  <path d="M7 29L20 16L7 3" stroke="#EF4968" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" shape-rendering="crispEdges" />
+                                </g>
+                                <defs>
+                                  <filter id="filter0_d_4125_915" x="0.5" y="0.5" width="26" height="39" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                                    <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                                    <feOffset dy="4" />
+                                    <feGaussianBlur stdDeviation="2" />
+                                    <feComposite in2="hardAlpha" operator="out" />
+                                    <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
+                                    <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_4125_915" />
+                                    <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_4125_915" result="shape" />
+                                  </filter>
+                                </defs>
+                              </svg>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Assigned task section End -->
+                      <div class="all-participant-card"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="empty-data-image" *ngIf="!eventDetails || eventDetails?.length == 0">
+                  <span>{{ language.club_events.no_events }}</span>
+                </div>
+              </div>
+            </mat-tab>
+            <!-- CURRENT EVENT END -->
+
+            <!-- UPDATE EVENT START -->
+            <mat-tab label="{{ language.club_wall.updateEvent }}">
+              <div class="card-body">
+                <div class="profile_details" *ngIf="updateEventData">
+                  <div class="event-details-inner">
+                    <div class="left-side-box">
+                      <div class="group_detail_main">
+                        <div class="group_img_sec">
+                          <div class="group_detail_img news_image_container">
+                            <div class="image-section">
+                              <!-- <img onContextMenu="return false;" [src]="showUpdateImage ? updateImageurl : '../../../assets/img/no_image.png'" alt="" loading="lazy" /> -->
+                              <ng-container *ngIf="updateEventData?.token || eventDetails?.token">
+                                <img
+                                  *ngIf="(!updateEventData?.token || !updateEventData?.token?.isLoading) && (!eventDetails.token || !eventDetails.token.isLoading)"
+                                  [src]="updateEventData?.token && !updateEventData?.token?.isLoading ? updateEventData?.token?.url : eventDetails.token?.url"
+                                  alt="{{ language.group_news.title }}"
+                                  loading="lazy"
+                                />
+                                <img *ngIf="(updateEventData?.token && updateEventData?.token?.isLoading) || (eventDetails.token && eventDetails.token.isLoading)" [src]="'../../../../assets/img/loading.gif'" alt="Image" />
+                              </ng-container>
+
+                              <ng-container *ngIf="!eventDetails.token && updateEventData?.token == null">
+                                <img src="../../../../../../assets/img/no_image.png" />
+                              </ng-container>
+
+                              <div class="image-badge" *ngIf="updateEventData.type == 1">
+                                <span>{{ language.create_event.club_event }}</span>
+                              </div>
+                              <div class="image-badge" *ngIf="updateEventData.type == 2">
+                                <span>{{ language.create_event.group_event }}</span>
+                              </div>
+                              <div class="image-badge" *ngIf="updateEventData.type == 3">
+                                <span>{{ language.create_event.functionaries_event }}</span>
+                              </div>
+                              <div class="image-badge" *ngIf="updateEventData.type == 4">
+                                <span>{{ language.create_event.courses }}</span>
+                              </div>
+                              <div class="image-badge" *ngIf="updateEventData.type == 5">
+                                <span>{{ language.create_event.seminar }}</span>
+                              </div>
+                            </div>
+                            <div class="event-img-bottom">
+                              <div>
+                                <div class="event-time">
+                                  <span class="img-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="33" height="33" viewBox="0 0 33 33" fill="none">
+                                      <path
+                                        d="M16.0735 32.1542C13.4295 32.1542 10.7855 32.1623 8.14255 32.1522C4.13322 32.1371 0.918911 29.4971 0.130951 25.5815C0.0291813 25.0747 0.0029831 24.5608 0.0029831 24.0449C0.00399072 19.2698 -0.00608549 14.4957 0.00600597 9.72054C0.0160822 5.82104 2.56033 2.64502 6.3379 1.78451C6.81652 1.67569 7.30421 1.60616 7.79593 1.60818C7.98335 1.60918 8.04582 1.55377 8.0831 1.36736C8.2544 0.505839 8.85796 -0.00200208 9.67212 1.31611e-05C10.4782 0.0020284 11.109 0.533045 11.2541 1.38146C11.2914 1.59709 11.377 1.60314 11.5402 1.60314C14.5873 1.60112 17.6333 1.59911 20.6804 1.60616C20.888 1.60616 20.9353 1.54268 20.9706 1.34519C21.1167 0.53506 21.7565 0.00303603 22.5485 1.31611e-05C23.3496 -0.0030097 23.9803 0.514908 24.1315 1.32907C24.1708 1.54369 24.2403 1.60213 24.463 1.61019C28.7313 1.76335 32.1592 5.19329 32.2035 9.45654C32.2539 14.407 32.2539 19.3574 32.2035 24.3079C32.1592 28.6024 28.6789 32.0656 24.3824 32.1401C21.6134 32.1875 18.8435 32.1492 16.0735 32.1492C16.0735 32.1512 16.0735 32.1522 16.0735 32.1542ZM16.1189 28.95C18.775 28.95 21.4311 28.958 24.0872 28.948C26.8228 28.9369 28.9751 26.8904 28.9973 24.1779C29.0356 19.3161 29.0315 14.4533 28.9993 9.59156C28.9822 7.05336 26.969 4.96356 24.5497 4.82854C24.2141 4.80939 24.1547 4.91015 24.1688 5.21143C24.1899 5.67494 24.201 6.14449 24.1486 6.60396C24.0448 7.5078 23.3193 8.08013 22.4175 8.01967C21.5903 7.96526 20.9595 7.27303 20.9474 6.40042C20.9414 5.97319 20.9283 5.54495 20.9524 5.11974C20.9676 4.85776 20.8678 4.81846 20.635 4.81947C17.6263 4.82652 14.6175 4.82954 11.6088 4.81644C11.3085 4.81544 11.2571 4.90914 11.2702 5.17415C11.2914 5.58727 11.2813 6.00342 11.2742 6.41755C11.2591 7.28612 10.6193 7.97332 9.788 8.02169C8.90129 8.07308 8.18991 7.50982 8.07504 6.62613C8.02667 6.25533 8.04884 5.87445 8.04783 5.4976C8.04481 4.73684 8.04683 4.73684 7.28305 4.87892C4.83856 5.33134 3.2173 7.26496 3.21427 9.75782C3.20823 14.5067 3.21125 19.2567 3.21629 24.0056C3.21629 24.3431 3.24047 24.6867 3.30697 25.0162C3.78358 27.366 5.72325 28.9419 8.1496 28.949C10.8067 28.956 13.4628 28.95 16.1189 28.95ZM8.17983 11.2521C7.17423 11.2531 6.45075 11.9182 6.44269 12.8421C6.43463 13.7843 7.1581 14.4664 8.18285 14.4745C8.91237 14.4795 9.6429 14.4755 10.3734 14.4755C14.9047 14.4755 19.436 14.4735 23.9672 14.4775C24.5073 14.4775 24.996 14.3566 25.3598 13.9374C25.8021 13.4286 25.915 12.8452 25.6399 12.2215C25.3588 11.5846 24.8459 11.2572 24.1526 11.2551C21.4714 11.2481 18.7901 11.2521 16.1098 11.2521C13.4658 11.2511 10.8228 11.2501 8.17983 11.2521ZM24.1486 25.7266C25.0343 25.7115 25.7296 25.0676 25.7779 24.2202C25.8273 23.3607 25.2328 22.6151 24.3501 22.5335C23.7022 22.474 23.0402 22.474 22.3913 22.5304C21.4945 22.608 20.888 23.3718 20.9494 24.2434C21.0089 25.0868 21.7071 25.7155 22.6009 25.7276C22.8528 25.7306 23.1037 25.7286 23.3556 25.7276C23.6196 25.7266 23.8836 25.7306 24.1486 25.7266Z"
+                                        fill="white"
+                                      />
+                                    </svg>
+                                  </span>
+                                  <span>{{ updateEventData?.date_from | date: 'dd.MM.YYYY' }}</span>
+                                </div>
+                              </div>
+                              <div>
+                                <div class="event-time">
+                                  <span class="img-icon"
+                                    ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+                                      <path
+                                        d="M16.0005 32C7.14952 31.999 -0.0269483 24.8137 7.60743e-05 15.9799C0.0271004 7.12515 7.16253 -0.00100259 16.0005 1.05801e-07C24.8545 0.0010028 32.026 7.1813 31.9999 16.019C31.9739 24.8738 24.8395 32 16.0005 32ZM3.18995 16C3.19095 23.053 8.93013 28.7954 15.9925 28.8104C23.0368 28.8245 28.784 23.0901 28.8121 16.017C28.8401 8.9681 23.0459 3.17152 15.9905 3.18857C8.92512 3.20662 3.18895 8.94705 3.18995 16ZM14.384 12.7453C14.384 13.8071 14.383 14.869 14.385 15.9308C14.386 16.384 14.5162 16.7941 14.8415 17.119C15.9104 18.1889 16.9834 19.2537 18.0564 20.3186C18.3506 20.6104 18.7059 20.7788 19.1233 20.7989C19.7829 20.831 20.3845 20.461 20.6567 19.8624C20.936 19.2457 20.8279 18.5789 20.3274 18.0666C19.5067 17.2263 18.6729 16.3991 17.8352 15.5749C17.662 15.4044 17.5879 15.2329 17.5899 14.9863C17.5999 13.2616 17.5969 11.537 17.5929 9.81337C17.5929 9.60281 17.5919 9.38422 17.5409 9.18167C17.3527 8.44169 16.6161 7.9263 15.8844 7.9995C15.0547 8.08172 14.4311 8.70439 14.4151 9.52259C14.3951 10.5965 14.4101 11.6714 14.4101 12.7463C14.4011 12.7453 14.3921 12.7453 14.384 12.7453Z"
+                                        fill="white"
+                                      />
+                                    </svg>
+                                  </span>
+                                  <span>
+                                    {{
+                                      updateEventData?.recurring_dates
+                                        ? updateEventData?.recurring_dates[0].start_time + '
+                                    - ' + updateEventData?.recurring_dates[0].end_time
+                                        : updateEventData.start_time + ' - ' + updateEventData.end_time
+                                    }}
+                                    {{ language.login.o_clock }}</span
+                                  >
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="overbar-section">
+                              <div class="overimage-bar">
+                                <ul>
+                                  <li>
+                                    <div class="event-time">
+                                      <span class="img-icon"> <img src="../../../assets/img/calender.svg" onContextMenu="return false;" alt="calender" loading="lazy" /></span>
+                                      <span>{{ updateEventData?.date_from | date: 'dd.MM.YYYY' }}</span>
+                                    </div>
+                                  </li>
+                                  <li>
+                                    <div class="event-time">
+                                      <span class="img-icon">
+                                        <img src="../../../../assets/img/dayicon.svg" onContextMenu="return false;" alt="euro" loading="lazy" />
+                                      </span>
+                                      <span> {{ updateEventData?.date_from | date: 'EEEE' }}</span>
+                                    </div>
+                                  </li>
+                                  <li>
+                                    <div class="event-time">
+                                      <span class="img-icon"
+                                        ><svg xmlns="http://www.w3.org/2000/svg" width="20" height="21" viewBox="0 0 20 21" fill="none">
+                                          <path
+                                            d="M10.0003 20.124C4.46845 20.1233 -0.0168427 15.6047 4.75464e-05 10.0494C0.0169378 4.48082 4.47658 -0.000630502 10.0003 6.65356e-08C15.5341 0.000630635 20.0162 4.51613 20 10.074C19.9837 15.6425 15.5247 20.124 10.0003 20.124ZM1.99372 10.062C1.99435 14.4974 5.58133 18.1087 9.99531 18.1181C14.398 18.127 17.99 14.5207 18.0075 10.0727C18.0251 5.63981 14.4037 1.99449 9.99406 2.00521C5.5782 2.01656 1.99309 5.62656 1.99372 10.062ZM8.99003 8.01516C8.99003 8.68293 8.9894 9.3507 8.99065 10.0185C8.99128 10.3035 9.0726 10.5614 9.27591 10.7657C9.94401 11.4385 10.6146 12.1082 11.2852 12.7778C11.4691 12.9613 11.6912 13.0673 11.9521 13.0799C12.3643 13.1001 12.7403 12.8674 12.9104 12.4909C13.085 12.1031 13.0174 11.6838 12.7046 11.3616C12.1917 10.8332 11.6706 10.3129 11.147 9.79462C11.0388 9.68742 10.9925 9.5796 10.9937 9.42448C11 8.3399 10.9981 7.25532 10.9956 6.17137C10.9956 6.03896 10.995 5.90149 10.9631 5.77412C10.8455 5.30876 10.385 4.98464 9.92775 5.03068C9.40916 5.08238 9.01943 5.47397 9.00942 5.98851C8.99691 6.66385 9.00629 7.33982 9.00629 8.01579C9.00066 8.01516 8.99503 8.01516 8.99003 8.01516Z"
+                                            fill="#fff"
+                                          />
+                                        </svg>
+                                      </span>
+                                      <span>
+                                        {{
+                                          updateEventData?.recurring_dates
+                                            ? updateEventData?.recurring_dates[0].start_time + '
+                                        - ' + updateEventData?.recurring_dates[0].end_time
+                                            : updateEventData.start_time + ' - ' + updateEventData.end_time
+                                        }}
+                                        {{ language.login.o_clock }}</span
+                                      >
+                                    </div>
+                                  </li>
+                                  <li>
+                                    <span class="img-icon"
+                                      ><svg xmlns="http://www.w3.org/2000/svg" width="20" height="21" viewBox="0 0 17 20" fill="none">
+                                        <path
+                                          d="M0 8.20461C0.107715 5.39839 1.25625 2.98295 3.74183 1.30586C7.0265 -0.910431 11.4835 -0.239719 14.0198 2.81762C15.5554 4.66819 16.2067 6.80369 15.9925 9.1897C15.8522 10.7534 15.2742 12.18 14.4814 13.5227C13.3172 15.4941 11.7872 17.1524 10.0657 18.6467C9.61729 19.0362 9.15763 19.4119 8.67479 19.7583C8.23078 20.077 7.80994 20.0839 7.3772 19.7589C5.21727 18.1369 3.31598 16.2657 1.85056 13.9836C0.996987 12.6535 0.364476 11.2306 0.114603 9.65688C0.0457161 9.22351 0.0206662 8.78827 0 8.20461ZM7.89636 1.98785C7.58449 2.02417 7.29516 2.04671 7.01022 2.09368C6.73342 2.1394 6.46225 2.21392 6.1961 2.30535C3.76688 3.14327 2.07413 5.51174 2.01527 8.13384C1.97957 9.72451 2.49622 11.1517 3.28718 12.495C4.47955 14.5203 6.10091 16.168 7.90701 17.6491C8.01472 17.7374 8.06921 17.7073 8.15876 17.6347C8.86329 17.0623 9.53651 16.4567 10.1703 15.8073C11.4929 14.4527 12.6533 12.9816 13.4023 11.2256C14.2835 9.16152 14.3029 7.10617 13.1857 5.12785C12.0302 3.08002 10.2392 2.03544 7.89636 1.98785ZM4.02302 7.99231C4.02615 5.7779 5.81784 3.9956 8.03664 4.00061C10.2423 4.00499 12.024 5.78854 12.0258 7.99356C12.0277 10.2061 10.2348 12.0022 8.02349 12.0016C5.81346 12.0009 4.01989 10.2036 4.02302 7.99231ZM8.02036 9.99756C9.12005 9.99944 10.0193 9.10954 10.03 8.00922C10.0406 6.90702 9.13132 6.00147 8.0166 6.0046C6.91378 6.00836 6.01637 6.90452 6.01824 8.00108C6.02075 9.09576 6.92317 9.99568 8.02036 9.99756Z"
+                                          fill="#fff"
+                                        ></path>
+                                      </svg>
+                                    </span>
+                                    <span>
+                                      <span *ngIf="updateEventData?.roomData?.name">{{ updateEventData.roomData.name }}&nbsp;/&nbsp;</span>{{ updateEventData.place }}
+                                    </span>
+                                  </li>
+                                  <li>
+                                    <div class="course-price">
+                                      <span class="img-icon"><img src="../../../../assets/img/euro.svg" onContextMenu="return false;" alt="dollor" loading="lazy" /></span>
+                                      <span *ngIf="updateEventData.price_per_participant != null">{{ updateEventData.price_per_participant }}</span>
+                                      <span *ngIf="updateEventData.price_per_participant == null">{{ language.organizer.free }}</span>
+                                    </div>
+                                  </li>
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="event-top-description"></div>
+                        <div class="event-content">
+                          <div class="event-title">
+                            <h5>{{ updateEventData.name }}</h5>
+                          </div>
+                          <div class="loaction-box">
+                            <span class="img-icon"
+                              ><svg xmlns="http://www.w3.org/2000/svg" width="10" height="12" viewBox="0 0 10 12" fill="none">
+                                <path
+                                  d="M0 4.92277C0.0671864 3.23904 0.783581 1.78977 2.33395 0.783517C4.38274 -0.546258 7.16277 -0.143831 8.74478 1.69057C9.70258 2.80091 10.1088 4.08222 9.97523 5.51382C9.88773 6.45206 9.52719 7.30802 9.03267 8.11362C8.30651 9.29648 7.35222 10.2915 6.27841 11.188C5.99873 11.4217 5.71202 11.6472 5.41085 11.855C5.1339 12.0462 4.87141 12.0503 4.60149 11.8553C3.25424 10.8821 2.06833 9.75941 1.15428 8.39018C0.621865 7.59209 0.22734 6.73838 0.0714832 5.79413C0.0285152 5.53411 0.0128904 5.27296 0 4.92277ZM4.92531 1.19271C4.73078 1.2145 4.55032 1.22803 4.37259 1.25621C4.19993 1.28364 4.03079 1.32835 3.86478 1.38321C2.34957 1.88596 1.29373 3.30705 1.25701 4.88031C1.23475 5.83471 1.55701 6.69104 2.05036 7.49702C2.7941 8.71219 3.80541 9.70079 4.93195 10.5894C4.99914 10.6424 5.03312 10.6244 5.08898 10.5808C5.52843 10.2374 5.94834 9.87401 6.34365 9.48436C7.16863 8.67161 7.89245 7.78898 8.35963 6.73538C8.90923 5.49691 8.92134 4.2637 8.22448 3.07671C7.50378 1.84801 6.38661 1.22126 4.92531 1.19271ZM2.50933 4.79539C2.51129 3.46674 3.62885 2.39736 5.01281 2.40036C6.38857 2.40299 7.49988 3.47313 7.50105 4.79614C7.50222 6.12366 6.38388 7.20131 5.00461 7.20093C3.62611 7.20056 2.50738 6.12216 2.50933 4.79539ZM5.00265 5.99854C5.68858 5.99966 6.24951 5.46572 6.25615 4.80553C6.26279 4.14422 5.69561 3.60088 5.00031 3.60276C4.31243 3.60501 3.75267 4.14271 3.75384 4.80065C3.75541 5.45746 4.31829 5.99741 5.00265 5.99854Z"
+                                  fill="#EF4968"
+                                />
+                              </svg>
+                            </span>
+                            <span>
+                              <span *ngIf="updateEventData?.roomData?.name">{{ updateEventData.roomData.name }}&nbsp;/&nbsp;</span>{{ updateEventData.place }}
+                            </span>
+                          </div>
+                          <p [innerHTML]="updateEventData.description"></p>
+                        </div>
+                        <ng-template #noRecurrence>
+                          <div class="schedule_list">
+                            <ul>
+                              <!-- <li>{{language.courses.start_date}}</li> -->
+                              <li>{{ updateEventData.date_from | date: 'dd.MM.YYYY' }}</li>
+                              <li>{{ updateEventData.date_from | date: ' H:mm' }} - {{ updateEventData.date_to | date: ' H:mm' }}</li>
+                            </ul>
+                            <ul>
+                              <!-- <li>{{language.courses.end_date}}</li> -->
+                              <li>{{ updateEventData.date_to | date: 'dd.MM.YYYY' }}</li>
+                              <li>{{ updateEventData.date_from | date: ' H:mm' }} - {{ updateEventData.date_to | date: ' H:mm' }}</li>
+                            </ul>
+                          </div>
+                        </ng-template>
+
+                        <!-- Start Veranstalter -->
+                        <div class="organizer_card">
+                          <div class="card-header">
+                            <h5 class="card-title">{{ language.club_events.orgainzer }}</h5>
+                          </div>
+                          <div class="card-body" *ngIf="organizerDetails">
+                            <div class="widget-appointment widget" *ngFor="let organizer of organizerDetails">
+                              <div class="widget-app-content">
+                                <div class="app-left-content">
+                                  <div class="author-img">
+                                    <img onContextMenu="return false;" [src]="organizer?.member_id | memberPhoto | async" style="width: 100px" alt="User Photo" loading="lazy" />
+                                  </div>
+                                  <div class="user-content">
+                                    <span class="user-name">{{ organizer.firstname }} {{ organizer.lastname }}</span>
+                                    <span class="participant_email">{{ organizer.email }}</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="attach_btn" *ngIf="updateDocFile" (click)="download(updateDocFile, updateType)">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#E12217" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-download">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                <polyline points="7 10 12 15 17 10" />
+                                <line x1="12" y1="15" x2="12" y2="3" />
+                              </svg>
+                              <!-- <span> {{language.create_event.download_attachment}} </span> -->
+                            </div>
+                          </div>
+                        </div>
+                        <!-- Stop Veranstalter -->
+                        <div class="author-des">
+                          <span class="author-status" *ngIf="eventDetails.update_approved_status == 0 && !eventDetails.deny_by_id">{{ language.theme.status }}:-{{ language.community_groups.waitingApproval }}</span>
+                          <span class="author-status" *ngIf="eventDetails.update_approved_status == 0 && eventDetails.deny_by_id">{{ language.theme.status }}:-{{ language.community_groups.admin_deny }}</span>
+                          <span class="author-id" *ngIf="eventDetails.deny_by_id >= 1">
+                            {{ language.dashboard.denyBy }}:-
+                            {{ eventDetails.denybyuser.firstname }}
+                            {{ eventDetails.denybyuser.lastname }}</span
+                          >
+                          <span class="deny-reason" *ngIf="eventDetails.deny_by_id >= 1"> {{ language.dashboard.denyReason }}:- {{ eventDetails.deny_reason }} </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="all_participants">
+                      <div class="page-action-right">
+                        <button *ngIf="userDetails.isAdmin && eventDetails.author != userDetails.userId && (eventDetails.approved_by == null || eventDetails.deny_by_id == null)" (click)="approvedUpdateEvents(eventDetails.id)" type="button">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="18" viewBox="0 0 20 18" fill="none">
+                            <path
+                              [ngStyle]="{ fill: setTheme.button_ic_color }"
+                              d="M20 5.58888C20 8.86343 20 12.1385 20 15.413C19.9208 15.5063 19.9312 15.6272 19.9015 15.7355C19.5321 17.086 18.3687 17.9592 16.9214 17.9597C12.3073 17.9613 7.69271 17.9603 3.07865 17.9603C3.00727 17.9603 2.93537 17.9592 2.86399 17.9561C1.56928 17.9019 0.461615 17.0214 0.108891 15.7731C0.0750254 15.6527 0.0854456 15.5178 0 15.413C0 11.1246 0 6.83618 0 2.54775C0.0729414 2.51023 0.0494959 2.43312 0.0625212 2.37633C0.384505 0.958666 1.5573 0.00573894 3.01925 0.00313389C6.3386 -0.00259722 9.65744 0.00157086 12.9768 0.000528842C13.3847 0.000528842 13.7823 0.060966 14.1543 0.229252C15.2375 0.720043 15.8653 1.55157 15.9788 2.74052C15.9992 2.95101 16.058 3.01249 16.2644 2.99477C16.5035 2.97445 16.7458 2.98748 16.9865 2.9906C18.3843 3.0078 19.5436 3.8982 19.9036 5.22574C19.937 5.34661 19.925 5.47947 20 5.58888ZM14.1564 15.9637C13.8938 15.0577 14.0058 14.1439 14.0021 13.2394C13.9902 9.86845 13.9881 6.497 14.0047 3.12607C14.0084 2.4102 13.503 1.98558 12.8705 1.98922C9.62305 2.00694 6.37507 2.00694 3.12762 1.98974C2.45291 1.9861 1.98869 2.45657 1.99078 3.12763C2.0038 7.03156 2.0038 10.9355 1.99078 14.8389C1.98869 15.4933 2.44093 15.9752 3.13283 15.9716C6.73197 15.9544 10.3311 15.9637 13.9302 15.9637C14.0011 15.9637 14.072 15.9637 14.1564 15.9637ZM16.0028 10.0753C16.0028 11.6607 16.0028 13.2462 16.0033 14.8316C16.0033 14.9676 15.9997 15.1041 16.0382 15.2375C16.1794 15.7246 16.6374 16.0231 17.1459 15.957C17.6367 15.8929 18.0014 15.4646 18.0019 14.9311C18.004 11.9619 18.0045 8.99264 18.0019 6.02288C18.0014 5.41643 17.5789 5.0017 16.9682 4.99232C16.7077 4.98816 16.4467 5.00274 16.1873 4.98763C16.0257 4.97826 15.9997 5.03765 15.9997 5.18301C16.0044 6.81325 16.0028 8.44453 16.0028 10.0753ZM7.99854 3.99042C8.96866 3.99042 9.93878 3.9899 10.9089 3.99042C11.5919 3.99094 11.9968 4.39629 11.9973 5.08194C11.9983 6.34903 11.9983 7.61613 11.9973 8.88322C11.9968 9.57721 11.5919 9.98047 10.8922 9.98099C8.96501 9.98203 7.03832 9.98203 5.11111 9.98099C4.40514 9.98047 3.99875 9.57304 3.99771 8.86707C3.99667 7.613 3.99667 6.35893 3.99771 5.10486C3.99823 4.39525 4.40253 3.99094 5.10798 3.99042C6.07133 3.99042 7.03467 3.99042 7.99854 3.99042ZM8.00323 7.97979C8.61437 7.97979 9.22604 7.97719 9.83718 7.98188C9.95389 7.98292 10.006 7.96781 10.0039 7.8287C9.99453 7.26445 9.99713 6.69967 10.0023 6.1349C10.0034 6.02184 9.98359 5.97964 9.85594 5.98016C8.62063 5.98537 7.38479 5.98537 6.14948 5.98068C6.02391 5.98016 5.99943 6.02184 6.00047 6.13646C6.00568 6.69446 6.00724 7.25298 5.99943 7.81099C5.99734 7.94593 6.03017 7.98552 6.16928 7.98344C6.78094 7.97562 7.39209 7.97979 8.00323 7.97979ZM10.9464 13.9719C11.1392 13.9724 11.3215 13.937 11.4893 13.8427C11.878 13.6239 12.078 13.1685 11.9728 12.747C11.8571 12.2839 11.4815 11.9801 10.9964 11.9796C8.99888 11.9765 7.00185 11.978 5.0043 11.9791C4.92667 11.9791 4.84747 11.9848 4.77245 12.0025C4.28531 12.1197 3.95342 12.5767 4.00448 13.0544C4.06023 13.5822 4.46662 13.9657 4.99336 13.9688C5.99526 13.9745 6.99716 13.9704 7.99906 13.9704C8.98169 13.9709 9.96431 13.9698 10.9464 13.9719Z"
+                              fill="white"
+                            />
+                          </svg>
+                          &nbsp;
+                          <span [ngStyle]="{ color: '#ffffff' }">{{ language.create_event.PublishEvent }}</span>
+                        </button>
+                        <button *ngIf="userDetails.isAdmin && eventDetails.author != userDetails.userId && (eventDetails.approved_by == null || eventDetails.deny_by_id == null)" (click)="unapprovedEvent(eventDetails.id)" type="button">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="18" viewBox="0 0 20 18" fill="none">
+                            <path
+                              [ngStyle]="{ fill: setTheme.button_ic_color }"
+                              d="M20 5.58888C20 8.86343 20 12.1385 20 15.413C19.9208 15.5063 19.9312 15.6272 19.9015 15.7355C19.5321 17.086 18.3687 17.9592 16.9214 17.9597C12.3073 17.9613 7.69271 17.9603 3.07865 17.9603C3.00727 17.9603 2.93537 17.9592 2.86399 17.9561C1.56928 17.9019 0.461615 17.0214 0.108891 15.7731C0.0750254 15.6527 0.0854456 15.5178 0 15.413C0 11.1246 0 6.83618 0 2.54775C0.0729414 2.51023 0.0494959 2.43312 0.0625212 2.37633C0.384505 0.958666 1.5573 0.00573894 3.01925 0.00313389C6.3386 -0.00259722 9.65744 0.00157086 12.9768 0.000528842C13.3847 0.000528842 13.7823 0.060966 14.1543 0.229252C15.2375 0.720043 15.8653 1.55157 15.9788 2.74052C15.9992 2.95101 16.058 3.01249 16.2644 2.99477C16.5035 2.97445 16.7458 2.98748 16.9865 2.9906C18.3843 3.0078 19.5436 3.8982 19.9036 5.22574C19.937 5.34661 19.925 5.47947 20 5.58888ZM14.1564 15.9637C13.8938 15.0577 14.0058 14.1439 14.0021 13.2394C13.9902 9.86845 13.9881 6.497 14.0047 3.12607C14.0084 2.4102 13.503 1.98558 12.8705 1.98922C9.62305 2.00694 6.37507 2.00694 3.12762 1.98974C2.45291 1.9861 1.98869 2.45657 1.99078 3.12763C2.0038 7.03156 2.0038 10.9355 1.99078 14.8389C1.98869 15.4933 2.44093 15.9752 3.13283 15.9716C6.73197 15.9544 10.3311 15.9637 13.9302 15.9637C14.0011 15.9637 14.072 15.9637 14.1564 15.9637ZM16.0028 10.0753C16.0028 11.6607 16.0028 13.2462 16.0033 14.8316C16.0033 14.9676 15.9997 15.1041 16.0382 15.2375C16.1794 15.7246 16.6374 16.0231 17.1459 15.957C17.6367 15.8929 18.0014 15.4646 18.0019 14.9311C18.004 11.9619 18.0045 8.99264 18.0019 6.02288C18.0014 5.41643 17.5789 5.0017 16.9682 4.99232C16.7077 4.98816 16.4467 5.00274 16.1873 4.98763C16.0257 4.97826 15.9997 5.03765 15.9997 5.18301C16.0044 6.81325 16.0028 8.44453 16.0028 10.0753ZM7.99854 3.99042C8.96866 3.99042 9.93878 3.9899 10.9089 3.99042C11.5919 3.99094 11.9968 4.39629 11.9973 5.08194C11.9983 6.34903 11.9983 7.61613 11.9973 8.88322C11.9968 9.57721 11.5919 9.98047 10.8922 9.98099C8.96501 9.98203 7.03832 9.98203 5.11111 9.98099C4.40514 9.98047 3.99875 9.57304 3.99771 8.86707C3.99667 7.613 3.99667 6.35893 3.99771 5.10486C3.99823 4.39525 4.40253 3.99094 5.10798 3.99042C6.07133 3.99042 7.03467 3.99042 7.99854 3.99042ZM8.00323 7.97979C8.61437 7.97979 9.22604 7.97719 9.83718 7.98188C9.95389 7.98292 10.006 7.96781 10.0039 7.8287C9.99453 7.26445 9.99713 6.69967 10.0023 6.1349C10.0034 6.02184 9.98359 5.97964 9.85594 5.98016C8.62063 5.98537 7.38479 5.98537 6.14948 5.98068C6.02391 5.98016 5.99943 6.02184 6.00047 6.13646C6.00568 6.69446 6.00724 7.25298 5.99943 7.81099C5.99734 7.94593 6.03017 7.98552 6.16928 7.98344C6.78094 7.97562 7.39209 7.97979 8.00323 7.97979ZM10.9464 13.9719C11.1392 13.9724 11.3215 13.937 11.4893 13.8427C11.878 13.6239 12.078 13.1685 11.9728 12.747C11.8571 12.2839 11.4815 11.9801 10.9964 11.9796C8.99888 11.9765 7.00185 11.978 5.0043 11.9791C4.92667 11.9791 4.84747 11.9848 4.77245 12.0025C4.28531 12.1197 3.95342 12.5767 4.00448 13.0544C4.06023 13.5822 4.46662 13.9657 4.99336 13.9688C5.99526 13.9745 6.99716 13.9704 7.99906 13.9704C8.98169 13.9709 9.96431 13.9698 10.9464 13.9719Z"
+                              fill="white"
+                            />
+                          </svg>
+                          &nbsp;
+                          <span [ngStyle]="{ color: '#ffffff' }">{{ language.create_event.DenyEvent }}</span>
+                        </button>
+                        <button class="delete-btn" *ngIf="eventDetails.author == userDetails.userId" (click)="deleteUpdateEvents(eventDetails.id)" type="button">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="18" viewBox="0 0 20 18" fill="none">
+                            <path
+                              [ngStyle]="{ fill: setTheme.button_ic_color }"
+                              d="M20 5.58888C20 8.86343 20 12.1385 20 15.413C19.9208 15.5063 19.9312 15.6272 19.9015 15.7355C19.5321 17.086 18.3687 17.9592 16.9214 17.9597C12.3073 17.9613 7.69271 17.9603 3.07865 17.9603C3.00727 17.9603 2.93537 17.9592 2.86399 17.9561C1.56928 17.9019 0.461615 17.0214 0.108891 15.7731C0.0750254 15.6527 0.0854456 15.5178 0 15.413C0 11.1246 0 6.83618 0 2.54775C0.0729414 2.51023 0.0494959 2.43312 0.0625212 2.37633C0.384505 0.958666 1.5573 0.00573894 3.01925 0.00313389C6.3386 -0.00259722 9.65744 0.00157086 12.9768 0.000528842C13.3847 0.000528842 13.7823 0.060966 14.1543 0.229252C15.2375 0.720043 15.8653 1.55157 15.9788 2.74052C15.9992 2.95101 16.058 3.01249 16.2644 2.99477C16.5035 2.97445 16.7458 2.98748 16.9865 2.9906C18.3843 3.0078 19.5436 3.8982 19.9036 5.22574C19.937 5.34661 19.925 5.47947 20 5.58888ZM14.1564 15.9637C13.8938 15.0577 14.0058 14.1439 14.0021 13.2394C13.9902 9.86845 13.9881 6.497 14.0047 3.12607C14.0084 2.4102 13.503 1.98558 12.8705 1.98922C9.62305 2.00694 6.37507 2.00694 3.12762 1.98974C2.45291 1.9861 1.98869 2.45657 1.99078 3.12763C2.0038 7.03156 2.0038 10.9355 1.99078 14.8389C1.98869 15.4933 2.44093 15.9752 3.13283 15.9716C6.73197 15.9544 10.3311 15.9637 13.9302 15.9637C14.0011 15.9637 14.072 15.9637 14.1564 15.9637ZM16.0028 10.0753C16.0028 11.6607 16.0028 13.2462 16.0033 14.8316C16.0033 14.9676 15.9997 15.1041 16.0382 15.2375C16.1794 15.7246 16.6374 16.0231 17.1459 15.957C17.6367 15.8929 18.0014 15.4646 18.0019 14.9311C18.004 11.9619 18.0045 8.99264 18.0019 6.02288C18.0014 5.41643 17.5789 5.0017 16.9682 4.99232C16.7077 4.98816 16.4467 5.00274 16.1873 4.98763C16.0257 4.97826 15.9997 5.03765 15.9997 5.18301C16.0044 6.81325 16.0028 8.44453 16.0028 10.0753ZM7.99854 3.99042C8.96866 3.99042 9.93878 3.9899 10.9089 3.99042C11.5919 3.99094 11.9968 4.39629 11.9973 5.08194C11.9983 6.34903 11.9983 7.61613 11.9973 8.88322C11.9968 9.57721 11.5919 9.98047 10.8922 9.98099C8.96501 9.98203 7.03832 9.98203 5.11111 9.98099C4.40514 9.98047 3.99875 9.57304 3.99771 8.86707C3.99667 7.613 3.99667 6.35893 3.99771 5.10486C3.99823 4.39525 4.40253 3.99094 5.10798 3.99042C6.07133 3.99042 7.03467 3.99042 7.99854 3.99042ZM8.00323 7.97979C8.61437 7.97979 9.22604 7.97719 9.83718 7.98188C9.95389 7.98292 10.006 7.96781 10.0039 7.8287C9.99453 7.26445 9.99713 6.69967 10.0023 6.1349C10.0034 6.02184 9.98359 5.97964 9.85594 5.98016C8.62063 5.98537 7.38479 5.98537 6.14948 5.98068C6.02391 5.98016 5.99943 6.02184 6.00047 6.13646C6.00568 6.69446 6.00724 7.25298 5.99943 7.81099C5.99734 7.94593 6.03017 7.98552 6.16928 7.98344C6.78094 7.97562 7.39209 7.97979 8.00323 7.97979ZM10.9464 13.9719C11.1392 13.9724 11.3215 13.937 11.4893 13.8427C11.878 13.6239 12.078 13.1685 11.9728 12.747C11.8571 12.2839 11.4815 11.9801 10.9964 11.9796C8.99888 11.9765 7.00185 11.978 5.0043 11.9791C4.92667 11.9791 4.84747 11.9848 4.77245 12.0025C4.28531 12.1197 3.95342 12.5767 4.00448 13.0544C4.06023 13.5822 4.46662 13.9657 4.99336 13.9688C5.99526 13.9745 6.99716 13.9704 7.99906 13.9704C8.98169 13.9709 9.96431 13.9698 10.9464 13.9719Z"
+                              fill="white"
+                            />
+                          </svg>
+                          &nbsp;
+                          <span [ngStyle]="{ color: '#ffffff' }">{{ language.create_event.ResetUpdateEvent }}</span>
+                        </button>
+                      </div>
+                      <!-- approved membar list area -->
+                      <div class="membar-list-main-zone approved-area" *ngIf="updateEventData.users">
+                        <div class="membar-list-zone-inner">
+                          <h2 class="widget-heading">{{ language.organizer.all_participants }}</h2>
+                          <div class="membar-zone">
+                            <div class="membar-list" *ngFor="let participant of updateEventData.users">
+                              <div class="membar-img">
+                                <img onContextMenu="return false;" [src]="participant?.user?.member_id | memberPhoto | async" style="width: 100px" alt="User Photo" loading="lazy" />
+                              </div>
+                              <div class="membar_id" *ngIf="participant && participant.user">
+                                <span
+                                  >{{ participant.user.firstname }}<br />
+                                  {{ participant.user.lastname }}</span
+                                >
+                              </div>
+                            </div>
+                            <div class="membar-modal-action" data-bs-toggle="modal" data-bs-target="#updateParticipantsModal">
+                              <span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="27" height="40" viewBox="0 0 27 40" fill="none">
+                                  <g filter="url(#filter0_d_4125_915)">
+                                    <path d="M7 29L20 16L7 3" stroke="#EF4968" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" shape-rendering="crispEdges" />
+                                  </g>
+                                  <defs>
+                                    <filter id="filter0_d_4125_915" x="0.5" y="0.5" width="26" height="39" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                                      <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                                      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                                      <feOffset dy="4" />
+                                      <feGaussianBlur stdDeviation="2" />
+                                      <feComposite in2="hardAlpha" operator="out" />
+                                      <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
+                                      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_4125_915" />
+                                      <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_4125_915" result="shape" />
+                                    </filter>
+                                  </defs>
+                                </svg>
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- approved membar list area End-->
+                      <!-- Assigned task section start -->
+                      <div class="event-task-zone" *ngIf="isTaskDetailsUpdate">
+                        <h2 class="widget-heading">{{ language.club_events.assigned_task }}</h2>
+                        <div class="event-task-list-zone">
+                          <div class="event-task-list">
+                            <div class="event-task-header">
+                              <div class="event-t-header-inner">
+                                <h3 class="">{{ updateEventData?.task[0].title }}</h3>
+                              </div>
+                              <div class="dropdown action_group" *ngIf="role != 'guest'">
+                                <button class="dropdown-toggle" type="button" (click)="onShowTask()">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="6" height="18" viewBox="0 0 6 18" fill="none">
+                                    <path
+                                      d="M2.77615 17.4836C2.52652 17.3973 2.26679 17.3468 2.02694 17.2241C1.10857 16.7553 0.596367 15.717 0.76142 14.6385C0.914482 13.6381 1.75837 12.7978 2.74711 12.6619C4.25185 12.4554 5.52305 13.6478 5.45362 15.2015C5.4047 16.2974 4.58353 17.2423 3.50264 17.4474C3.4695 17.4539 3.42595 17.4361 3.40733 17.4836C3.19683 17.4836 2.98665 17.4836 2.77615 17.4836ZM2.80771 0.923208C2.79698 0.957184 2.76794 0.950388 2.74333 0.953625C1.65328 1.10764 0.779725 2.08449 0.729861 3.20564C0.660747 4.75908 1.93163 5.95143 3.43668 5.74467C4.42479 5.60909 5.26931 4.76847 5.42206 3.768C5.5868 2.68923 5.07491 1.65123 4.15654 1.18238C3.91669 1.06008 3.65696 1.0096 3.40733 0.922884C3.20756 0.923208 3.00779 0.923208 2.80771 0.923208ZM3.09237 6.77814C1.79214 6.77781 0.72639 7.86985 0.726074 9.20326C0.725759 10.5364 1.79088 11.629 3.09142 11.6294C4.39166 11.6297 5.4574 10.5377 5.45772 9.20423C5.45772 7.87082 4.3926 6.77846 3.09237 6.77814Z"
+                                      fill="#F2F2F5"
+                                    />
+                                  </svg>
+                                </button>
+                                <ul class="dropdown-menu Task-toggle" aria-labelledby="dropdownMenuLink">
+                                  <li>
+                                    <a class="dropdown-item" routerLink="/web/update-task/{{ updateEventData?.task[0]?.id }}">{{ language.organizer.Edit }}</a>
+                                  </li>
+                                  <!-- <li>
+                                    <a class="dropdown-item">{{ language.organizer.Delete }}</a>
+                                  </li> -->
+                                  <li>
+                                    <a class="dropdown-item" (click)="goBack()">{{ language.organizer.Back }}</a>
+                                  </li>
+                                </ul>
+                              </div>
+                            </div>
+                            <div class="event-task-description">
+                              <div class="event-task-badge" *ngIf="eventDetails.group_id == 0">{{ language.create_news.chairman }}</div>
+                              <div class="event-task-badge" *ngIf="eventDetails.group_id != 0">{{ language.header.group }}</div>
+                              <p [innerHTML]="updateEventData?.task[0].description.length > 0 ? (updateEventData?.task[0].description | slice: 0:100) + '...' : updateEventData?.task[0].description"></p>
+                            </div>
+                            <div class="survey-timeline">
+                              <div class="timeline-label">
+                                <span>{{ language.organizer_task.progress }} : 0% </span>
+                              </div>
+                              <div class="timeline">
+                                <mat-progress-bar mode="determinate"></mat-progress-bar>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="membar-modal-action" data-bs-toggle="modal" data-bs-target="#taskDetailsModal" (click)="getTaskDetails(updateEventData?.task[0])">
+                            <span>
+                              <svg xmlns="http://www.w3.org/2000/svg" width="27" height="40" viewBox="0 0 27 40" fill="none">
+                                <g filter="url(#filter0_d_4125_915)">
+                                  <path d="M7 29L20 16L7 3" stroke="#EF4968" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" shape-rendering="crispEdges" />
+                                </g>
+                                <defs>
+                                  <filter id="filter0_d_4125_915" x="0.5" y="0.5" width="26" height="39" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                                    <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                                    <feOffset dy="4" />
+                                    <feGaussianBlur stdDeviation="2" />
+                                    <feComposite in2="hardAlpha" operator="out" />
+                                    <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
+                                    <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_4125_915" />
+                                    <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_4125_915" result="shape" />
+                                  </filter>
+                                </defs>
+                              </svg>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- Assigned task section End -->
+
+                      <div class="all-participant-card"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="empty-data-image" *ngIf="!eventDetails || eventDetails?.length == 0">
+                  <span>{{ language.club_events.no_events }}</span>
+                </div>
+              </div>
+            </mat-tab>
+            <!-- UPDATE EVENT END -->
+          </mat-tab-group>
+
+          <!-- INITIAL EVENT START -->
+          <div class="card-body" *ngIf="!updateEventData">
+            <div class="profile_details" *ngIf="eventDetails">
+              <div class="event-details-inner">
+                <div class="left-side-box">
+                  <div class="group_detail_main">
+                    <div class="group_img_sec">
+                      <div class="group_detail_img news_image_container">
+                        <div class="image-section">
+                          <ng-container *ngIf="eventDetails.token">
+                            <ng-container *ngIf="!eventDetails.token.isLoading && eventDetails.token.imageLoaded">
+                              <img [src]="imageurl" alt="Image" alt="" loading="lazy" />
+                            </ng-container>
+                            <ng-container *ngIf="eventDetails.token.isLoading">
+                              <img [src]="'../../../../assets/img/loading.gif'" alt="Image" />
+                            </ng-container>
+                          </ng-container>
+                          <ng-container *ngIf="!eventDetails.token">
+                            <img src="../../../../../../assets/img/no-image.png" />
+                          </ng-container>
+
+                          <div class="image-badge" *ngIf="eventDetails.type == 1">
+                            <span>{{ language.create_event.club_event }}</span>
+                          </div>
+                          <div class="image-badge" *ngIf="eventDetails.type == 2">
+                            <span>{{ language.create_event.group_event }}</span>
+                          </div>
+                          <div class="image-badge" *ngIf="eventDetails.type == 3">
+                            <span>{{ language.create_event.functionaries_event }}</span>
+                          </div>
+                          <div class="image-badge" *ngIf="eventDetails.type == 4">
+                            <span>{{ language.create_event.courses }}</span>
+                          </div>
+                          <div class="image-badge" *ngIf="eventDetails.type == 5">
+                            <span>{{ language.create_event.seminar }}</span>
+                          </div>
+                        </div>
+                        <div class="event-img-bottom">
+                          <div>
+                            <div class="event-time">
+                              <span class="img-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="33" height="33" viewBox="0 0 33 33" fill="none">
+                                  <path
+                                    d="M16.0735 32.1542C13.4295 32.1542 10.7855 32.1623 8.14255 32.1522C4.13322 32.1371 0.918911 29.4971 0.130951 25.5815C0.0291813 25.0747 0.0029831 24.5608 0.0029831 24.0449C0.00399072 19.2698 -0.00608549 14.4957 0.00600597 9.72054C0.0160822 5.82104 2.56033 2.64502 6.3379 1.78451C6.81652 1.67569 7.30421 1.60616 7.79593 1.60818C7.98335 1.60918 8.04582 1.55377 8.0831 1.36736C8.2544 0.505839 8.85796 -0.00200208 9.67212 1.31611e-05C10.4782 0.0020284 11.109 0.533045 11.2541 1.38146C11.2914 1.59709 11.377 1.60314 11.5402 1.60314C14.5873 1.60112 17.6333 1.59911 20.6804 1.60616C20.888 1.60616 20.9353 1.54268 20.9706 1.34519C21.1167 0.53506 21.7565 0.00303603 22.5485 1.31611e-05C23.3496 -0.0030097 23.9803 0.514908 24.1315 1.32907C24.1708 1.54369 24.2403 1.60213 24.463 1.61019C28.7313 1.76335 32.1592 5.19329 32.2035 9.45654C32.2539 14.407 32.2539 19.3574 32.2035 24.3079C32.1592 28.6024 28.6789 32.0656 24.3824 32.1401C21.6134 32.1875 18.8435 32.1492 16.0735 32.1492C16.0735 32.1512 16.0735 32.1522 16.0735 32.1542ZM16.1189 28.95C18.775 28.95 21.4311 28.958 24.0872 28.948C26.8228 28.9369 28.9751 26.8904 28.9973 24.1779C29.0356 19.3161 29.0315 14.4533 28.9993 9.59156C28.9822 7.05336 26.969 4.96356 24.5497 4.82854C24.2141 4.80939 24.1547 4.91015 24.1688 5.21143C24.1899 5.67494 24.201 6.14449 24.1486 6.60396C24.0448 7.5078 23.3193 8.08013 22.4175 8.01967C21.5903 7.96526 20.9595 7.27303 20.9474 6.40042C20.9414 5.97319 20.9283 5.54495 20.9524 5.11974C20.9676 4.85776 20.8678 4.81846 20.635 4.81947C17.6263 4.82652 14.6175 4.82954 11.6088 4.81644C11.3085 4.81544 11.2571 4.90914 11.2702 5.17415C11.2914 5.58727 11.2813 6.00342 11.2742 6.41755C11.2591 7.28612 10.6193 7.97332 9.788 8.02169C8.90129 8.07308 8.18991 7.50982 8.07504 6.62613C8.02667 6.25533 8.04884 5.87445 8.04783 5.4976C8.04481 4.73684 8.04683 4.73684 7.28305 4.87892C4.83856 5.33134 3.2173 7.26496 3.21427 9.75782C3.20823 14.5067 3.21125 19.2567 3.21629 24.0056C3.21629 24.3431 3.24047 24.6867 3.30697 25.0162C3.78358 27.366 5.72325 28.9419 8.1496 28.949C10.8067 28.956 13.4628 28.95 16.1189 28.95ZM8.17983 11.2521C7.17423 11.2531 6.45075 11.9182 6.44269 12.8421C6.43463 13.7843 7.1581 14.4664 8.18285 14.4745C8.91237 14.4795 9.6429 14.4755 10.3734 14.4755C14.9047 14.4755 19.436 14.4735 23.9672 14.4775C24.5073 14.4775 24.996 14.3566 25.3598 13.9374C25.8021 13.4286 25.915 12.8452 25.6399 12.2215C25.3588 11.5846 24.8459 11.2572 24.1526 11.2551C21.4714 11.2481 18.7901 11.2521 16.1098 11.2521C13.4658 11.2511 10.8228 11.2501 8.17983 11.2521ZM24.1486 25.7266C25.0343 25.7115 25.7296 25.0676 25.7779 24.2202C25.8273 23.3607 25.2328 22.6151 24.3501 22.5335C23.7022 22.474 23.0402 22.474 22.3913 22.5304C21.4945 22.608 20.888 23.3718 20.9494 24.2434C21.0089 25.0868 21.7071 25.7155 22.6009 25.7276C22.8528 25.7306 23.1037 25.7286 23.3556 25.7276C23.6196 25.7266 23.8836 25.7306 24.1486 25.7266Z"
+                                    fill="white"
+                                  />
+                                </svg>
+                              </span>
+                              <span>{{ eventDetails?.date_from | date: 'dd.MM.YYYY' }}</span>
+                            </div>
+                          </div>
+                          <div>
+                            <div class="event-time">
+                              <span class="img-icon"
+                                ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+                                  <path
+                                    d="M16.0005 32C7.14952 31.999 -0.0269483 24.8137 7.60743e-05 15.9799C0.0271004 7.12515 7.16253 -0.00100259 16.0005 1.05801e-07C24.8545 0.0010028 32.026 7.1813 31.9999 16.019C31.9739 24.8738 24.8395 32 16.0005 32ZM3.18995 16C3.19095 23.053 8.93013 28.7954 15.9925 28.8104C23.0368 28.8245 28.784 23.0901 28.8121 16.017C28.8401 8.9681 23.0459 3.17152 15.9905 3.18857C8.92512 3.20662 3.18895 8.94705 3.18995 16ZM14.384 12.7453C14.384 13.8071 14.383 14.869 14.385 15.9308C14.386 16.384 14.5162 16.7941 14.8415 17.119C15.9104 18.1889 16.9834 19.2537 18.0564 20.3186C18.3506 20.6104 18.7059 20.7788 19.1233 20.7989C19.7829 20.831 20.3845 20.461 20.6567 19.8624C20.936 19.2457 20.8279 18.5789 20.3274 18.0666C19.5067 17.2263 18.6729 16.3991 17.8352 15.5749C17.662 15.4044 17.5879 15.2329 17.5899 14.9863C17.5999 13.2616 17.5969 11.537 17.5929 9.81337C17.5929 9.60281 17.5919 9.38422 17.5409 9.18167C17.3527 8.44169 16.6161 7.9263 15.8844 7.9995C15.0547 8.08172 14.4311 8.70439 14.4151 9.52259C14.3951 10.5965 14.4101 11.6714 14.4101 12.7463C14.4011 12.7453 14.3921 12.7453 14.384 12.7453Z"
+                                    fill="white"
+                                  />
+                                </svg>
+                              </span>
+                              <span>
+                                {{
+                                  eventDetails?.recurring_dates ? eventDetails?.recurring_dates[0].start_time + '
+                                - ' + eventDetails?.recurring_dates[0].end_time : eventDetails.start_time + ' - ' + eventDetails.end_time
+                                }}
+                                {{ language.login.o_clock }}</span
+                              >
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="overbar-section">
+                          <div class="overimage-bar">
+                            <ul>
+                              <li>
+                                <div class="event-time">
+                                  <span class="img-icon"> <img src="../../../assets/img/calender.svg" onContextMenu="return false;" alt="calender" loading="lazy" /></span>
+                                  <span>{{ eventDetails?.date_from | date: 'dd.MM.YYYY' }}</span>
+                                </div>
+                              </li>
+                              <li>
+                                <div class="event-time">
+                                  <span class="img-icon">
+                                    <img src="../../../../assets/img/dayicon.svg" onContextMenu="return false;" alt="euro" loading="lazy" />
+                                  </span>
+                                  <span> {{ eventDetails?.date_from | date: 'EEEE' }}</span>
+                                </div>
+                              </li>
+                              <li>
+                                <div class="event-time">
+                                  <span class="img-icon"
+                                    ><svg xmlns="http://www.w3.org/2000/svg" width="20" height="21" viewBox="0 0 20 21" fill="none">
+                                      <path
+                                        d="M10.0003 20.124C4.46845 20.1233 -0.0168427 15.6047 4.75464e-05 10.0494C0.0169378 4.48082 4.47658 -0.000630502 10.0003 6.65356e-08C15.5341 0.000630635 20.0162 4.51613 20 10.074C19.9837 15.6425 15.5247 20.124 10.0003 20.124ZM1.99372 10.062C1.99435 14.4974 5.58133 18.1087 9.99531 18.1181C14.398 18.127 17.99 14.5207 18.0075 10.0727C18.0251 5.63981 14.4037 1.99449 9.99406 2.00521C5.5782 2.01656 1.99309 5.62656 1.99372 10.062ZM8.99003 8.01516C8.99003 8.68293 8.9894 9.3507 8.99065 10.0185C8.99128 10.3035 9.0726 10.5614 9.27591 10.7657C9.94401 11.4385 10.6146 12.1082 11.2852 12.7778C11.4691 12.9613 11.6912 13.0673 11.9521 13.0799C12.3643 13.1001 12.7403 12.8674 12.9104 12.4909C13.085 12.1031 13.0174 11.6838 12.7046 11.3616C12.1917 10.8332 11.6706 10.3129 11.147 9.79462C11.0388 9.68742 10.9925 9.5796 10.9937 9.42448C11 8.3399 10.9981 7.25532 10.9956 6.17137C10.9956 6.03896 10.995 5.90149 10.9631 5.77412C10.8455 5.30876 10.385 4.98464 9.92775 5.03068C9.40916 5.08238 9.01943 5.47397 9.00942 5.98851C8.99691 6.66385 9.00629 7.33982 9.00629 8.01579C9.00066 8.01516 8.99503 8.01516 8.99003 8.01516Z"
+                                        fill="#fff"
+                                      />
+                                    </svg>
+                                  </span>
+                                  <span>
+                                    {{
+                                      eventDetails?.recurring_dates
+                                        ? eventDetails?.recurring_dates[0].start_time + '
+                                    - ' + eventDetails?.recurring_dates[0].end_time
+                                        : eventDetails.start_time + ' - ' + eventDetails.end_time
+                                    }}
+                                    {{ language.login.o_clock }}</span
+                                  >
+                                </div>
+                              </li>
+                              <li>
+                                <span class="img-icon"
+                                  ><svg xmlns="http://www.w3.org/2000/svg" width="20" height="21" viewBox="0 0 17 20" fill="none">
+                                    <path
+                                      d="M0 8.20461C0.107715 5.39839 1.25625 2.98295 3.74183 1.30586C7.0265 -0.910431 11.4835 -0.239719 14.0198 2.81762C15.5554 4.66819 16.2067 6.80369 15.9925 9.1897C15.8522 10.7534 15.2742 12.18 14.4814 13.5227C13.3172 15.4941 11.7872 17.1524 10.0657 18.6467C9.61729 19.0362 9.15763 19.4119 8.67479 19.7583C8.23078 20.077 7.80994 20.0839 7.3772 19.7589C5.21727 18.1369 3.31598 16.2657 1.85056 13.9836C0.996987 12.6535 0.364476 11.2306 0.114603 9.65688C0.0457161 9.22351 0.0206662 8.78827 0 8.20461ZM7.89636 1.98785C7.58449 2.02417 7.29516 2.04671 7.01022 2.09368C6.73342 2.1394 6.46225 2.21392 6.1961 2.30535C3.76688 3.14327 2.07413 5.51174 2.01527 8.13384C1.97957 9.72451 2.49622 11.1517 3.28718 12.495C4.47955 14.5203 6.10091 16.168 7.90701 17.6491C8.01472 17.7374 8.06921 17.7073 8.15876 17.6347C8.86329 17.0623 9.53651 16.4567 10.1703 15.8073C11.4929 14.4527 12.6533 12.9816 13.4023 11.2256C14.2835 9.16152 14.3029 7.10617 13.1857 5.12785C12.0302 3.08002 10.2392 2.03544 7.89636 1.98785ZM4.02302 7.99231C4.02615 5.7779 5.81784 3.9956 8.03664 4.00061C10.2423 4.00499 12.024 5.78854 12.0258 7.99356C12.0277 10.2061 10.2348 12.0022 8.02349 12.0016C5.81346 12.0009 4.01989 10.2036 4.02302 7.99231ZM8.02036 9.99756C9.12005 9.99944 10.0193 9.10954 10.03 8.00922C10.0406 6.90702 9.13132 6.00147 8.0166 6.0046C6.91378 6.00836 6.01637 6.90452 6.01824 8.00108C6.02075 9.09576 6.92317 9.99568 8.02036 9.99756Z"
+                                      fill="#fff"
+                                    ></path>
+                                  </svg>
+                                </span>
+                                <span>
+                                  <span *ngIf="eventDetails?.roomData?.name">{{ eventDetails.roomData.name }}&nbsp;/&nbsp;</span>{{ eventDetails.place }}
+                                </span>
+                              </li>
+                              <li>
+                                <div class="course-price">
+                                  <span class="img-icon"><img src="../../../../assets/img/euro.svg" onContextMenu="return false;" alt="dollor" loading="lazy" /></span>
+                                  <span *ngIf="eventDetails.price_per_participant != null">{{ eventDetails.price_per_participant }}</span>
+                                  <span *ngIf="eventDetails.price_per_participant == null">{{ language.organizer.free }}</span>
+                                </div>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="event-top-description"></div>
+                    <div class="event-content">
+                      <div class="event-title">
+                        <h5>{{ eventDetails.name }}</h5>
+                        <div>
+                          <div class="dropdown action_group" *ngIf="role != 'guest' && (userDetails.userId == eventDetails.author || userDetails.isAdmin)">
+                            <button class="dropdown-toggle" type="button" (click)="onShow()">
+                              <span *ngIf="userDetails.userId == eventDetails.author || userDetails.isAdmin" routerLink="/web/update-event/{{ eventDetails.id }}"
+                                ><svg xmlns="http://www.w3.org/2000/svg" width="19" height="18" viewBox="0 0 19 18" fill="none">
+                                  <g clip-path="url(#clip0_4109_7762)">
+                                    <path
+                                      fill-rule="evenodd"
+                                      clip-rule="evenodd"
+                                      d="M11.2331 0.529704L1.94254 9.92699L0.656827 15.8413C0.593034 16.1331 0.603635 16.4363 0.687655 16.723C0.771676 17.0097 0.92642 17.2706 1.13766 17.4819C1.3489 17.6931 1.60985 17.8479 1.89653 17.9319C2.18321 18.0159 2.48641 18.0265 2.77826 17.9627L8.69254 16.677L17.996 7.26428C18.3274 6.92929 18.5127 6.47674 18.5115 6.00552C18.5103 5.5343 18.3227 5.08271 17.9895 4.74942L13.7634 0.52199C13.5971 0.355803 13.3995 0.224126 13.1821 0.134526C12.9647 0.0449257 12.7318 -0.000830637 12.4967 -0.000113776C12.2615 0.000603086 12.0288 0.047779 11.812 0.138703C11.5952 0.229627 11.3984 0.362506 11.2331 0.529704ZM4.17454 16.0264L2.58797 14.4411L3.39797 10.7216L7.89797 15.2216L4.17454 16.0264Z"
+                                      fill="#BDBDBD"
+                                    />
+                                  </g>
+                                  <defs>
+                                    <clipPath id="clip0_4109_7762">
+                                      <rect width="18" height="18" fill="white" transform="translate(0.561523)" />
+                                    </clipPath>
+                                  </defs>
+                                </svg>
+                              </span>
+                            </button>
+                          </div>
+                          <a class="dropdown-item delet-icon" *ngIf="userDetails.userId == eventDetails.author || userDetails.isAdmin" (click)="deleteEvents(eventDetails.id)">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="19" height="20" viewBox="0 0 19 20" fill="none">
+                              <path
+                                d="M17.5143 1.20815H12.6V0.971716C12.6 0.201917 11.9649 0.0644531 11.1896 0.0644531H7.15227C6.37697 0.0644531 5.74739 0.201917 5.74739 0.971716V1.20815H0.852294C0.742306 1.20797 0.633364 1.2295 0.531714 1.27151C0.430064 1.31352 0.337705 1.37517 0.259931 1.45295C0.182158 1.53072 0.120501 1.62308 0.0784938 1.72473C0.0364869 1.82638 0.0149568 1.93532 0.0151379 2.04531V3.66189C0.0151379 3.88392 0.103338 4.09685 0.260335 4.25385C0.417332 4.41084 0.630266 4.49904 0.852294 4.49904H17.5143C17.7363 4.49904 17.9493 4.41084 18.1063 4.25385C18.2633 4.09685 18.3515 3.88392 18.3515 3.66189V2.04531C18.3515 1.82328 18.2633 1.61035 18.1063 1.45335C17.9493 1.29635 17.7363 1.20815 17.5143 1.20815Z"
+                                fill="#FB5F5F"
+                              />
+                              <path
+                                d="M15.7574 6.72327H2.60898C2.49079 6.72431 2.37414 6.75032 2.26671 6.79961C2.15927 6.8489 2.06347 6.92035 1.98559 7.00926C1.90771 7.09818 1.8495 7.20256 1.8148 7.31555C1.78009 7.42854 1.76966 7.54759 1.7842 7.6649L3.13272 17.8675C3.18302 18.2641 3.37564 18.6289 3.67476 18.8942C3.97388 19.1594 4.35915 19.307 4.75892 19.3095H13.6075C14.0084 19.3087 14.3954 19.1618 14.6959 18.8964C14.9965 18.631 15.1901 18.2653 15.2406 17.8675L16.5877 7.6649C16.6025 7.54709 16.5921 7.42749 16.5572 7.31402C16.5222 7.20055 16.4635 7.09581 16.385 7.00675C16.3065 6.9177 16.2099 6.84637 16.1017 6.79749C15.9935 6.74861 15.8761 6.72331 15.7574 6.72327Z"
+                                fill="#FB5F5F"
+                              />
+                            </svg>
+                          </a>
+                        </div>
+                      </div>
+                      <div class="loaction-box">
+                        <span class="img-icon"
+                          ><svg xmlns="http://www.w3.org/2000/svg" width="10" height="12" viewBox="0 0 10 12" fill="none">
+                            <path
+                              d="M0 4.92277C0.0671864 3.23904 0.783581 1.78977 2.33395 0.783517C4.38274 -0.546258 7.16277 -0.143831 8.74478 1.69057C9.70258 2.80091 10.1088 4.08222 9.97523 5.51382C9.88773 6.45206 9.52719 7.30802 9.03267 8.11362C8.30651 9.29648 7.35222 10.2915 6.27841 11.188C5.99873 11.4217 5.71202 11.6472 5.41085 11.855C5.1339 12.0462 4.87141 12.0503 4.60149 11.8553C3.25424 10.8821 2.06833 9.75941 1.15428 8.39018C0.621865 7.59209 0.22734 6.73838 0.0714832 5.79413C0.0285152 5.53411 0.0128904 5.27296 0 4.92277ZM4.92531 1.19271C4.73078 1.2145 4.55032 1.22803 4.37259 1.25621C4.19993 1.28364 4.03079 1.32835 3.86478 1.38321C2.34957 1.88596 1.29373 3.30705 1.25701 4.88031C1.23475 5.83471 1.55701 6.69104 2.05036 7.49702C2.7941 8.71219 3.80541 9.70079 4.93195 10.5894C4.99914 10.6424 5.03312 10.6244 5.08898 10.5808C5.52843 10.2374 5.94834 9.87401 6.34365 9.48436C7.16863 8.67161 7.89245 7.78898 8.35963 6.73538C8.90923 5.49691 8.92134 4.2637 8.22448 3.07671C7.50378 1.84801 6.38661 1.22126 4.92531 1.19271ZM2.50933 4.79539C2.51129 3.46674 3.62885 2.39736 5.01281 2.40036C6.38857 2.40299 7.49988 3.47313 7.50105 4.79614C7.50222 6.12366 6.38388 7.20131 5.00461 7.20093C3.62611 7.20056 2.50738 6.12216 2.50933 4.79539ZM5.00265 5.99854C5.68858 5.99966 6.24951 5.46572 6.25615 4.80553C6.26279 4.14422 5.69561 3.60088 5.00031 3.60276C4.31243 3.60501 3.75267 4.14271 3.75384 4.80065C3.75541 5.45746 4.31829 5.99741 5.00265 5.99854Z"
+                              fill="#EF4968"
+                            />
+                          </svg>
+                        </span>
+                        <span>
+                          <span *ngIf="eventDetails?.roomData?.name">{{ eventDetails.roomData.name }}&nbsp;/&nbsp;</span>{{ eventDetails.place }}
+                        </span>
+                      </div>
+                      <p [innerHTML]="eventDetails.description"></p>
+                    </div>
+                    <ng-template #noRecurrence>
+                      <div class="schedule_list">
+                        <ul>
+                          <!-- <li>{{language.courses.start_date}}</li> -->
+                          <li>{{ eventDetails.date_from | date: 'dd.MM.YYYY' }}</li>
+                          <li>{{ eventDetails.date_from | date: ' H:mm' }} - {{ eventDetails.date_to | date: ' H:mm' }}</li>
+                        </ul>
+                        <ul>
+                          <!-- <li>{{language.courses.end_date}}</li> -->
+                          <li>{{ eventDetails.date_to | date: 'dd.MM.YYYY' }}</li>
+                          <li>{{ eventDetails.date_from | date: ' H:mm' }} - {{ eventDetails.date_to | date: ' H:mm' }}</li>
+                        </ul>
+                      </div>
+                    </ng-template>
+
+                    <!-- Start Veranstalter -->
+                    <div class="organizer_card">
+                      <div class="card-header">
+                        <h5 class="card-title">{{ language.club_events.orgainzer }}</h5>
+                      </div>
+                      <div class="card-body" *ngIf="organizerDetails">
+                        <div class="widget-appointment widget" *ngFor="let organizer of organizerDetails">
+                          <div class="widget-app-content">
+                            <div class="app-left-content">
+                              <div class="author-img">
+                                <img onContextMenu="return false;" [src]="organizer?.member_id | memberPhoto | async" alt="User Photo" style="width: 100px" loading="lazy" />
+                              </div>
+                              <div class="user-content">
+                                <span class="user-name">{{ organizer.firstname }} {{ organizer.lastname }}</span>
+                                <span class="participant_email">{{ organizer.email }}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="attach_btn" *ngIf="docFile" (click)="download(docFile, updateType)">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#E12217" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-download">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                            <polyline points="7 10 12 15 17 10" />
+                            <line x1="12" y1="15" x2="12" y2="3" />
+                          </svg>
+                          <!-- <span> {{language.create_event.download_attachment}} </span> -->
+                        </div>
+                      </div>
+                    </div>
+                    <!-- Stop Veranstalter -->
+                    <div class="author-des">
+                      <span class="author-status" *ngIf="eventDetails.approved_status == 0 && !eventDetails.deny_by_id">{{ language.theme.status }}:-{{ language.community_groups.waitingApproval }}</span>
+                      <span class="author-status" *ngIf="eventDetails.approved_status == 0 && eventDetails.deny_by_id">{{ language.theme.status }}:-{{ language.community_groups.admin_deny }}</span>
+                      <span class="author-id" *ngIf="eventDetails.deny_by_id >= 1">
+                        {{ language.dashboard.denyBy }}:- {{ eventDetails.denybyuser.firstname }}
+                        {{ eventDetails.denybyuser.lastname }}
+                      </span>
+                      <span class="deny-reason" *ngIf="eventDetails.deny_by_id >= 1"> {{ language.dashboard.denyReason }}:- {{ eventDetails.deny_reason }} </span>
+                    </div>
+                  </div>
+                </div>
+                <div class="all_participants">
+                  <!-- approved membar list area -->
+                  <div class="membar-list-main-zone approved-area" *ngIf="approvedParticipantsNew?.length > 0">
+                    <div class="membar-list-zone-inner">
+                      <h2 class="widget-heading">{{ language.club_events.approved }}</h2>
+                      <div class="membar-zone" *ngIf="approvedParticipantsNew">
+                        <div class="membar-list" *ngFor="let participant of approvedParticipantsNew.slice(0, 12)">
+                          <div class="membar-badge success-badge" *ngIf="participant.approved_status == 1">
+                            <span>{{ language.organizer.approved }}</span>
+                          </div>
+                          <div class="membar-img">
+                            <img onContextMenu="return false;" [src]="participant?.users?.member_id | memberPhoto | async" alt="User Photo" style="width: 100px" loading="lazy" />
+                          </div>
+                          <div class="membar_id">
+                            <span
+                              >{{ participant.users.firstname }}<br />
+                              {{ participant.users.lastname }}</span
+                            >
+                          </div>
+                        </div>
+                        <div class="membar-modal-action" data-bs-toggle="modal" data-bs-target="#approvedParticipantsModal">
+                          <span *ngIf="approvedParticipantsNew.length > 11">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="27" height="40" viewBox="0 0 27 40" fill="none">
+                              <g filter="url(#filter0_d_4125_915)">
+                                <path d="M7 29L20 16L7 3" stroke="#EF4968" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" shape-rendering="crispEdges" />
+                              </g>
+                              <defs>
+                                <filter id="filter0_d_4125_915" x="0.5" y="0.5" width="26" height="39" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                                  <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                                  <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                                  <feOffset dy="4" />
+                                  <feGaussianBlur stdDeviation="2" />
+                                  <feComposite in2="hardAlpha" operator="out" />
+                                  <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
+                                  <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_4125_915" />
+                                  <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_4125_915" result="shape" />
+                                </filter>
+                              </defs>
+                            </svg>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- approved membar list area End-->
+
+                  <!-- Pending membar list area -->
+                  <div class="membar-list-main-zone pending-area" *ngIf="unapprovedParticipants?.length > 0">
+                    <div class="membar-list-zone-inner">
+                      <h2 class="widget-heading">{{ language.club_events.pending }}</h2>
+                      <div class="membar-zone">
+                        <div class="membar-list" *ngFor="let participant of unapprovedParticipants.slice(0, 9)">
+                          <div class="membar-badge info-badge">
+                            <span>{{ language.organizer.pending }}</span>
+                          </div>
+                          <div class="author-img">
+                            <img onContextMenu="return false;" [src]="participant?.member_id | memberPhoto | async" style="width: 100px" alt="User Photo" loading="lazy" />
+                          </div>
+                          <div class="membar_id">
+                            <span
+                              >{{ participant.firstname }}<br />
+                              {{ participant.lastname }}</span
+                            >
+                          </div>
+                        </div>
+                        <div class="membar-modal-action" data-bs-toggle="modal" data-bs-target="#pendingParticipantsModal">
+                          <span *ngIf="memImg.length > 8">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="27" height="40" viewBox="0 0 27 40" fill="none">
+                              <g filter="url(#filter0_d_4125_915)">
+                                <path d="M7 29L20 16L7 3" stroke="#EF4968" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" shape-rendering="crispEdges" />
+                              </g>
+                              <defs>
+                                <filter id="filter0_d_4125_915" x="0.5" y="0.5" width="26" height="39" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                                  <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                                  <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                                  <feOffset dy="4" />
+                                  <feGaussianBlur stdDeviation="2" />
+                                  <feComposite in2="hardAlpha" operator="out" />
+                                  <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
+                                  <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_4125_915" />
+                                  <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_4125_915" result="shape" />
+                                </filter>
+                              </defs>
+                            </svg>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Pending membar list area End-->
+
+                  <!-- Denied membar list area -->
+                  <div class="membar-list-main-zone denied-area" *ngIf="deniedParticipants?.length > 0">
+                    <div class="membar-list-zone-inner">
+                      <h2 class="widget-heading">{{ language.club_events.denied }}</h2>
+                      <div class="membar-zone">
+                        <div class="membar-list" *ngFor="let participant of deniedParticipants.slice(0, 6)">
+                          <div class="membar-badge danger-badge" *ngIf="participant.approved_status == 3">
+                            <span>{{ language.create_event.cancelled }}</span>
+                          </div>
+                          <div class="membar-img">
+                            <img onContextMenu="return false;" [src]="participant?.users?.member_id | memberPhoto | async" style="width: 100px" alt="User Photo" loading="lazy" />
+                          </div>
+                          <div class="membar_id">
+                            <span
+                              >{{ participant.users.firstname }}<br />
+                              {{ participant.users.lastname }}</span
+                            >
+                          </div>
+                        </div>
+                        <div class="membar-modal-action" data-bs-toggle="modal" data-bs-target="#deniedParticipantsModal">
+                          <span *ngIf="deniedParticipants.length > 5">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="27" height="40" viewBox="0 0 27 40" fill="none">
+                              <g filter="url(#filter0_d_4125_915)">
+                                <path d="M7 29L20 16L7 3" stroke="#EF4968" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" shape-rendering="crispEdges" />
+                              </g>
+                              <defs>
+                                <filter id="filter0_d_4125_915" x="0.5" y="0.5" width="26" height="39" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                                  <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                                  <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                                  <feOffset dy="4" />
+                                  <feGaussianBlur stdDeviation="2" />
+                                  <feComposite in2="hardAlpha" operator="out" />
+                                  <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
+                                  <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_4125_915" />
+                                  <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_4125_915" result="shape" />
+                                </filter>
+                              </defs>
+                            </svg>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Denied membar list area End-->
+
+                  <!-- Assigned task section start -->
+                  <div class="event-task-zone" *ngIf="eventDetails.eventTask && eventDetails.eventTask.id">
+                    <h2 class="widget-heading">{{ language.club_events.assigned_task }}</h2>
+                    <div class="event-task-list-zone">
+                      <div class="event-task-list">
+                        <div class="event-task-header">
+                          <div class="event-t-header-inner">
+                            <input
+                              *ngIf="eventDetails.eventTask.status == 0"
+                              class="check-style"
+                              id="styled-checkbox-{{ eventDetails.eventTask.id }}"
+                              type="checkbox"
+                              style="opacity: 1; margin-top: 0px"
+                              (change)="mainTaskMarkComplete(eventDetails.eventTask.id)"
+                            />
+                            <input *ngIf="eventDetails.eventTask.status == 1" class="check-style" id="styled-checkbox-{{ eventDetails.eventTask.id }}" type="checkbox" style="opacity: 1; margin-top: 0px" checked="checked" disabled="disabled" />
+                            <h3 *ngIf="eventDetails.eventTask.status != 2">
+                              {{ eventDetails.eventTask.title }}
+                            </h3>
+                            <h3 *ngIf="eventDetails.eventTask.status == 2" class="">
+                              {{ eventDetails.eventTask.title }}
+                            </h3>
+                          </div>
+                          <div class="dropdown action_group" *ngIf="role != 'guest' && (userDetails.userId == eventDetails.author || userDetails.isAdmin)">
+                            <button class="dropdown-toggle" type="button" (click)="onShowTask()">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="6" height="18" viewBox="0 0 6 18" fill="none">
+                                <path
+                                  d="M2.77615 17.4836C2.52652 17.3973 2.26679 17.3468 2.02694 17.2241C1.10857 16.7553 0.596367 15.717 0.76142 14.6385C0.914482 13.6381 1.75837 12.7978 2.74711 12.6619C4.25185 12.4554 5.52305 13.6478 5.45362 15.2015C5.4047 16.2974 4.58353 17.2423 3.50264 17.4474C3.4695 17.4539 3.42595 17.4361 3.40733 17.4836C3.19683 17.4836 2.98665 17.4836 2.77615 17.4836ZM2.80771 0.923208C2.79698 0.957184 2.76794 0.950388 2.74333 0.953625C1.65328 1.10764 0.779725 2.08449 0.729861 3.20564C0.660747 4.75908 1.93163 5.95143 3.43668 5.74467C4.42479 5.60909 5.26931 4.76847 5.42206 3.768C5.5868 2.68923 5.07491 1.65123 4.15654 1.18238C3.91669 1.06008 3.65696 1.0096 3.40733 0.922884C3.20756 0.923208 3.00779 0.923208 2.80771 0.923208ZM3.09237 6.77814C1.79214 6.77781 0.72639 7.86985 0.726074 9.20326C0.725759 10.5364 1.79088 11.629 3.09142 11.6294C4.39166 11.6297 5.4574 10.5377 5.45772 9.20423C5.45772 7.87082 4.3926 6.77846 3.09237 6.77814Z"
+                                  fill="#F2F2F5"
+                                />
+                              </svg>
+                            </button>
+                            <ul class="dropdown-menu Task-toggle" aria-labelledby="dropdownMenuLink">
+                              <li>
+                                <a class="dropdown-item" routerLink="/web/update-task/{{ eventDetails?.eventTask?.id }}"> {{ language.organizer.Edit }}</a>
+                              </li>
+                              <!-- <li>
+                                <a class="dropdown-item">{{ language.organizer.Delete }}</a>
+                              </li> -->
+                              <li>
+                                <a class="dropdown-item" (click)="goBack()">{{ language.organizer.Back }}</a>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                        <div class="event-task-description">
+                          <div class="event-task-badge" *ngIf="eventDetails.eventTask.group_id == 0">{{ language.create_news.chairman }}</div>
+                          <div class="event-task-badge" *ngIf="eventDetails.eventTask.group_id != 0">{{ language.header.group }}</div>
+                          <p [innerHTML]="eventDetails.eventTask.description.length > 0 ? (eventDetails.eventTask.description | slice: 0:100) + '...' : eventDetails.eventTask.description"></p>
+                        </div>
+                        <div class="survey-timeline">
+                          <div class="timeline-label">
+                            <span>{{ language.organizer_task.progress }} : 0% </span>
+                          </div>
+                          <div class="timeline">
+                            <mat-progress-bar mode="determinate"></mat-progress-bar>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="membar-modal-action" data-bs-toggle="modal" data-bs-target="#taskDetailsModal" (click)="getTaskDetails(eventDetails.eventTask)">
+                        <span>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="27" height="40" viewBox="0 0 27 40" fill="none">
+                            <g filter="url(#filter0_d_4125_915)">
+                              <path d="M7 29L20 16L7 3" stroke="#EF4968" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" shape-rendering="crispEdges" />
+                            </g>
+                            <defs>
+                              <filter id="filter0_d_4125_915" x="0.5" y="0.5" width="26" height="39" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                                <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                                <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                                <feOffset dy="4" />
+                                <feGaussianBlur stdDeviation="2" />
+                                <feComposite in2="hardAlpha" operator="out" />
+                                <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
+                                <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_4125_915" />
+                                <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_4125_915" result="shape" />
+                              </filter>
+                            </defs>
+                          </svg>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Assigned task section End -->
+                  <div class="all-participant-card"></div>
+                </div>
+              </div>
+            </div>
+            <div class="empty-data-image" *ngIf="!eventDetails || eventDetails?.length == 0">
+              <span>{{ language.club_events.no_events }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- APPROVED PARTICIPANTS MODAL START -->
+<div class="modal fade change_pass_section profile_popup" id="approvedParticipantsModal" tabindex="-1" aria-labelledby="exampleModalLabel">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <!-- <div id="profileSpinner" class="overlay__content"><span class="spinner"></span></div> -->
+    <div class="modal-content">
+      <div class="membar-list-main-zone approved-area" *ngIf="approvedParticipantsNew?.length > 0">
+        <div class="membar-list-zone-inner">
+          <h2 class="widget-heading">{{ language.club_events.approved }}</h2>
+          <div class="membar-zone" *ngIf="approvedParticipantsNew">
+            <div class="membar-list" *ngFor="let participant of approvedParticipantsNew">
+              <div class="membar-badge success-badge" *ngIf="participant.approved_status == 1">
+                <span>{{ language.organizer.approved }}</span>
+              </div>
+              <div class="membar-img">
+                <img onContextMenu="return false;" [src]="participant?.users?.member_id | memberPhoto | async" style="width: 100px" alt="User Photo" loading="lazy" />
+              </div>
+              <div class="membar_id">
+                <span
+                  >{{ participant.users.firstname }}<br />
+                  {{ participant.users.lastname }}</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- APPROVED PARTICIPANTS MODAL END -->
+
+<!-- PENDING PARTICIPANTS MODAL START -->
+<div class="modal fade change_pass_section profile_popup" id="pendingParticipantsModal" tabindex="-1" aria-labelledby="exampleModalLabel">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <!-- <div id="profileSpinner" class="overlay__content"><span class="spinner"></span></div> -->
+    <div class="modal-content">
+      <div class="membar-list-main-zone pending-area" *ngIf="unapprovedParticipants?.length > 0">
+        <div class="membar-list-zone-inner">
+          <h2 class="widget-heading">{{ language.club_events.pending }}</h2>
+          <div class="membar-zone">
+            <div class="membar-list" *ngFor="let participant of unapprovedParticipants">
+              <div class="membar-badge info-badge">
+                <span>{{ language.organizer.pending }}</span>
+              </div>
+              <div class="membar-img">
+                <img onContextMenu="return false;" [src]="participant?.member_id | memberPhoto | async" style="width: 100px" alt="User Photo" loading="lazy" />
+              </div>
+              <div class="membar_id">
+                <span
+                  >{{ participant.firstname }}<br />
+                  {{ participant.lastname }}</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- PENDING PARTICIPANTS MODAL END -->
+
+<!-- DENIED PARTICIPANTS MODAL START -->
+<div class="modal fade change_pass_section profile_popup" id="deniedParticipantsModal" tabindex="-1" aria-labelledby="exampleModalLabel">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <!-- <div id="profileSpinner" class="overlay__content"><span class="spinner"></span></div> -->
+    <div class="modal-content">
+      <div class="membar-list-main-zone denied-area" *ngIf="deniedParticipants?.length > 0">
+        <div class="membar-list-zone-inner">
+          <h2 class="widget-heading">{{ language.club_events.denied }}</h2>
+          <div class="membar-zone" *ngFor="let participant of deniedParticipants">
+            <div class="membar-list">
+              <div class="membar-badge danger-badge" *ngIf="participant.approved_status == 3">
+                <span>{{ language.create_event.cancelled }}</span>
+              </div>
+              <div class="membar-img">
+                <img onContextMenu="return false;" [src]="participant?.users?.member_id | memberPhoto | async" style="width: 100px" alt="User Photo" loading="lazy" />
+              </div>
+              <div class="membar_id">
+                <span
+                  >{{ participant.users.firstname }}<br />
+                  {{ participant.users.lastname }}</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- DENIED PARTICIPANTS MODAL END -->
+
+<!-- TASK DETAILS MODAL START -->
+<div class="modal fade change_pass_section profile_popup" id="taskDetailsModal" tabindex="-1" aria-labelledby="exampleModalLabel">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <!-- <div id="profileSpinner" class="overlay__content"><span class="spinner"></span></div> -->
+    <div class="modal-content">
+      <div class="event-task-list">
+        <div class="event-task-header">
+          <div class="event-t-header-inner">
+            <h3 class="">{{ selectedTask?.title }}</h3>
+          </div>
+        </div>
+        <div class="event-task-description">
+          <div class="event-task-badge" *ngIf="selectedTask?.group_id == 0">{{ language.create_news.chairman }}</div>
+          <div class="event-task-badge" *ngIf="selectedTask?.group_id != 0">{{ language.header.group }}</div>
+          <p [innerHTML]="selectedTask?.description"></p>
+        </div>
+        <div class="survey-timeline">
+          <div class="timeline-label">
+            <span>{{ language.organizer_task.progress }} : 0% </span>
+          </div>
+          <div class="timeline">
+            <mat-progress-bar mode="determinate"></mat-progress-bar>
+          </div>
+        </div>
+      </div>
+      <div class="all-participant-card">
+        <div class="card-header" *ngIf="collaborators && collaborators.length">
+          <h5 class="card-title">{{ language.organizer.collaborators }}</h5>
+        </div>
+        <div class="card-body" *ngIf="collaborators">
+          <div class="widget-appointment widget" *ngFor="let participant of collaborators">
+            <div class="widget-app-content">
+              <div class="app-left-content">
+                <div class="membar-img">
+                  <img onContextMenu="return false;" [src]="participant?.user[0]?.member_id | memberPhoto | async" style="width: 100px" alt="User Photo" loading="lazy" />
+                </div>
+                <div class="user-content">
+                  <span class="user-name">
+                    {{ participant.user[0]?.firstname }}
+                    {{ participant.user[0]?.lastname }}</span
+                  >
+                  <span class="participant_email">{{ participant?.user[0]?.email }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- TASK DETAILS MODAL END -->
+
+<!-- UPDATE PARTICIPANTS MODAL START -->
+<div class="modal fade change_pass_section profile_popup" id="updateParticipantsModal" tabindex="-1" aria-labelledby="exampleModalLabel">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="membar-zone">
+        <div class="membar-list" *ngFor="let participant of updateEventData?.users">
+          <div class="membar-img">
+            <img onContextMenu="return false;" [src]="participant?.user?.member_id | memberPhoto | async" style="width: 100px" alt="User Photo" loading="lazy" />
+          </div>
+          <div class="membar_id" *ngIf="participant && participant?.user">
+            <span
+              >{{ participant?.user?.firstname }}<br />
+              {{ participant?.user?.lastname }}</span
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- UPDATE PARTICIPANTS MODAL END -->
+
+<div *ngIf="dowloading">
+  <div class="overlay download-overlay">
+    <div class="overlay__inner">
+      <div class="overlay__content">
+        <div class="loading" data-loading-text="Downloading..."></div>
+      </div>
+    </div>
+  </div>
+</div>

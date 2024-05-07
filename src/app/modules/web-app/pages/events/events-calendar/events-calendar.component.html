@@ -1,0 +1,158 @@
+<div class="cal-container">
+  <div class="cal-container-left">
+    <div class="date-bar">
+      <div>
+        <vc-dropdown (itemSelected)="applyViewFilters($event)" [(selectedItem)]="selectedView" [options]="viewDropDownItems"></vc-dropdown>
+      </div>
+      <div>
+        <vc-dropdown (itemSelected)="applyYearFilters($event)" [(selectedItem)]="selectedYear" [options]="years" [placeholder]="language?.club_events?.year"></vc-dropdown>
+      </div>
+      <div>
+        <vc-dropdown (itemSelected)="applyMonthFilters($event)" [options]="monthDropDownItems" [selectedItem]="selectedMonth" [placeholder]="language?.club_events?.month"></vc-dropdown>
+      </div>
+      <div *ngIf="isOrganizerRoute() || isOrganizerEventsRoute()">
+        <vc-dropdown (itemSelected)="applyTypeFilters($event)" [options]="typeDropDownItems" [selectedItem]="selectedEventType" [placeholder]="language?.club_events?.event_type"></vc-dropdown>
+      </div>
+    </div>
+    <div></div>
+
+    <!-- GRID VIEW START-->
+
+    <div class="box-section grid" *ngIf="selectedView === 'tile-view'">
+      <div class="row">
+        <div class="col-md-3" *ngFor="let today of pagedEvents">
+          <div class="events-box" (click)="viewDetails(today.id, today.date_from, today.type)">
+            <div class="event-img-box">
+              <div class="event-img">
+                <!-- <img onContextMenu="return false;" [src]="today?.picture_video ? today?.picture_video : '../../../assets/img/no_image.png'" alt="" loading="lazy" /> -->
+                <ng-container *ngIf="today.picture_video">
+                  <ng-container *ngIf="!today.picture_video.isLoading">
+                    <img appDefaultImage [src]="today.picture_video.url" alt="Image" loading="lazy" />
+                  </ng-container>
+                  <ng-container *ngIf="today.picture_video.isLoading">
+                    <img [src]="'../../../../assets/img/loading.gif'" alt="Image" />
+                  </ng-container>
+                </ng-container>
+                <ng-container *ngIf="!today.picture_video">
+                  <img src="../../../../../../assets/img/no-image.png" />
+                </ng-container>
+              </div>
+              <div class="tag">{{ eventTypeList[today.type].name }}</div>
+              <div class="event-date">
+                <span>{{ today?.date_from | date: 'MMMM' }}</span>
+                <h3>{{ today?.date_from | date: 'dd' }}</h3>
+              </div>
+            </div>
+            <div class="event-col-two">
+              <div class="col-grey">{{ today.place }}</div>
+              <div class="col-time">{{ today.date_from | date: 'HH:mm' }} - {{ today.date_to | date: 'HH:mm' }} {{ language.login.o_clock }}</div>
+            </div>
+            <h2>{{ today.name }}</h2>
+            <a (click)="viewDetails(today.id, today.date_from, today.type)" style="display: flex; align-items: center"
+              >{{ language.club_events.to_event }}
+              <vc-icon [cssStyle]="{ marginBottom: '-7px', marginLeft: '-7px' }" boxSize="16px" iconName="chevron-right"></vc-icon>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="next-prev-button" *ngIf="allEventsList && isData">
+        <div class="items-per-page">
+          <span>{{ language.club_events.items_per_page }}</span>
+          <select [(ngModel)]="itemPerPage" (change)="changeItemsPerPage()">
+            <option value="8">8</option>
+            <option value="24">24</option>
+            <option value="40">40</option>
+          </select>
+        </div>
+        <div class="pagination-area">
+          <button (click)="previousPage()" [disabled]="currentPageNumber === 1">
+            <svg xmlns="http://www.w3.org/2000/svg" width="7" height="12" viewBox="0 0 7 12" fill="none">
+              <path d="M6.37853 11L1.29248 6L6.37853 1" stroke="#EF4968" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+          <div class="pagination">
+            <span *ngIf="pagesArray[0] > 1">...</span>
+            <span *ngFor="let page of pagesArray" (click)="goToPage(page)" [class.active]="currentPageNumber === page">
+              {{ page }}
+            </span>
+            <span *ngIf="pagesArray[pagesArray.length - 1] < totalPages">...</span>
+          </div>
+          <button style="transform: rotate(180deg)" (click)="nextPage()" [disabled]="currentPageNumber === totalPages">
+            <svg xmlns="http://www.w3.org/2000/svg" width="7" height="12" viewBox="0 0 7 12" fill="none">
+              <path d="M6.37853 11L1.29248 6L6.37853 1" stroke="#EF4968" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- GRID VIEW START-->
+
+    <!-- LIST VIEW START-->
+    <div class="box-section list" *ngIf="selectedView === 'list-view'">
+      <div class="row" *ngFor="let today of pagedEvents">
+        <div class="col-md-12">
+          <div class="events-box" (click)="viewDetails(today.id, today.date_from, today.type)">
+            <div class="event-img-box">
+              <div class="date_time">
+                <span class="date">{{ today.date_from | date: 'dd.MM.YYYY' }}</span>
+                <span class="time">{{ today.date_from | date: 'HH:mm' }} - {{ today.date_to | date: 'HH:mm' }} {{ language.login.o_clock }}</span>
+              </div>
+              <div class="title_tag">
+                <h2>{{ today.name }}</h2>
+                <div class="tag_list">{{ eventTypeList[today.type].name }}</div>
+              </div>
+              <div class="stadion">
+                <h2>{{ today.place }}</h2>
+                <!-- <span>Am Waldbach 1 | 1 2345 Musterstadt</span> -->
+              </div>
+              <div class="desci-event">{{ today?.approvedEventUsers?.length }} {{ language.club_events.approved_paticipants }}</div>
+              <div class="anchor_link">
+                <a (click)="viewDetails(today.id, today.date_from, today.type)"
+                  >{{ language.club_events.to_event_list }}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="31" height="24" viewBox="0 0 31 24" fill="none">
+                    <path d="M14.3663 4.70697L22.2325 11H5.25V13H22.2325L14.3663 19.293L16.1337 20.707L27.0175 12L16.1337 3.29297L14.3663 4.70697Z" fill="#EF4968" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="next-prev-button" *ngIf="pagedEvents && isData">
+        <div class="items-per-page">
+          <span>{{ language.club_events.items_per_page }}</span>
+          <select [(ngModel)]="itemPerPage" (change)="changeItemsPerPage()">
+            <option value="8">8</option>
+            <option value="24">24</option>
+            <option value="40">40</option>
+          </select>
+        </div>
+        <div class="pagination-area">
+          <button (click)="previousPage()" [disabled]="currentPageNumber === 1">
+            <svg xmlns="http://www.w3.org/2000/svg" width="7" height="12" viewBox="0 0 7 12" fill="none">
+              <path d="M6.37853 11L1.29248 6L6.37853 1" stroke="#EF4968" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+          <div class="pagination">
+            <span *ngIf="pagesArray[0] > 1">...</span>
+            <span *ngFor="let page of pagesArray" (click)="goToPage(page)" [class.active]="currentPageNumber === page">
+              {{ page }}
+            </span>
+            <span *ngIf="pagesArray[pagesArray.length - 1] < totalPages">...</span>
+          </div>
+
+          <button style="transform: rotate(180deg)" (click)="nextPage()" [disabled]="currentPageNumber === totalPages">
+            <svg xmlns="http://www.w3.org/2000/svg" width="7" height="12" viewBox="0 0 7 12" fill="none">
+              <path d="M6.37853 11L1.29248 6L6.37853 1" stroke="#EF4968" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="empty-data" *ngIf="isData == false">
+      <span>{{ language.club_events.no_events }}</span>
+    </div>
+    <!-- LIST VIEW END-->
+  </div>
+</div>

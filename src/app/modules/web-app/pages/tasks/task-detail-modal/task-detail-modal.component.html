@@ -1,0 +1,313 @@
+<!-- SURVEY DETAIL MODAL POPUP START -->
+<div class="task-dialog-model">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>{{ language.instructor.instructor_detail }}</h3>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+          <path d="M32 3.72111L28.2789 0L16 12.2789L3.72111 0L0 3.72111L12.2789 16L0 28.2789L3.72111 32L16 19.7211L28.2789 32L32 28.2789L19.7211 16L32 3.72111Z" fill="#98A5C6"></path>
+        </svg>
+      </button>
+    </div>
+    <div class="modal-body" *ngIf="taskDetails">
+      <div class="instructor-modal-content">
+        <div class="instructor-m-description">
+          <div class="ins-image">
+            <div class="arrow left-arrow">
+              <svg xmlns="http://www.w3.org/2000/svg" width="19" height="32" viewBox="0 0 19 32" fill="none" (click)="navigateToPreviousTask()" [class.disabled]="selectedIndex === 0">
+                <path d="M16 3L3 16L16 29" stroke="#EF4968" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </div>
+            <div class="image-task">
+              <ng-container *ngIf="taskDetails.token">
+                <ng-container *ngIf="!taskDetails.token.isLoading && taskDetails.token.imageLoaded">
+                  <img [src]="taskDetails.token.url" alt="Image" />
+                </ng-container>
+                <ng-container *ngIf="taskDetails.token.isLoading">
+                  <img [src]="'../../../../assets/img/loading.gif'" alt="Image" />
+                </ng-container>
+              </ng-container>
+              <ng-container *ngIf="!taskDetails.image">
+                <img src="../../../../../../assets/img/no_image.png" />
+              </ng-container>
+            </div>
+            <div class="arrow right-arrow">
+              <svg xmlns="http://www.w3.org/2000/svg" width="19" height="32" viewBox="0 0 19 32" fill="none" (click)="navigateToNextTask()" [class.disabled]="selectedIndex === tasks.length - 1">
+                <path d="M3 29L16 16L3 3" stroke="#EF4968" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </div>
+          </div>
+
+          <div class="ins-description">
+            <div class="red-button" style="padding-right: 8px; padding-top: 4px" *ngIf="taskDetails?.subtasks?.length > 0">
+              <div *ngIf="taskDetails?.status == 0">
+                <input #radioButtonMain [type]="'radio'" class="input-radio" id="{{ taskDetails.id }}" [checked]="checkedStatesMain[taskDetails.id]" (change)="mainTaskMarkComplete(taskDetails.id)" />
+                <label for="{{ taskDetails?.id }}">{{ language.organizer_task.mark_done }}</label>
+              </div>
+              <!-- IF TASK IS MARK COMPLETED -->
+              <div *ngIf="taskDetails?.status == 1">
+                <button type="button" *ngIf="taskDetails.status == 1" disabled="disabled" style="border-radius: 10px">{{ language.organizer_task.task_completed }}</button>
+              </div>
+            </div>
+
+            <div class="task-title-box">
+              <div class="task-title-box-inner">
+                <h3>{{ taskDetails.title }}</h3>
+                <div class="tag">
+                  <span class="group-badge" *ngIf="taskDetails?.group_id > 0">{{ language.community_groups.group }} </span>
+                  <span class="individual-badge" *ngIf="taskDetails?.group_id == null || taskDetails?.group_id == 0">{{ language.create_task.individual }}</span>
+                </div>
+              </div>
+            </div>
+            <p [innerHTML]="taskDetails.description"></p>
+            <div class="progress-task">
+              <div class="progress-content">
+                <span
+                  >{{ language.organizer_task.progress }} :
+                  <ng-container *ngIf="taskDetails?.subtasks?.length > 0">{{ taskDetails?.approvedCount }}/{{ taskDetails?.subtasks?.length }}</ng-container>
+                </span>
+              </div>
+              <mat-progress-bar mode="determinate" [value]="taskDetails?.progressVal"></mat-progress-bar>
+            </div>
+          </div>
+        </div>
+
+        <!-- Task assigned to start -->
+        <div class="card organizer_card">
+          <div class="card-header">
+            <h5 class="card-title">{{ language.organizer_task.task_assigned }}</h5>
+          </div>
+          <div class="card-body" *ngIf="collaborators">
+            <div class="widget-appointment widget">
+              <div class="widget-app-item" *ngFor="let collaborator of collaborators">
+                <div class="widget-app-content">
+                  <div class="app-left-content">
+                    <div class="author-img">
+                      <img onContextMenu="return false;" [src]="collaborator?.user[0]?.member_id | memberPhoto | async" style="width: 100px" alt="User Photo" loading="lazy" />
+                    </div>
+                    <div class="user-content">
+                      <span class="user-name">{{ collaborator.user[0].firstname }} {{ collaborator.user[0].lastname }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="author-des" *ngIf="taskDetails.status == 2">
+          <span class="author-status" *ngIf="taskDetails.status == 2 && !taskDetails.deny_by_id">{{ language.theme.status }}:-{{ language.community_groups.waitingApproval }}</span>
+          <span class="author-status" *ngIf="taskDetails.status == 2 && taskDetails.deny_by_id">{{ language.theme.status }}:-{{ language.community_groups.admin_deny }}</span>
+          <span class="author-id" *ngIf="taskDetails.deny_by_id >= 1">
+            {{ language.dashboard.denyBy }}:- {{ taskDetails.denybyuser.firstname }}
+            {{ taskDetails.denybyuser.lastname }}
+          </span>
+          <span class="deny-reason" *ngIf="taskDetails.deny_by_id >= 1"> {{ language.dashboard.denyReason }}:- {{ taskDetails.deny_reason }} </span>
+        </div>
+
+        <!-- TO MARK MAIN TASK COMPLETE IF NO SUBTASKS PRESENT -->
+        <div class="faq-accordion tab-content" *ngIf="taskDetails?.subtasks?.length == 0 && taskDetails.status != 2">
+          <div class="m-4" id="tab1">
+            <div class="accordion" id="myAccordion">
+              <div class="accordion-item">
+                <div>
+                  <input #radioButtonMain [type]="'radio'" *ngIf="taskDetails.status == 0" class="input-radio" id="{{ taskDetails.id }}" [checked]="checkedStatesMain[taskDetails.id]" (change)="mainTaskMarkComplete(taskDetails.id)" />
+                  <input [type]="'radio'" *ngIf="taskDetails.status == 1" class="input-radio" id="{{ taskDetails.id }}" [checked]="true" disabled="disabled" />
+                  <label for="{{ taskDetails.id }}" *ngIf="taskDetails.status == 0">{{ language.organizer_task.task_not_completed }}</label>
+                  <label for="{{ taskDetails.id }}" *ngIf="taskDetails.status == 1">{{ language.organizer_task.task_completed }}</label>
+                </div>
+
+                <h2 class="accordion-header" [attr.id]="'heading_' + i">
+                  <a type="button" class="accordion-button collapsed" data-bs-toggle="collapse" [attr.data-bs-target]="'#collapse_' + i">
+                    <div class="event-action">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="10" viewBox="0 0 12 10" fill="none">
+                        <g clip-path="url(#clip0_4964_738)">
+                          <path
+                            fill-rule="evenodd"
+                            clip-rule="evenodd"
+                            d="M1.25664 2.00012C1.58618 1.99732 1.90446 2.11986 2.14704 2.34291L6.00341 5.98247L9.85293 2.3472C10.0952 2.12394 10.4126 2 10.742 2C11.0715 2 11.3889 2.12394 11.6311 2.3472C11.7474 2.45411 11.8402 2.58399 11.9037 2.72863C11.9672 2.87326 12 3.0295 12 3.18746C12 3.34541 11.9672 3.50165 11.9037 3.64628C11.8402 3.79092 11.7474 3.9208 11.6311 4.02772L6.8878 8.50711C6.64638 8.73136 6.32906 8.85599 5.99955 8.85599C5.67004 8.85599 5.35273 8.73136 5.1113 8.50711L0.369679 4.02772C0.253174 3.92094 0.160147 3.7911 0.0965055 3.64645C0.0328642 3.5018 0 3.34549 0 3.18746C0 3.02942 0.0328642 2.87312 0.0965055 2.72846C0.160147 2.58381 0.253174 2.45397 0.369679 2.3472C0.610457 2.12295 0.927617 1.99884 1.25664 2.00012Z"
+                            fill="#FB5F5F"
+                          />
+                        </g>
+                        <defs>
+                          <clipPath id="clip0_4964_738">
+                            <rect width="12" height="10" fill="white" />
+                          </clipPath>
+                        </defs>
+                      </svg>
+                    </div>
+                  </a>
+                </h2>
+                <div [attr.id]="'collapse_' + i" class="accordion-collapse collapse" data-bs-parent="#myAccordion">
+                  <div class="card-body">
+                    <p [innerHTML]="taskDetails.description"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Subtasks start -->
+        <div class="faq-accordion tab-content" *ngIf="taskDetails?.subtasks?.length > 0 && taskDetails.status != 2">
+          <div class="m-4" id="tab1">
+            <div class="accordion" id="myAccordion">
+              <div class="accordion-item" *ngFor="let item of taskDetails?.subtasks; let i = index">
+                <div>
+                  <input #radioButton [type]="'radio'" *ngIf="item.status == 0" class="input-radio" id="{{ item.id }}" [checked]="checkedStates[item.id]" (change)="subTaskMarkComplete(item.id)" />
+                  <input [type]="'radio'" *ngIf="item.status == 1" class="input-radio" id="{{ item.id }}" [checked]="true" disabled="disabled" />
+                  <label for="{{ item.id }}">{{ item.title }}</label>
+                </div>
+
+                <h2 class="accordion-header" [attr.id]="'heading_' + i">
+                  <a type="button" class="accordion-button collapsed" data-bs-toggle="collapse" [attr.data-bs-target]="'#collapse_' + i">
+                    <div class="event-action">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="10" viewBox="0 0 12 10" fill="none">
+                        <g clip-path="url(#clip0_4964_738)">
+                          <path
+                            fill-rule="evenodd"
+                            clip-rule="evenodd"
+                            d="M1.25664 2.00012C1.58618 1.99732 1.90446 2.11986 2.14704 2.34291L6.00341 5.98247L9.85293 2.3472C10.0952 2.12394 10.4126 2 10.742 2C11.0715 2 11.3889 2.12394 11.6311 2.3472C11.7474 2.45411 11.8402 2.58399 11.9037 2.72863C11.9672 2.87326 12 3.0295 12 3.18746C12 3.34541 11.9672 3.50165 11.9037 3.64628C11.8402 3.79092 11.7474 3.9208 11.6311 4.02772L6.8878 8.50711C6.64638 8.73136 6.32906 8.85599 5.99955 8.85599C5.67004 8.85599 5.35273 8.73136 5.1113 8.50711L0.369679 4.02772C0.253174 3.92094 0.160147 3.7911 0.0965055 3.64645C0.0328642 3.5018 0 3.34549 0 3.18746C0 3.02942 0.0328642 2.87312 0.0965055 2.72846C0.160147 2.58381 0.253174 2.45397 0.369679 2.3472C0.610457 2.12295 0.927617 1.99884 1.25664 2.00012Z"
+                            fill="#FB5F5F"
+                          />
+                        </g>
+                        <defs>
+                          <clipPath id="clip0_4964_738">
+                            <rect width="12" height="10" fill="white" />
+                          </clipPath>
+                        </defs>
+                      </svg>
+                    </div>
+                  </a>
+                </h2>
+                <div [attr.id]="'collapse_' + i" class="accordion-collapse collapse" data-bs-parent="#myAccordion">
+                  <div class="card-body">
+                    <p [innerHTML]="item.description"></p>
+                  </div>
+                  <div class="card-body">
+                    <h3>{{ language.organizer_task.task_assigned }}</h3>
+                    <div class="card-body top-box" *ngIf="item?.assigned_too && item?.assigned_too.length > 0">
+                      <div class="widget-appointment widget">
+                        <div class="widget-app-content">
+                          <div class="widget-appointment widget" *ngFor="let subcollab of item?.assigned_too">
+                            <div class="widget-app-content">
+                              <div class="app-left-content">
+                                <div class="author-img">
+                                  <img onContextMenu="return false;" [src]="subcollab?.user?.member_id | memberPhoto | async" style="width: 100px" alt="User Photo" loading="lazy" />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <span>{{ item?.assigned_too?.length }} {{ language.community_groups.participants }}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <span>{{ language.organizer_task.completed_by }} {{ item.date | date: 'dd.MM.YYYY' }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pop-bottom">
+        <div>
+          <div class="left-popup" *ngIf="organizerDetails && organizerDetails.length > 0">
+            <div class="img-profile">
+              <img onContextMenu="return false;" [src]="organizerDetails[0]?.user[0]?.member_id | memberPhoto | async" style="width: 100px" alt="User Photo" loading="lazy" />
+            </div>
+            <div>
+              <span>{{ language.community_groups.task_was_created_by }}</span>
+              <label>{{ organizerDetails[0]?.user[0].firstname }} {{ organizerDetails[0]?.user[0].lastname }}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- SURVEY DETAIL MODAL POPUP END -->
+
+<!-- You do not have the permission to complete this subtask -->
+<div class="modal fade small-popoup" tabindex="-1" tabindex="-1" aria-labelledby="exampleModalLabel" id="subtask2">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ language.organizer_task.uncomplete_subtask }}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeSubtaskModal()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <path d="M32 3.72111L28.2789 0L16 12.2789L3.72111 0L0 3.72111L12.2789 16L0 28.2789L3.72111 32L16 19.7211L28.2789 32L32 28.2789L19.7211 16L32 3.72111Z" fill="#98A5C6"></path>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>{{ language.organizer_task.completePermission }}</p>
+      </div>
+      <div class="modal-footer">
+        <div class="right-popup">
+          <a href="javascript:void(0)" (click)="closeSubtaskModal()"
+            >{{ language.organizer_task.close_subtask }}
+            <vc-icon color="#5293F4" iconName="close" size="20px" width="20" height="20" style="margin-top: 3px"></vc-icon>
+          </a>
+        </div>
+        <!-- <button type="button" class="btn btn-secondary" (click)="closeSubtaskModal()" data-dismiss="modal">{{ language.organizer_task.close_subtask }}</button> -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- The task can only be completed by Admin or Organizer -->
+<div class="modal fade small-popoup" tabindex="-1" tabindex="-1" aria-labelledby="exampleModalLabel" id="subtask1">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ language.organizer_task.uncomplete_subtask }}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeModals()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <path d="M32 3.72111L28.2789 0L16 12.2789L3.72111 0L0 3.72111L12.2789 16L0 28.2789L3.72111 32L16 19.7211L28.2789 32L32 28.2789L19.7211 16L32 3.72111Z" fill="#98A5C6"></path>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>{{ language.organizer_task.completeByAdmin }}</p>
+      </div>
+      <div class="modal-footer">
+        <div class="right-popup">
+          <a href="javascript:void(0)" (click)="closeModals()"
+            >{{ language.organizer_task.close_subtask }}
+            <vc-icon color="#5293F4" iconName="close" size="20px" width="20" height="20" style="margin-top: 3px"></vc-icon>
+          </a>
+        </div>
+        <!-- <button type="button" class="btn btn-secondary" (click)="closeModals()" data-dismiss="modal">{{ language.organizer_task.close_subtask }}</button> -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- The task have uncomplete subtasks -->
+<div class="modal fade small-popoup" tabindex="-1" tabindex="-1" aria-labelledby="exampleModalLabel" id="subtask">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ language.organizer_task.uncomplete_subtask }}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeModal()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <path d="M32 3.72111L28.2789 0L16 12.2789L3.72111 0L0 3.72111L12.2789 16L0 28.2789L3.72111 32L16 19.7211L28.2789 32L32 28.2789L19.7211 16L32 3.72111Z" fill="#98A5C6"></path>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>{{ language.organizer_task.uncomplete_heading }}</p>
+      </div>
+      <div class="modal-footer">
+        <div class="right-popup">
+          <a href="javascript:void(0)" (click)="closeModal()"
+            >{{ language.organizer_task.close_subtask }}
+            <vc-icon color="#5293F4" iconName="close" size="20px" width="20" height="20" style="margin-top: 3px"></vc-icon>
+          </a>
+        </div>
+        <!-- <button type="button" class="btn btn-secondary" (click)="closeModal()" data-dismiss="modal">{{ language.organizer_task.close_subtask }}</button> -->
+      </div>
+    </div>
+  </div>
+</div>

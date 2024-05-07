@@ -1,0 +1,29 @@
+.vc-group-details-expanded {
+  .tab-selector-with-filters {
+    display: flex;
+    justify-content: space-between;
+
+    @media screen and (max-width: 1145px) {
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .tab-selector {
+      position: relative;
+      //max-width: 700px;
+      margin-top: 10px;
+      margin-bottom: 15px;
+    }
+
+    .filters {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+
+      @media screen and (max-width: 1145px) {
+        justify-content: center;
+      }
+      //justify-content: flex-end;
+    }
+  }
+}

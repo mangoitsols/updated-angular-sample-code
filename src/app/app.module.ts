@@ -1,128 +1,105 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, LOCALE_ID, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { LOCALE_ID } from '@angular/core';
 import { registerLocaleData } from '@angular/common';
+import localeDe from '@angular/common/locales/de';
 import localeEl from '@angular/common/locales/en';
+import myLocaleTr from '@angular/common/locales/tr';
+import myLocaleRu from '@angular/common/locales/ru';
+import localeIt from '@angular/common/locales/it';
+import localeFr from '@angular/common/locales/fr';
+import localeSp from '@angular/common/locales/es';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { DateAdapter } from '@angular/material/core';
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { RecoverPasswordComponent } from './pages/recover-password/recover-password.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AuthGuard } from './auth.guard';
-import { LimitTextPipe } from './pipe/limit-text.pipe';
-import { NgxPaginationModule } from 'ngx-pagination';
-import { AngularEditorModule } from '@kolkov/angular-editor';
-import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
-import { LanguageService } from './service/language.service';
-import { FullCalendarModule } from '@fullcalendar/angular';
-import interactionPlugin from '@fullcalendar/interaction';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import timeGridPlugin from '@fullcalendar/timegrid';
-import { TooltipDirective } from './tooltip.directive';
-import { NgxDocViewerModule } from 'ngx-doc-viewer';
-import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
-import { ConfirmDialogService } from './confirm-dialog/confirm-dialog.service';
-import { MatTabsModule } from '@angular/material/tabs';
-import { LoginComponent } from './pages/login/login.component';
-import { DashboardComponent } from './member/dashboard/dashboard.component';
-import { HeaderComponent } from './common/header/header.component';
-import { PageNotFoundComponent } from './common/page-not-found/page-not-found.component';
-import { MenuComponent } from './common/menu/menu.component';
-import { LayoutComponent } from './common/layout/layout.component';
-import { ClubNewsComponent } from './member/news/club-news/club-news.component';
-import { ClubAllNewsComponent } from './member/news/club-all-news/club-all-news.component';
-import { ClubNewsDetailsComponent } from './member/news/club-news-details/club-news-details.component';
-import { ClubDatesComponent } from './member/club-dates/club-dates.component';
-import { ClubEventsComponent } from './member/events/club-events/club-events.component';
-import { ClubAppointmentsComponent } from './member/club-appointments/club-appointments.component';
-import { AuthServiceService } from './service/auth-service.service';
-import { ClubWallComponent } from './member/club-wall/club-wall.component';
-import { GroupNewsComponent } from './member/news/group-news/group-news.component';
-import { BirthdaysComponent } from './member/birthdays/birthdays.component';
-import { CommunityComponent } from './member/community/community.component';
-import { ProfileComponent } from './member/profiles/profile/profile.component';
-import { ProfileViewComponent } from './member/profiles/profile-view/profile-view.component';
-import { ProfileEditComponent } from './member/profiles/profile-edit/profile-edit.component';
-import { ProfileBankComponent } from './member/profiles/profile-bank/profile-bank.component';
-import { CreateTaskComponent } from './member/tasks/create-task/create-task.component';
-import { CreateNewsComponent } from './member/news/create-news/create-news.component';
-import { CreateGroupComponent } from './member/groups/create-group/create-group.component';
-import { CreateMessageComponent } from './member/messages/create-message/create-message.component';
-import { ProfileClubComponent } from './member/profiles/profile-club/profile-club.component';
-import { UpdateNewsComponent } from './member/news/update-news/update-news.component';
-import { UpdateGroupComponent } from './member/groups/update-group/update-group.component';
-import { UpdateTaskComponent } from './member/tasks/update-task/update-task.component';
-import { ImageViewerComponent } from './member/image-viewer/image-viewer.component';
-import { GroupDetailComponent } from './member/groups/group-detail/group-detail.component';
-import { OrganizerAllTaskComponent } from './member/tasks/organizer-all-task/organizer-all-task.component';
-import { OrganizerPersonalTaskComponent } from './member/tasks/organizer-personal-task/organizer-personal-task.component';
-import { OrganizerGroupTaskComponent } from './member/tasks/organizer-group-task/organizer-group-task.component';
-import { OrganizerCreatedTaskComponent } from './member/tasks/organizer-created-task/organizer-created-task.component';
 
-FullCalendarModule.registerPlugins([
-  interactionPlugin,
-  dayGridPlugin,
-  timeGridPlugin
-]);
+import { NgxImageCompressService } from 'ngx-image-compress';
+import { ToastrModule } from 'ngx-toastr';
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+import { ConfirmDialogComponent, ConfirmDialogService, DenyReasonConfirmDialogComponent, DenyReasonConfirmDialogService, UpdateConfirmDialogComponent, UpdateConfirmDialogService } from '@shared/components';
+import { SharedModule } from '@shared/shared.module';
+import { AuthService, LanguageService } from '@core/services';
+import { AuthGuard } from '@core/guards';
+import { CustomDateAdapter } from '@core/helpers';
+import { AuthInterceptor } from '@core/interceptor/auth-interceptor';
+import { DialogModule } from '@ngneat/dialog';
+import { MessageInfoDialogComponent } from './shared/components/message-info-dialog/message-info-dialog.component';
+import { MessaInfoDialogService } from '@shared/components/message-info-dialog/message-info-dialog.service';
+import { MatRippleModule } from '@angular/material/core';
+
+export function getCulture() {
+  const language = localStorage.getItem('language');
+  if (language === 'en') {
+    registerLocaleData(localeEl, 'en');
+    return 'en';
+  } else if (language === 'ru') {
+    registerLocaleData(myLocaleRu);
+    return 'ru';
+  } else if (language === 'tr') {
+    registerLocaleData(myLocaleTr);
+    return 'tr';
+  } else if (language === 'it') {
+    registerLocaleData(localeIt);
+    return 'it';
+  } else if (language === 'es') {
+    registerLocaleData(localeSp);
+    return 'es';
+  } else if (language === 'fr') {
+    registerLocaleData(localeFr);
+    return 'fr';
+  } else {
+    registerLocaleData(localeDe);
+    return 'de';
+  }
+}
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    LoginComponent,
-    RecoverPasswordComponent,
-    DashboardComponent,
-    HeaderComponent,
-    PageNotFoundComponent,
-    MenuComponent,
-    LayoutComponent,
-    ClubNewsComponent,
-    ClubAllNewsComponent,
-    ClubNewsDetailsComponent,
-    ClubDatesComponent,
-    ClubEventsComponent,
-    ClubAppointmentsComponent,
-    ClubWallComponent,
-    GroupNewsComponent,
-    BirthdaysComponent,
-    LimitTextPipe,
-    ProfileViewComponent,
-    ProfileEditComponent,
-    ProfileBankComponent,
-    CreateEventComponent,
-    CreateTaskComponent,
-    CreateMessageComponent,
-    ProfileClubComponent,
-    ConfirmDialogComponent,
-    AllDocumentsComponent,
-    TaskDetailComponent,
-    TooltipDirective,
-    CreateChatComponent,
-    ContactAdminComponent,
-    MemberProfileComponent,
-    UpdateRoomComponent,
-  ],
+  declarations: [AppComponent, ConfirmDialogComponent, DenyReasonConfirmDialogComponent, UpdateConfirmDialogComponent, MessageInfoDialogComponent],
   imports: [
+    HttpClientModule,
+    BrowserAnimationsModule,
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule,
-    FormsModule,
-    ReactiveFormsModule,
-    BrowserAnimationsModule,
-    AngularEditorModule,
-    FullCalendarModule,
+    SharedModule,
+    MatRippleModule,
     NgMultiSelectDropDownModule.forRoot(),
-    NgxPaginationModule,
-    NgxDocViewerModule,
-    MatTabsModule
+    ToastrModule.forRoot({
+      timeOut: 2000,
+      disableTimeOut: false,
+      positionClass: 'toast-top-right',
+      preventDuplicates: true,
+      closeButton: false,
+    }),
+    DialogModule.forRoot({
+      closeButton: false,
+      // backdrop: false,
+      height: 'auto',
+      width: 'auto',
+    }),
   ],
-  exports: [
-    ConfirmDialogComponent
+  exports: [ConfirmDialogComponent, UpdateConfirmDialogComponent, DenyReasonConfirmDialogComponent],
+
+  providers: [
+    AuthService,
+    LanguageService,
+    AuthGuard,
+    ConfirmDialogService,
+    MessaInfoDialogService,
+    UpdateConfirmDialogService,
+    DenyReasonConfirmDialogService,
+    NgxImageCompressService,
+    { provide: LOCALE_ID, useValue: getCulture() },
+    { provide: DateAdapter, useClass: CustomDateAdapter },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true,
+    },
   ],
-  providers: [AuthServiceService, LanguageService, AuthGuard, ConfirmDialogService, { provide: LOCALE_ID, useValue: 'en-US' }],
-  bootstrap: [AppComponent]
+
+  bootstrap: [AppComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class AppModule { }
-
-
-// ,{ provide: LOCALE_ID, useValue: "de-at"},{provide: LOCALE_ID, useValue: 'en-US'}
+export class AppModule {}

@@ -1,0 +1,98 @@
+<div class="vc-group-details-expanded">
+  <ng-container *ngIf="!isLoading; else loadingPageHeader">
+    <vc-page-header [breadcrumbs]="breadcrumbs" [headerTitle]="pageTitle">
+      <ng-container *ngIf="currentRoute !== translateCurrentTab('members'); else groupActionButtons">
+        <vc-group-admin-info-card [title]="'Group Admin'" [user]="groupAdmin"></vc-group-admin-info-card>
+      </ng-container>
+      <ng-template #groupActionButtons>
+        <vc-button
+          (click)="joinGroup()"
+          *ngIf="!isUserMemberOfGroup"
+          [inlineStyle]="{ borderRadius: '5px' }"
+          backgroundColor="var(--vc-color-green)"
+          border="0"
+          color="var(--vc-color-white)"
+          label="{{ language.community_groups.tippy_join_group }}"
+        ></vc-button>
+        &nbsp;
+        <vc-button
+          (click)="leaveGroup()"
+          *ngIf="isUserMemberOfGroup"
+          [inlineStyle]="{ borderRadius: '5px', marginLeft: '10px' }"
+          backgroundColor="var(--vc-color-dark-pink)"
+          border="0"
+          label="{{ language.community_groups.tippy_leave_group }}"
+        ></vc-button>
+      </ng-template>
+    </vc-page-header>
+  </ng-container>
+
+  <div class="tab-selector-with-filters">
+    <div class="tab-selector">
+      <vc-tabs-selection
+        (selectedTab)="selectedTab($event)"
+        [selectedTabName]="currentRoute"
+        [tabs]="[
+          { label: 'News', routerLink: 'news' },
+          { label: language.community_groups.tasks, routerLink: 'tasks' },
+          { label: 'Events', routerLink: 'events' },
+          { label: language.community_groups.members, routerLink: 'members' }
+        ]"
+      ></vc-tabs-selection>
+    </div>
+    <!-- Drop down for News -->
+    <ng-container *ngIf="currentRoute === language.community_groups.news || currentRoute === 'News'">
+      <div class="filters">
+        <vc-dropdown (itemSelected)="updateDaysList(); updateFilter()" [(selectedItem)]="filterQuery.year" [options]="years" [placeholder]="language?.club_events?.year"></vc-dropdown>
+
+        <vc-dropdown (itemSelected)="updateDaysList(); updateFilter()" [(selectedItem)]="filterQuery.month" [options]="months" [placeholder]="language?.club_events?.month" bindValue="number"></vc-dropdown>
+
+        <vc-dropdown (itemSelected)="updateFilter()" [(selectedItem)]="filterQuery.day" [options]="days" [placeholder]="language?.courses?.day" bindValue="number"></vc-dropdown>
+
+        <vc-dropdown
+          (itemSelected)="updateFilter()"
+          [(selectedItem)]="filterQuery.selectedContribution"
+          [options]="[
+                            { label: language?.community_groups.my_contributions || 'My Contributions', value: 'my' },
+                            { label: language?.community_groups.all_contributions || 'All Contribution', value: 'all' },
+                        ]"
+          [placeholder]="language.community_groups.options"
+          bindValue="value"
+        ></vc-dropdown>
+      </div>
+    </ng-container>
+
+    <!-- Drop down for Events -->
+    <ng-container *ngIf="currentRoute === language.community_groups.events || currentRoute === 'Events'">
+      <div class="filters">
+        <vc-dropdown
+          (itemSelected)="toggleListView($event)"
+          [options]="[
+                            { label: language?.club_events.tile_view || '', value: 'tile-view' },
+                            { label: language?.club_events.list_view || '', value: 'list-view' },
+                        ]"
+          [placeholder]="language?.community_groups.opinion"
+          bindValue="value"
+          selectedItem="tile-view"
+        ></vc-dropdown>
+        <vc-dropdown (itemSelected)="updateFilterForEvents()" [(selectedItem)]="eventsFilterQuery.year" [options]="years" [placeholder]="language?.club_events?.year"></vc-dropdown>
+        <vc-dropdown (itemSelected)="updateFilterForEvents()" [(selectedItem)]="eventsFilterQuery.month" [options]="months" [placeholder]="language?.club_events?.month" bindValue="number"></vc-dropdown>
+      </div>
+    </ng-container>
+  </div>
+
+  <router-outlet (activate)="onOutletLoaded($event)"></router-outlet>
+</div>
+
+<ng-template #loadingPageHeader>
+  <ngx-skeleton-loader
+    [appearance]="'circle'"
+    [count]="1"
+    [theme]="{
+      width: '50%',
+      height: '100px',
+      'border-radius': '10px',
+      'margin-bottom': '10px'
+    }"
+  ></ngx-skeleton-loader>
+</ng-template>

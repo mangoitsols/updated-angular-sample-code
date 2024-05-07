@@ -1,0 +1,632 @@
+<div class="content create-component">
+  <div class="mobile-back-main">
+    <div class="back-button">
+      <button type="button" (click)="navigation.back()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none">
+          <path
+            d="M13.5 15L18.375 19.875C18.6042 20.1042 18.7188 20.3958 18.7188 20.75C18.7188 21.1042 18.6042 21.3958 18.375 21.625C18.1458 21.8542 17.8542 21.9687 17.5 21.9687C17.1458 21.9687 16.8542 21.8542 16.625 21.625L10.875 15.875C10.75 15.75 10.6617 15.6146 10.61 15.4687C10.5583 15.3229 10.5321 15.1667 10.5312 15C10.5312 14.8333 10.5575 14.6771 10.61 14.5312C10.6625 14.3854 10.7508 14.25 10.875 14.125L16.625 8.375C16.8542 8.14583 17.1458 8.03125 17.5 8.03125C17.8542 8.03125 18.1458 8.14583 18.375 8.375C18.6042 8.60417 18.7188 8.89583 18.7188 9.25C18.7188 9.60417 18.6042 9.89583 18.375 10.125L13.5 15Z"
+            fill="#E93608"
+          />
+        </svg>
+      </button>
+    </div>
+    <div class="mb-title">{{ language.create_event.updateEvent }}</div>
+    <div class="empty-area">&nbsp;</div>
+  </div>
+  <div class="add_event_main event_main">
+    <form [formGroup]="eventForm" (ngSubmit)="eventProcess()">
+      <div class="row">
+        <div class="col-md-12 add_event_content Payment_data_main create-news-main">
+          <div class="page-action">
+            <div class="page-heading page-heading-event">
+              <!-- <h1>{{ language.create_event.updateEvent }}</h1> -->
+              <vc-page-header [breadcrumbs]="breadCrumbItems" [headerTitle]="language.create_event.updateEvent">
+                <div class="profile_sub_btn event_sub_btn">
+                  <button
+                    type="submit"
+                    class="save_btn"
+                    [ngStyle]="{
+                      'border-color': setTheme.default_status == true ? setTheme.create_button_bgcolor : setTheme.create_button_bgcolor,
+                      'background-color': setTheme.default_status == true ? setTheme.create_button_bgcolor : setTheme.create_button_bgcolor,
+                      color: setTheme.default_status == true ? setTheme.create_button_text : setTheme.create_button_text
+                    }"
+                  >
+                    <span
+                      ><span [ngStyle]="{ color: setTheme.default_status == true ? setTheme.create_button_text : setTheme.create_button_text }">{{ language.profile.save }}</span></span
+                    >
+                  </button>
+                  <button
+                    type="button"
+                    (click)="onCancel()"
+                    class="Cancel_btn"
+                    [ngStyle]="{
+                      'border-color': setTheme.default_status == true ? setTheme.cancel_button_bgcolor : setTheme.cancel_button_bgcolor,
+                      'background-color': setTheme.default_status == true ? setTheme.cancel_button_bgcolor : setTheme.cancel_button_bgcolor,
+                      color: setTheme.default_status == true ? setTheme.cancel_button_text : setTheme.cancel_button_text
+                    }"
+                  >
+                    <span
+                      ><span [ngStyle]="{ color: setTheme.default_status == true ? setTheme.cancel_button_text : setTheme.cancel_button_text }">{{ language.create_event.cancel }}</span></span
+                    >
+                  </button>
+                </div>
+              </vc-page-header>
+            </div>
+          </div>
+          <div class="card body-bg create-event-main-box">
+            <div class="card-body" *ngIf="eventDetails">
+              <!-- profile details data start -->
+              <div class="profile_details">
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="event_field">
+                      <!-- <label>{{ language.create_event.title_label }}</label> -->
+                      <input type="text" placeholder="{{ language.create_event.name_placeholder }}" class="trigger_class" formControlName="name" />
+                      <label class="text-danger" *ngIf="eventSubmitted && eventForm.controls['name'].errors">{{ language.error_message.common_required }}</label>
+                    </div>
+                    <div class="event_field">
+                      <!-- <label>{{ language.create_event.location }}</label> -->
+                      <input type="text" placeholder="{{ language.create_event.venue_placeholder }}" formControlName="place" />
+                      <label class="text-danger" *ngIf="eventSubmitted && eventForm.controls['place'].errors">{{ language.error_message.common_required }}</label>
+                    </div>
+                    <div class="news-dropdown event_type">
+                      <!-- <label id="clickTrigger">{{ language.create_event.type }}</label> -->
+                      <ng-multiselect-dropdown
+                        *ngIf="eventTypeDropdownList"
+                        formControlName="type"
+                        [placeholder]="language.create_event.type_placeholder"
+                        [settings]="eventTypeDropdownSettings"
+                        [data]="eventTypeDropdownList"
+                        (onSelect)="onTypeSelect($event)"
+                      >
+                      </ng-multiselect-dropdown>
+                      <label class="text-danger" *ngIf="eventSubmitted && eventForm.controls['type'].errors">{{ language.error_message.common_required }}</label>
+                    </div>
+
+                    <div class="event_field">
+                      <!-- <label>{{ language.tags.tag }}</label> -->
+                      <mat-chip-list #chipList>
+                        <mat-chip *ngFor="let tag of tagsName" [selectable]="selectable" [removable]="removable" (removed)="remove(tag)">
+                          {{ tag }}
+                          <mat-icon matChipRemove *ngIf="removable"><i class="bx ri-close-circle-fill"></i></mat-icon>
+                        </mat-chip>
+                        <input
+                          class="form-control"
+                          placeholder="{{ language.create_event.tags_placeholder }}"
+                          #tagInput
+                          [formControl]="tagCtrl"
+                          [matAutocomplete]="auto"
+                          [matChipInputFor]="chipList"
+                          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                          [matChipInputAddOnBlur]="addOnBlur"
+                          (matChipInputTokenEnd)="addTags($event)"
+                        />
+                        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+                          <mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
+                            {{ tag.name }}
+                          </mat-option>
+                        </mat-autocomplete>
+                      </mat-chip-list>
+                      <!-- <div *ngIf="(eventForm.controls.tags.touched || eventSubmitted) && (eventForm.controls.tags.errors?.required || eventForm.controls.tags.errors?.whitespace)" class="text-danger">
+                        <div *ngIf="eventForm.controls.tags.errors.required">
+                          {{ language.error_message.common_required }}
+                        </div>
+                      </div> -->
+                    </div>
+
+                    <div class="weekdays-section" formArrayName="eventDate">
+                      <div class="weekdays-main" *ngFor="let item of eventForm.controls.eventDate['controls']; let i = index" [formGroupName]="i">
+                        <div class="group_input row">
+                          <div class="event_field col-md-4 date-box">
+                            <!-- <input type="date" id="date_start" placeholder="{{ language.create_event.start_date }}" formControlName="date_from" [min]="getToday()" (change)="dateSubmit()" onfocus="blur()" /> -->
+
+                            <input id="date_start" matInput [matDatepicker]="picker" placeholder="{{ language.create_event.start_date }}" formControlName="date_from" [min]="getToday()" (change)="dateSubmit()" onfocus="blur()" readonly />
+                            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                            <mat-datepicker #picker></mat-datepicker>
+
+                            <label class="text-danger" *ngIf="eventSubmitted || eventForm.controls.eventDate.controls[i].controls.date_from.touched">
+                              <label class="text-danger" *ngIf="eventForm.controls.eventDate.controls[i].controls.date_from.errors?.required">{{ language.error_message.common_required }}</label>
+                              <label class="text-danger" *ngIf="eventForm.controls.eventDate.controls[i].controls.date_from.status == 'INVALID'">{{ language.error_message.duplicate_date }}</label>
+                            </label>
+                          </div>
+                          <div class="event_field col-md-3 time-box">
+                            <!-- <label>{{ language.create_event.start_time }}</label> -->
+                            <input [ngxTimepicker]="pickerStart" [format]="24" placeholder="{{ language.create_event.start_time }}" formControlName="start_time" (change)="dateSubmit()" (change)="compareTwoTimes(i)" readonly />
+                            <ngx-material-timepicker #pickerStart (timeSet)="dateSubmit()" (closed)="compareTwoTimes(i)" [minutesGap]="5"></ngx-material-timepicker>
+                            <label class="text-danger" *ngIf="eventSubmitted || eventForm.controls.eventDate.controls[i].controls.start_time.touched">
+                              <label class="text-danger" *ngIf="eventForm.controls.eventDate.controls[i].controls.start_time.errors?.required">{{ language.error_message.common_required }}</label>
+                              <label class="text-danger" *ngIf="eventForm.controls.eventDate.controls[i].controls.start_time.status == 'INVALID'">{{ language.error_message.end_time_same }}</label>
+                            </label>
+                          </div>
+
+                          <div class="event_field col-md-3 time-box">
+                            <!-- <label>{{ language.create_event.end_time }}</label> -->
+                            <input [ngxTimepicker]="pickerEnd" [format]="24" placeholder="{{ language.create_event.end_time }}" formControlName="end_time" (change)="compareTwoTimes(i)" (change)="dateSubmit()" readonly />
+                            <ngx-material-timepicker #pickerEnd (closed)="compareTwoTimes(i)" (timeSet)="dateSubmit()" [minutesGap]="5"></ngx-material-timepicker>
+                            <label class="text-danger" *ngIf="eventSubmitted || eventForm.controls.eventDate.controls[i].controls.end_time.touched">
+                              <label class="text-danger" *ngIf="eventForm.controls.eventDate.controls[i].controls.end_time.errors?.required">{{ language.error_message.common_required }}</label>
+                              <label class="text-danger" *ngIf="eventForm.controls.eventDate.controls[i].controls.end_time.status == 'INVALID'">{{ language.error_message.end_time_same }}</label>
+                            </label>
+                            <label *ngIf="errorTime.isError == true && errorTime.index == i" class="text-danger">{{ errorTime.errorMessage }}</label>
+                          </div>
+
+                          <div class="event_field col-md-2 col-md-12 bottun-form">
+                            <div class="weekdays-item" *ngIf="i > 0">
+                              <div class="inst-add-btn">
+                                <a (click)="removeAvailableTimes(i)"> <span _ngcontent-kdc-c381="">-</span> {{ language.create_event.remove }} </a>
+                              </div>
+                            </div>
+                            <div class="weekdays-item" *ngIf="i == 0">
+                              <div class="inst-add-btn">
+                                <a (click)="addAvailableTimes()"> <span _ngcontent-kdc-c381="">+</span>{{ language.create_event.add_date }} </a>
+                              </div>
+                            </div>
+                          </div>
+                          <label class="text-danger" *ngIf="eventForm.get('eventDate')['controls'][i]?.hasError('duplicateDateTime')">
+                            {{ language.error_message.duplicate_date }}
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="group_input">
+                      <div class="news-dropdown">
+                        <div class="multi_dropdown_main" *ngIf="checkRecc == true">
+                          <!-- <label *ngIf="checkRecc == true && recurrenceSelected != undefined && recurrenceSelected != 0">
+                            {{ language.new_create_event.recurrence }}
+                            <span *ngIf="isRecurred"><span>: </span>{{ isRecurred }}</span>
+                          </label> -->
+                          <ng-multiselect-dropdown
+                            *ngIf="recurrenceDropdownList"
+                            formControlName="recurrence"
+                            [placeholder]="language.new_create_event.repeat_event"
+                            [settings]="recurrenceDropdownSettings"
+                            [data]="recurrenceDropdownList"
+                            (onSelect)="onRecurrenceSelect($event)"
+                            (onDeSelect)="onRecurrenceDeSelect($event)"
+                            (onSelect)="endRepeat()"
+                          >
+                          </ng-multiselect-dropdown>
+                          <label class="text-danger" *ngIf="eventSubmitted && eventForm.controls['visibility'].errors">{{ language.error_message.common_required }}</label>
+                        </div>
+                      </div>
+                      <div *ngIf="customReccDateError.isError == true" class="text-danger">{{ customReccDateError.errorMessage }}</div>
+                      <div class="group_input">
+                        <div class="event_field col-md-4" style="padding: 0" *ngIf="checkRecc == true && recurrenceSelected != undefined && recurrenceSelected != 0">
+                          <!-- <label>{{ language.create_event.end_date }}</label> -->
+                          <!-- <input type="date" id="date_end" placeholder="{{ language.create_event.end_date }}" formControlName="date_to" [min]="getEndDate()" onfocus="blur()" /> -->
+
+                          <input matInput [matDatepicker]="picker1" id="date_end" placeholder="{{ language.create_event.end_date }}" [min]="getEndDate()" formControlName="date_to" readonly />
+                          <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                          <mat-datepicker #picker1></mat-datepicker>
+
+                          <label class="text-danger" *ngIf="eventSubmitted && eventForm.controls['date_to'].errors">{{ language.error_message.common_required }}</label>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="group_input" *ngIf="isCustom">
+                      <div class="news-dropdown">
+                        <button type="button" style="display: none" id="showPopup" class="disabled" data-bs-toggle="modal" data-bs-target="#exampleModal">{{ language.profile.change_password }}</button>
+                        <div class="modal fade change_pass_section recurrence_model" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel">
+                          <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">
+                                  {{ language.new_create_event.custom_recurrence }}
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" (click)="closeModal()" aria-label="Close"><i class="nc-icon nc-simple-remove"></i></button>
+                              </div>
+                              <div class="group_input recurrence_main">
+                                <div class="news-dropdown">
+                                  <div class="multi_dropdown_main">
+                                    <label>{{ language.new_create_event.recurrence }}</label>
+                                    <ng-multiselect-dropdown
+                                      *ngIf="customRecurrenceDropdownList"
+                                      formControlName="customRecurrence"
+                                      [placeholder]="language.new_create_event.recurrence"
+                                      [settings]="customRecurrenceDropdownSettings"
+                                      [data]="customRecurrenceDropdownList"
+                                      (onSelect)="onCustomRecurrenceSelect($event)"
+                                    >
+                                    </ng-multiselect-dropdown>
+                                    <label class="text-danger" *ngIf="eventSubmitted && eventForm.controls['visibility'].errors">{{ language.error_message.common_required }}</label>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="modal-body">
+                                <div id="custom_recurrence_main">
+                                  <div class="custom_recurrence_inner">
+                                    <div class="repeat_daily" *ngIf="customRecurrenceTypeSelected == 1">
+                                      <span class="custom_repeat_inner">
+                                        {{ language.courses.every }} <input type="number" class="custom_recurrence_daily" name="interval" min="1" max="99" (change)="checkOnlyNaturalNumber($event)" (keyup)="checkOnlyNaturalNumber($event)" />
+                                        {{ language.courses.day }}
+                                      </span>
+                                    </div>
+                                    <div class="repeat_weekly" *ngIf="customRecurrenceTypeSelected == 2">
+                                      <span class="custom_repeat_inner">
+                                        {{ language.courses.every }}
+                                        <input type="number" class="custom_recurrence_weekly" name="interval" min="1" max="99" (change)="checkOnlyNaturalNumber($event)" (keyup)="checkOnlyNaturalNumber($event)" />
+                                        {{ language.courses.week }}
+                                      </span>
+                                      <div class="group_input">
+                                        <div class="news-dropdown">
+                                          <div class="multi_dropdown_main">
+                                            <label>{{ language.new_create_event.recurrence }}</label>
+                                            <ng-multiselect-dropdown
+                                              *ngIf="weekDayDropdownList"
+                                              formControlName="recc_week"
+                                              [placeholder]="language.new_create_event.recurrence"
+                                              [settings]="weekDayDropdownSettings"
+                                              [data]="weekDayDropdownList"
+                                              (onSelect)="onWeekDaySelect($event)"
+                                              (onDeSelect)="onWeekDayDeSelect($event)"
+                                            >
+                                            </ng-multiselect-dropdown>
+                                            <label class="text-danger" *ngIf="eventSubmitted && eventForm.controls['visibility'].errors">{{ language.error_message.common_required }}</label>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="repeat_monthly" *ngIf="customRecurrenceTypeSelected == 3">
+                                      <span class="custom_repeat_inner">
+                                        {{ language.courses.every }} <input type="number" class="custom_recurrence_monthly" name="interval" min="1" max="99" (change)="checkOnlyNaturalNumber($event)" (keyup)="checkOnlyNaturalNumber($event)" />{{
+                                          language.courses.month
+                                        }}
+                                      </span>
+                                    </div>
+                                    <div class="repeat_yearly" *ngIf="customRecurrenceTypeSelected == 4">
+                                      <span class="custom_repeat_inner">
+                                        {{ language.courses.every }} <input type="number" class="custom_recurrence_yearly" name="interval" min="1" max="99" (change)="checkOnlyNaturalNumber($event)" (keyup)="checkOnlyNaturalNumber($event)" />
+                                        {{ language.courses.year }}
+                                      </span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" *ngIf="this.naturalNumber == true" disabled class="btn btn-secondary change_btn">
+                                  {{ language.courses.ok }}
+                                </button>
+                                <!-- <button type="button"    *ngIf="this.naturalNumber == false"    class="btn btn-secondary change_btn" (click)="setCustomRecurrence()"> -->
+                                <button type="button" *ngIf="this.naturalNumber == false" class="btn btn-secondary change_btn" (click)="customReccModalClose()">
+                                  {{ language.courses.ok }}
+                                </button>
+                                <button type="button" class="btn btn-secondary change_btn" data-bs-dismiss="modal" (click)="closeModal()">{{ language.courses.cancel }}</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="group_input">
+                      <div class="news-dropdown">
+                        <div class="multi_dropdown_main">
+                          <ng-multiselect-dropdown
+                            *ngIf="visibilityDropdownList"
+                            formControlName="visibility"
+                            [placeholder]="language.create_event.visibility_placeholder_new"
+                            [settings]="visibilityDropdownSettings"
+                            [data]="visibilityDropdownList"
+                            (onSelect)="onVisibilitySelect($event)"
+                            (click)="changeVisibility()"
+                          >
+                          </ng-multiselect-dropdown>
+                          <label class="text-danger" *ngIf="eventSubmitted && eventForm.controls['visibility'].errors">{{ language.error_message.common_required }}</label>
+                        </div>
+                      </div>
+                      <div class="news-dropdown last-box" *ngIf="visibility == 1 || visibility == 2">
+                        <div class="multi_dropdown_main" *ngIf="setEventParticipants && setEventParticipants.length > 0">
+                          <ng-multiselect-dropdown
+                            formControlName="participant"
+                            [placeholder]="language.create_event.participants_placeholder"
+                            [settings]="userDropdownSettings"
+                            [data]="userDropdownList"
+                            (onSelect)="onUserSelect($event)"
+                            (onDeSelect)="onUserDeSelect($event)"
+                            (onSelectAll)="onUserSelectAll($event)"
+                            (onDeSelectAll)="onUserDeSelectAll($event)"
+                          >
+                          </ng-multiselect-dropdown>
+                          <div *ngIf="eventSubmitted && eventForm.controls?.participant?.errors?.required" class="text-danger">
+                            <div *ngIf="eventForm.controls?.participant?.errors.required">
+                              {{ language.error_message.common_required }}
+                            </div>
+                          </div>
+                        </div>
+                        <div class="multi_dropdown_main" *ngIf="setEventParticipants && setEventParticipants.length == 0">
+                          <label>{{ language.create_event.participants }}</label>
+                          <ng-multiselect-dropdown
+                            formControlName="participant"
+                            [placeholder]="language.create_event.participants_placeholder"
+                            [settings]="userDropdownSettings"
+                            [data]="userDropdownList"
+                            (onSelect)="onUserSelect($event)"
+                            (onDeSelect)="onUserDeSelect($event)"
+                            (onSelectAll)="onUserSelectAll($event)"
+                            (onDeSelectAll)="onUserDeSelectAll($event)"
+                          >
+                          </ng-multiselect-dropdown>
+                          <div *ngIf="eventSubmitted && eventForm.controls?.participant?.errors?.required" class="text-danger">
+                            <div *ngIf="eventForm.controls?.participant?.errors.required">
+                              {{ language.error_message.common_required }}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="news-dropdown" *ngIf="visibility == 3">
+                        <div class="multi_dropdown_main" *ngIf="groupGet && groupGet.length > 0">
+                          <ng-multiselect-dropdown formControlName="group" [placeholder]="language.create_event.group" [settings]="groupDropdownSettings" [data]="group_dropdown" (onSelect)="onGroupSelect($event)"> </ng-multiselect-dropdown>
+                          <div *ngIf="eventSubmitted && eventForm.controls.group.errors?.required" class="text-danger">
+                            <div *ngIf="eventForm.controls.group.errors.required">
+                              {{ language.error_message.common_required }}
+                            </div>
+                          </div>
+                        </div>
+                        <div class="multi_dropdown_main" *ngIf="groupGet && groupGet.length == 0">
+                          <ng-multiselect-dropdown formControlName="group" [placeholder]="language.create_event.group" [settings]="groupDropdownSettings" [data]="group_dropdown" (onSelect)="onGroupSelect($event)"> </ng-multiselect-dropdown>
+                          <div *ngIf="eventSubmitted && eventForm.controls.group.errors?.required" class="text-danger">
+                            <div *ngIf="eventForm.controls.group.errors.required">
+                              {{ language.error_message.common_required }}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <div class="check_field">
+                        <div class="unstyled centered">
+                          <div class="switch_toggle"><input class="check-style" id="styled-checkbox-9" type="checkbox" [checked]="" formControlName="show_guest_list" /> <label for="styled-checkbox-9"></label></div>
+                          <span>{{ language.create_event.show_guests }}</span>
+                        </div>
+                      </div>
+                      <div class="check_field">
+                        <div class="unstyled centered">
+                          <div class="switch_toggle"><input class="check-style" id="styled-checkbox-8" type="checkbox" formControlName="chargeable" (change)="eventCheck($event)" /> <label for="styled-checkbox-8"></label></div>
+                          <span>{{ language.create_event.chargeable }}</span>
+                        </div>
+                        <div class="event_field" *ngIf="eventPriceDisplay">
+                          <!-- <label>{{ language.create_event.event_price }}</label> -->
+                          <input type="text" placeholder="{{ language.create_event.enter_price }}" formControlName="price_per_participant" (keyup)="checkPrice()" />
+                          <div class="text-danger" *ngIf="checkPric == true">
+                            {{ language.courses.valid_price }}
+                          </div>
+                          <div class="text-danger" *ngIf="eventForm.controls.place.touched || eventSubmitted">
+                            <div *ngIf="eventForm.controls.price_per_participant.errors?.currencySymbol; else patternError">
+                              {{ language.error_message.specialChar_validation }}
+                            </div>
+                            <ng-template #patternError>
+                              <div *ngIf="eventForm.controls.price_per_participant.errors?.pattern">
+                                {{ language.error_message.common_valid }}
+                              </div>
+                            </ng-template>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="event_field paragr" [ngClass]="{ imageUpload: imageFile }">
+                      <div class="event_upload news_pic_upload">
+                        <label class="preview_txt" style="display: none"></label>
+                        <input type="file" (change)="uploadFile($event)" id="file" accept="image/*" />
+                        <span class="event_uplod_overlay">
+                          <label *ngIf="errorImage.isError" class="text-danger">
+                            {{ errorImage.errorMessage }}
+                          </label>
+                          <div class="loader_image" *ngIf="isImage"></div>
+                          <img onContextMenu="return false;" *ngIf="croppedImage" class="preview_img" [src]="croppedImage" />
+                          <img onContextMenu="return false;" class="preview_img" *ngIf="hasPicture == false && (croppedImage == null || croppedImage == '') && !isImage" src="../../../../assets/img/no_image.png" />
+                          <img onContextMenu="return false;" class="preview_img" *ngIf="eventImage == 'undefine'" src="../../../../assets/img/no_image.png" />
+                          <img onContextMenu="return false;" class="preview_img" *ngIf="hasPicture == true && (croppedImage == null || croppedImage == '') && !isImage" [src]="eventImage" />
+                        </span>
+                        <div *ngIf="(eventForm.controls.file.touched || eventSubmitted) && eventForm.controls.file.errors?.required" class="text-danger">
+                          <div *ngIf="eventForm.controls.file.errors.required">
+                            {{ language.error_message.common_required }}
+                          </div>
+                        </div>
+                      </div>
+                      <div class="card-body" *ngIf="imageFile">
+                        <div class="row" style="margin-top: 1px">
+                          <div class="text-center col-md-6">
+                            <image-cropper
+                              [imageChangedEvent]="imageChangedEvent"
+                              [maintainAspectRatio]="true"
+                              [aspectRatio]="4 / 3"
+                              autoCrop="false"
+                              hideResizeSquares="true"
+                              [resizeToHeight]="500"
+                              [onlyScaleDown]="true"
+                              [roundCropper]="false"
+                              format="webp"
+                              (imageCropped)="imageCropped($event)"
+                              (imageLoaded)="imageLoaded()"
+                              (cropperReady)="cropperReady()"
+                              (loadImageFailed)="loadImageFailed()"
+                            >
+                            </image-cropper>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="event_field paragr">
+                      <!-- <label>{{ language.create_event.description }}</label> -->
+                      <div class="event_upload">
+                        <angular-editor
+                          placeholder="{{ language.create_event.description_placeholder_new }}"
+                          formControlName="description"
+                          [config]="editorConfig"
+                          [ngClass]="{ 'is-invalid': eventSubmitted && eventForm.controls['description'].errors }"
+                        >
+                        </angular-editor>
+                        <label class="text-danger" *ngIf="eventSubmitted && eventForm.controls['description'].errors">{{ language.error_message.common_required }} </label>
+                      </div>
+                    </div>
+                    <div class="group_up_btn">
+                      <div class="attach_btn" *ngIf="eventFile" (click)="download(fileUrl, updateType)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#E12217" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-download">
+                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                          <polyline points="7 10 12 15 17 10" />
+                          <line x1="12" y1="15" x2="12" y2="3" />
+                        </svg>
+                        <span>{{ language.create_event.download }}</span>
+                        <!-- <a href="{{eventFile}}"><span>{{language.create_event.download_attachment}}</span> </a> -->
+                      </div>
+                      <div class="message_upload create_upload_event">
+                        <input type="file" (change)="uploadFile1($event)" id="add_docfile" accept="/" />
+                        <span class="message_upload_overlay">
+                          <div class="upload_label" [ngStyle]="{ 'border-color': setTheme.button_bgcolor, color: setTheme.button_bgcolor }">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#68759F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-plus">
+                              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                              <polyline points="14 2 14 8 20 8" />
+                              <line x1="12" y1="18" x2="12" y2="12" />
+                              <line x1="9" y1="15" x2="15" y2="15" />
+                            </svg>
+                            <div class="up_text">
+                              <div>{{ language.create_event.add_attachment_placeholdert }}</div>
+                              <!-- <span>({{ language.create_message.max }}20Mb)</span> -->
+                            </div>
+                          </div>
+                        </span>
+                        <label *ngIf="errorFile.isError == true" class="text-danger">{{ language.create_message.file_size }}</label>
+                        <label *ngIf="errorFiles.Error == true" class="text-danger">{{ errorFiles.errorMessage }}</label>
+                        <div class="message-upload-list" style="display: none">
+                          <label class="preview_txt1" style="display: none"></label>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="guest-radio-option">
+                      <div class="check_field">
+                        <div class="unstyled centered">
+                          <div class="switch_toggle"><input class="check-style" id="isTask_check" (click)="onTaskSelect()" formControlName="isTask" type="checkbox" /> <label for="isTask_check"></label></div>
+                          <span>{{ language.create_event.assign_task_placeholder }}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="event_field" *ngIf="isTaskField">
+                      <div>
+                        <button class="delete_btn" type="button" style="margin-left: 85%" *ngIf="taskStatus == 1" (click)="deleteTask(taskId)">{{ language.organizer.Delete }}</button>
+                        <div class="weekdays-section" formArrayName="task">
+                          <div class="weekdays-main" *ngFor="let item of eventForm.controls.task['controls']; let i = index" [formGroupName]="i">
+                            <div class="event_field">
+                              <!-- <label>{{ language.create_task.title_placeholder }}</label> -->
+                              <input type="text" id="date_start" [readonly]="taskStatus == 1" placeholder="{{ language.create_task.title_placeholder }}" formControlName="title" />
+                              <label class="text-danger" *ngIf="eventSubmitted || eventForm.controls.task.controls[i].controls.title.touched">
+                                <label class="text-danger" *ngIf="eventForm.controls.task.controls[i].controls.title.errors?.required">{{ language.error_message.common_required }}</label>
+                              </label>
+                            </div>
+                            <div class="event_field paragr">
+                              <!-- <label>{{ language.create_task.description }}</label> -->
+                              <angular-editor [config]="taskEditorConfig" placeholder="{{ language.room.angular_editor_text }}" formControlName="description" [ngClass]="{ 'is-invalid': submitted && eventForm.controls.description.errors }">
+                              </angular-editor>
+                              <label class="text-danger" *ngIf="eventSubmitted || eventForm.controls.task.controls[i].controls.description.touched">
+                                <label class="text-danger" *ngIf="eventForm.controls.task.controls[i].controls.description.errors?.required">{{ language.error_message.common_required }}</label>
+                              </label>
+                            </div>
+                            <div class="news-dropdown">
+                              <!-- <label>{{ language.create_task.collaborators }}</label> -->
+                              <ng-multiselect-dropdown
+                                formControlName="type_dropdown"
+                                [disabled]="taskStatus == 1"
+                                [placeholder]="language.create_task.type"
+                                [settings]="typeDropdownSettings"
+                                [data]="type_dropdown"
+                                (onDeSelect)="onTaskTypeDeSelect($event)"
+                                (onSelect)="onTaskTypeSelect($event)"
+                              >
+                              </ng-multiselect-dropdown>
+                              <label class="text-danger" *ngIf="eventSubmitted || eventForm.controls.task.controls[i].controls.type_dropdown.touched">
+                                <label class="text-danger" *ngIf="eventForm.controls.task.controls[i].controls.type_dropdown.errors?.required">{{ language.error_message.common_required }}</label>
+                              </label>
+                            </div>
+                            <div class="news-dropdown" *ngIf="type_visibility == 1">
+                              <!-- <label>{{ language.create_task.group_label }}</label> -->
+                              <ng-multiselect-dropdown formControlName="groups" [disabled]="taskStatus == 1" [placeholder]="language.create_task.group" [settings]="groupDropdownSettings" [data]="group_dropdown" (onSelect)="onTaskGroupSelect($event)">
+                              </ng-multiselect-dropdown>
+                              <label class="text-danger" *ngIf="eventSubmitted || eventForm.controls.task.controls[i].controls.groups.touched">
+                                <label class="text-danger" *ngIf="eventForm.controls.task.controls[i].controls.groups.errors?.required">{{ language.error_message.common_required }}</label>
+                              </label>
+                            </div>
+                            <div class="news-dropdown" *ngIf="user_dropdown && type_visibility == 0">
+                              <!-- <label>{{ language.create_task.participant_label }}</label> -->
+                              <ng-multiselect-dropdown
+                                formControlName="user_select"
+                                [disabled]="taskStatus == 1"
+                                [placeholder]="language.create_task.select_placeholder"
+                                [settings]="participantDropdownSettings"
+                                [data]="user_dropdown"
+                                (onSelect)="onTaskUserSelect($event)"
+                                (onDeSelect)="onTaskUserDeSelect($event)"
+                                (onSelectAll)="onTaskUserSelectAll(user_dropdown)"
+                                (onDeSelectAll)="onTaskUserDeSelectAll($event)"
+                              >
+                              </ng-multiselect-dropdown>
+                              <label class="text-danger" *ngIf="eventSubmitted || eventForm.controls.task.controls[i].controls.user_select.touched">
+                                <label class="text-danger" *ngIf="eventForm.controls.task.controls[i].controls.user_select.errors?.required">{{ language.error_message.common_required }}</label>
+                              </label>
+                            </div>
+
+                            <div class="event_field">
+                              <!-- <label>{{ language.create_task.end_date }}</label> -->
+                              <!-- <input type="date" id="date_start" formControlName="date" [readonly]="taskStatus == 1" placeholder="{{ language.create_task.end_date }}" onfocus="blur()" [min]="getToday()" (change)="taskDateValidate($event, '')" /> -->
+
+                              <input matInput [matDatepicker]="picker2" placeholder="{{ language.create_event.end_date }}" id="date_start" [min]="getToday()" formControlName="date" (dateChange)="taskDateValidate($event, '')" readonly />
+                              <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                              <mat-datepicker #picker2></mat-datepicker>
+
+                              <label class="text-danger" *ngIf="eventSubmitted || eventForm.controls.task.controls[i].controls.date.touched">
+                                <label class="text-danger" *ngIf="eventForm.controls.task.controls[i].controls.date.errors?.required">{{ language.error_message.common_required }}</label>
+                              </label>
+                              <label *ngIf="errorDateTask.isError == true" class="text-danger">
+                                {{ errorDateTask.errorMessage }}
+                              </label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="profile_sub_btn event_sub_btn mobile">
+                      <button
+                        type="submit"
+                        class="save_btn"
+                        [ngStyle]="{
+                          'border-color': setTheme.default_status == true ? setTheme.create_button_bgcolor : setTheme.create_button_bgcolor,
+                          'background-color': setTheme.default_status == true ? setTheme.create_button_bgcolor : setTheme.create_button_bgcolor,
+                          color: setTheme.default_status == true ? setTheme.create_button_text : setTheme.create_button_text
+                        }"
+                      >
+                        <span
+                          ><span [ngStyle]="{ color: setTheme.default_status == true ? setTheme.create_button_text : setTheme.create_button_text }">{{ language.profile.save }}</span></span
+                        >
+                      </button>
+                      <button
+                        type="button"
+                        (click)="onCancel()"
+                        class="Cancel_btn"
+                        [ngStyle]="{
+                          'border-color': setTheme.default_status == true ? setTheme.cancel_button_bgcolor : setTheme.cancel_button_bgcolor,
+                          'background-color': setTheme.default_status == true ? setTheme.cancel_button_bgcolor : setTheme.cancel_button_bgcolor,
+                          color: setTheme.default_status == true ? setTheme.cancel_button_text : setTheme.cancel_button_text
+                        }"
+                      >
+                        <span
+                          ><span [ngStyle]="{ color: setTheme.default_status == true ? setTheme.cancel_button_text : setTheme.cancel_button_text }">{{ language.create_event.cancel }}</span></span
+                        >
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- profile details data End -->
+            </div>
+            <div class="empty-data-image" *ngIf="!eventDetails || eventDetails?.length == 0">
+              <!-- <img onContextMenu="return false;"  src="assets/img/no-event-img.png" alt="{{language.club_events.no_events}}" loading="lazy"><br> -->
+              <span>{{ language.club_events.no_events }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

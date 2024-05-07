@@ -1,0 +1,146 @@
+.vc-dropdown {
+  box-sizing: border-box;
+  border-radius: 8px;
+  display: inline-block;
+  font-family: Gellix, serif;
+  width: 100%;
+  position: relative;
+
+  .dropdown-btn {
+    box-sizing: border-box;
+    background-color: #fff;
+    font-family: Gellix, serif;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    min-width: 150px;
+    width: 100%;
+    text-align: left;
+    position: relative;
+    color: var(--vc-color-dark-grey);
+    font-weight: 600;
+    padding: 10px 30px 10px 15px;
+
+    span {
+      position: absolute;
+      right: 10px;
+    }
+  }
+
+  .dropdown-content {
+    box-sizing: border-box;
+    display: block;
+    position: absolute;
+    z-index: 999;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    width: calc(100% - 0px);
+    max-height: 250px;
+    overflow-y: auto;
+    box-shadow: var(--vc-box-shadow);
+
+    .dropdown-item {
+      box-sizing: border-box; // Add this line
+      padding: 10px 15px;
+      display: block;
+      color: var(--vc-color-dark-grey);
+      text-decoration: none;
+      cursor: pointer;
+      //text-transform: capitalize;
+
+      &:hover {
+        background-color: #ddd;
+      }
+    }
+
+    .selected-item {
+      background-color: var(--vc-color-yellow);
+      color: #ffffff;
+      font-weight: 600;
+    }
+  }
+
+  .dropdown-content.top {
+    bottom: 100%; // This makes it appear above the dropdown button
+    top: auto; // Reset the top property
+  }
+}
+
+.m-vc-dropdown {
+  box-sizing: border-box;
+  border-radius: 5px;
+  display: inline-block;
+  font-family: Arial, sans-serif;
+  width: 100%;
+  position: relative;
+
+  .dropdown-btn {
+    box-sizing: border-box;
+    background-color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    //min-width: 150px;
+    width: 100%;
+    text-align: left;
+    position: relative;
+    padding: 10px 30px 10px 15px;
+    //font-size: 16px;
+    font-size: 14px;
+    font-weight: 400;
+    font-style: normal;
+    color: #414141;
+
+    span {
+      position: absolute;
+      right: 10px;
+    }
+  }
+
+  .dropdown-content {
+    box-sizing: border-box;
+    display: block;
+    position: absolute;
+    z-index: 999;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+    width: calc(100% - 0px);
+    max-height: 250px;
+    overflow-y: auto;
+    box-shadow: var(--vc-box-shadow);
+
+    .dropdown-item {
+      box-sizing: border-box; // Add this line
+      padding: 10px 15px;
+      display: block;
+      text-decoration: none;
+      cursor: pointer;
+
+      .items {
+        color: #414141;
+        font-style: normal;
+        font-size: 14px;
+        font-weight: 400;
+        padding: 0;
+        margin: 0;
+      }
+
+      &:hover {
+        background-color: #ddd;
+      }
+    }
+
+    .selected-item {
+      background-color: var(--vc-color-yellow);
+      color: #ffffff;
+      font-weight: 400;
+    }
+  }
+
+  .dropdown-content.top {
+    bottom: 100%; // This makes it appear above the dropdown button
+    top: auto; // Reset the top property
+  }
+}

@@ -1,0 +1,76 @@
+<div class="login-page">
+  <div class="container-fluid">
+    <div class="row no-margin">
+      <div class="col-sm-12 no-padding login-box">
+        <div class="row no-margin w-100">
+          <div class="col-lg-6 col-md-6 box-de">
+            <div class="login-content">
+              <div class="login-logo">
+                <img onContextMenu="return false;" src="assets/img/logo.png" alt="logo" loading="lazy" />
+              </div>
+              <div class="login-heading">
+                <h2>{{ language.login.loginHeading }}</h2>
+              </div>
+              <div class="login-con">
+                <p>{{ language.login.loginDesc }}</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6 col-md-6 log-det">
+            <div class="login-content">
+              <div class="login-logo">
+                <img onContextMenu="return false;" src="assets/img/brand_img_m.png" alt="logo" loading="lazy" />
+              </div>
+              <div class="login-con">
+                <p>{{ language.login.loginDesc }}</p>
+              </div>
+            </div>
+            <form class="login-form" [formGroup]="loginForm" (ngSubmit)="loginProcess()">
+              <h2>{{ language.login.signInHeading }}</h2>
+              <div class="text-box-cont">
+                <label class="error alert alert-danger" *ngIf="validError">{{ formError }}</label>
+                <div class="input-group">
+                  <label class="mobile-hidden">{{ language.login.userName }}</label>
+                  <div class="login-unput-feed">
+                    <input type="text" class="form-control username" placeholder="{{ language.login.userName }}" formControlName="username" aria-label="Username" aria-describedby="basic-addon1" />
+                    <div class="icon">
+                      <img onContextMenu="return false;" src="assets/img/Email_Icon.png" alt="logo" loading="lazy" />
+                    </div>
+                  </div>
+                  <span class="error" *ngIf="loginsubmitted && loginForm.controls['username'].errors">{{ language.login.userNameError }}</span>
+                </div>
+                <div class="input-group">
+                  <label class="mobile-hidden">{{ language.login.password }}</label>
+                  <div class="login-unput-feed">
+                    <input type="password" class="form-control password" placeholder="{{ language.login.password }}" formControlName="password" aria-label="Username" aria-describedby="basic-addon1" />
+                    <div class="icon">
+                      <img onContextMenu="return false;" src="assets/img/Password_Icon.png" alt="logo" loading="lazy" />
+                    </div>
+                  </div>
+                  <span class="error" *ngIf="loginsubmitted && loginForm.controls['password'].errors">{{ language.login.passwordError }}</span>
+                </div>
+
+                <div class="input-group center mb-3">
+                  <button class="btn btn-success">{{ language.login.signIn }}</button>
+                </div>
+                <p>
+                  <a class="forgot-password" routerLink="/recover-password">{{ language.login.recoverPassword }}</a>
+                </p>
+                <span class="login-bottom">
+                  <a routerLink="/email">Dein Verein ist noch nicht dabei?<b>Jetzt Infos holen.</b></a>
+                </span>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="authService.showLoader">
+  <div class="overlay">
+    <div class="overlay__inner">
+      <div class="overlay__content"><span class="spinner"></span></div>
+    </div>
+  </div>
+</div>

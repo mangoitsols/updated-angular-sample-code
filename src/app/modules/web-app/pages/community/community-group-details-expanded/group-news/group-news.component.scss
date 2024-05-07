@@ -1,0 +1,15 @@
+.group-news-list {
+  margin-top: 40px;
+
+  .fixed-gap {
+    gap: 2.3rem;
+  }
+
+  .row-cols-xxl-5 > * {
+    @media screen and (min-width: 1440px) {
+      -ms-flex: 0 0 18% !important;
+      flex: 0 0 18% !important;
+      max-width: 18% !important;
+    }
+  }
+}

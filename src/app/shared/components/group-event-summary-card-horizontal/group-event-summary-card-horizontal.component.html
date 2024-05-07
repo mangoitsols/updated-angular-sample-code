@@ -1,0 +1,30 @@
+<div class="list-view-layout-for-group-event">
+  <div class="w-100">
+    <div class="vc-card-shadow vc-radius-light p-3 mb-4">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h2 class="vc-date">{{ event?.recurringDates[0]?.dateFrom | date: 'dd. MMMM yy' }}</h2>
+          <p class="vc-time">
+            {{ event?.recurringDates && event?.recurringDates.length ? event?.recurringDates[0].startTime + ' until ' + event?.recurringDates[0].endTime : event.startTime + ' until ' + event.endTime }} {{ language.login.o_clock }}
+          </p>
+        </div>
+        <div>
+          <h2 class="vc-date">{{ event?.name }}</h2>
+          <vc-badge text="{{ event?.participantCount }} {{ language.community_groups.participants }}"></vc-badge>
+        </div>
+        <div>
+          <p class="vc-date">{{ event?.place }}</p>
+        </div>
+        <div>
+          <p class="vc-time">{{ event?.participantCount }} {{ language.club_events.approved_paticipants }}</p>
+        </div>
+        <div>
+          <a class="event-link" routerLink="../event/1/details"
+            >To the Event
+            <vc-icon [cssStyle]="{ marginBottom: '-11px' }" color="var(--vc-color-dark-pink)" iconName="arrow-right" size="22px"></vc-icon>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

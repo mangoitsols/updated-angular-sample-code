@@ -1,0 +1,401 @@
+<!-- Dashboard - News Start -->
+
+<div class="row" *ngIf="showClubDash">
+  <div id="club_widget" class="col-md-12 club_widget">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title" *ngIf="headline_word_option == 0">
+          {{ language.dashboard.dashboardNewsTitle_stand }}
+        </h5>
+        <h5 class="card-title" *ngIf="headline_word_option == 1">
+          {{ language.dashboard.dashboardNewsTitle_untern }}
+        </h5>
+      </div>
+      <div class="card-body scrollbox" id="contentDiv">
+        <div class="dash-news" (onLoad)="getAllNews()">
+          <div class="empty-data-image" *ngIf="dashboardNewsData?.length == 0">
+            <img onContextMenu="return false;" src="assets/img/no-news-img.png" alt="{{ language.group_news.no_news }}" loading="lazy" /><br />
+            <span>{{ language.group_news.no_news }}</span>
+          </div>
+          <ng-container *ngFor="let data of dashboardNewsData; let i = index">
+            <div class="news-item large-item" [ngClass]="{ 'highlighted-news': data.is_highlighted == 'true' }" *ngIf="i < 1">
+              <div class="news-item-image">
+                <ng-container *ngIf="data.token">
+                  <ng-container *ngIf="!data.token.isLoading && data.token.imageLoaded">
+                    <!-- If the image has finished loading, display it -->
+                    <img [src]="data.token.url" alt="Image" loading="lazy" data-bs-toggle="modal" data-bs-target="#exModal" (click)="getNewsDetails(data.id)" />
+                  </ng-container>
+                  <ng-container *ngIf="data.token.isLoading">
+                    <!-- If the image is still loading, display a loader -->
+                    <img [src]="'../../../../assets/img/loading.gif'" alt="Image" />
+                  </ng-container>
+                </ng-container>
+                <div class="new-action">
+                  <span class="club-news-date">{{ data.created_at | date: 'dd.MM.YYYY' }}</span> <br />
+                  <a class="green" *ngIf="data?.user?.id == userData['userId'] || role == 'admin'" (click)="updateNews(data.id)"> {{ language.club_news.Edit }}</a>
+                  <a class="red" *ngIf="data?.user?.id == userData['userId'] || role == 'admin'" (click)="deleteNews(data.id)"> {{ language.club_news.Delete }}</a>
+                </div>
+              </div>
+
+              <div class="news-item-content">
+                <div class="news-top-content" data-bs-toggle="modal" data-bs-target="#exModal" (click)="getNewsDetails(data.id)">
+                  <span *ngIf="data.audience == '0'" class="news-badge">{{ language.create_news.title }}</span>
+                  <span *ngIf="data.audience == '2'" class="news-badge-group">{{ language.create_news.group_news }}</span>
+                  <span *ngIf="data.audience == '3'" class="news-badge-chairman">{{ language.create_news.chairman }}</span>
+                </div>
+                <div class="news-description" data-bs-toggle="modal" data-bs-target="#exModal" (click)="getNewsDetails(data.id)">
+                  <h5>{{ data.title }}</h5>
+                  <div class="news-summery">
+                    <p [innerHTML]="data.text.length > 0 ? (data.text | slice: 0:700) : data.text"></p>
+                  </div>
+                </div>
+                <div class="news-footer">
+                  <div class="news-author" data-bs-toggle="modal" data-bs-target="#exModal" (click)="getNewsDetails(data.id)">
+                    <img [src]="data?.user?.member_id | memberPhoto | async" alt="User Photo" />
+                    <!-- <img onContextMenu="return false;" [src]="data.user.image != null ? data.user.image : 'assets/img/defaultProfile.jpeg'" alt="{{ data?.user?.firstname }}" loading="lazy" /> -->
+                    <div class="author-des">
+                      <Span
+                        >{{ language.dashboard.dashboardNewsAuthor }}<br />
+                        <strong> {{ data.user.firstname }} {{ data.user.lastname }} </strong>
+                      </Span>
+                      <span class="author-status" *ngIf="data.approved_status == 0 && !data.deny_by_id">{{ language.theme.status }}:-{{ language.community_groups.waitingApproval }}</span>
+                      <span class="deny-reason" *ngIf="data.approved_status == 0 && data.deny_by_id">{{ language.theme.status }}:-{{ language.community_groups.admin_deny }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+          <div class="news-item multi-item">
+            <div class="dashboard-slider" *ngIf="dashboardNewsData?.length > 0">
+              <ng-container *ngFor="let data of dashboardNewsData; let i = index">
+                <div class="multi-item-single" [ngClass]="{ 'highlighted-news': data.is_highlighted == 'true' }" *ngIf="i >= 1 && i <= newsDisplay">
+                  <!-- <div class="multi-item-single"   [ngClass]="{'highlighted-news': data.is_highlighted == 'true'}"> -->
+                  <div class="news-item-image" [ngClass]="data.imageUrls == null ? 'no_image' : ''">
+                    <ng-container *ngIf="data.token">
+                      <ng-container *ngIf="!data.token.isLoading && data.token.imageLoaded">
+                        <!-- If the image has finished loading, display it -->
+                        <img [src]="data.token.url" alt="Image" alt="" loading="lazy" data-bs-toggle="modal" data-bs-target="#exModal" (click)="getNewsDetails(data.id)" />
+                      </ng-container>
+                      <ng-container *ngIf="data.token.isLoading">
+                        <!-- If the image is still loading, display a loader -->
+                        <img [src]="'../../../../assets/img/loading.gif'" alt="Image" />
+                      </ng-container>
+                    </ng-container>
+                    <div class="new-action">
+                      <span class="club-news-date">{{ data.created_at | date: 'dd.MM.YYYY' }}</span
+                      ><br />
+                      <a class="green" *ngIf="data?.user?.id == userData['userId'] || role == 'admin'" (click)="updateNews(data.id)"> {{ language.club_news.Edit }}</a>
+                      <a class="red" *ngIf="data?.user?.id == userData['userId'] || role == 'admin'" (click)="deleteNews(data.id)"> {{ language.club_news.Delete }}</a>
+                    </div>
+                  </div>
+                  <div class="news-item-content">
+                    <div class="news-top-content" data-bs-toggle="modal" data-bs-target="#exModal" (click)="getNewsDetails(data.id)">
+                      <span *ngIf="data.audience == '0'" class="news-badge">{{ language.create_news.title }}</span>
+                      <span *ngIf="data.audience == '2'" class="news-badge-group">{{ language.create_news.group_news }}</span>
+                      <span *ngIf="data.audience == '3'" class="news-badge-chairman">{{ language.create_news.chairman }}</span>
+                    </div>
+                    <div class="news-description" data-bs-toggle="modal" data-bs-target="#exModal" (click)="getNewsDetails(data.id)">
+                      <h5>{{ data.title }}</h5>
+                      <div class="news-summery">
+                        <p [innerHTML]="data.text.length > 0 ? (removeHtml(data.text) | slice: 0:150) : removeHtml(data.text)"></p>
+                      </div>
+                    </div>
+
+                    <div class="news-footer">
+                      <div class="news-author" data-bs-toggle="modal" data-bs-target="#exModal" (click)="getNewsDetails(data.id)">
+                        <img onContextMenu="return false;" [src]="data?.user?.member_id | memberPhoto | async" alt="User Photo" />
+                        <!-- <img onContextMenu="return false;" [src]="data.user.image != null ? data.user.image : 'assets/img/defaultProfile.jpeg'" alt="{{ data?.user?.firstname }}" loading="lazy" /> -->
+                        <div class="author-des">
+                          <span
+                            >{{ language.dashboard.dashboardNewsAuthor }}<br /><strong>{{ data.user.firstname }} {{ data.user.lastname }}</strong></span
+                          >
+                          <span class="author-status" *ngIf="data.approved_status == 0 && !data.deny_by_id">{{ language.theme.status }}:-{{ language.community_groups.waitingApproval }}</span>
+                          <span class="deny-reason" *ngIf="data.approved_status == 0 && data.deny_by_id">{{ language.theme.status }}:-{{ language.community_groups.admin_deny }}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="dashboardData?.length > 0 && dashboardData.length > newsDisplay">
+          <div class="show_more_btn">
+            <a routerLink="/web/clubwall">
+              <button class="red_more_btn">{{ language.dashboard.dashboardNewsShowAll }}</button>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <br />
+    </div>
+  </div>
+</div>
+<!-- Dashboard - News End -->
+
+<!-- Clubwall - News Start -->
+<div class="row" *ngIf="showClubDash == false">
+  <div class="col-md-12 club_widget">
+    <div class="card">
+      <div class="card-header clubwall-ne">
+        <h5 class="card-title" *ngIf="headline_word_option == 0">
+          {{ language.dashboard.dashboardNewsTitle_new }}
+        </h5>
+        <h5 class="card-title" *ngIf="headline_word_option == 1">
+          {{ language.dashboard.dashboardNewsTitle_untern }}
+        </h5>
+        <div class="next-prev-button" *ngIf="dashboardData">
+          <button (click)="pageChanged(-1)" [disabled]="currentPageNmuber === 1">
+            <svg xmlns="http://www.w3.org/2000/svg" width="41" height="39" viewBox="0 0 41 39" fill="none">
+              <rect width="39" height="39" rx="10" fill="#DCE0EC" />
+              <rect x="2" y="2" width="35" height="35" rx="8" fill="white" />
+              <path
+                d="M17.2581 19.253C17.2581 19.1632 17.2581 19.0735 17.2573 18.9844C17.3387 18.2826 17.6322 17.6764 18.143 17.1772C18.8462 16.4905 19.5567 15.8117 20.2694 15.1358C20.7433 14.6869 21.4109 14.679 21.8545 15.1049C22.3062 15.5388 22.3003 16.2032 21.8242 16.6665C21.1662 17.3072 20.4956 17.9364 19.8339 18.5742C19.2735 19.1144 19.2742 19.7882 19.8339 20.3262C20.503 20.9697 21.1787 21.6061 21.8434 22.2533C22.199 22.5995 22.2781 23.0442 22.0866 23.4651C21.9018 23.8716 21.4834 24.1259 21.0272 24.1051C20.7388 24.0921 20.4926 23.9794 20.2879 23.7833C19.5589 23.0844 18.8232 22.3912 18.1046 21.6823C17.6122 21.196 17.3387 20.5969 17.2573 19.916C17.2573 19.8262 17.2581 19.7364 17.2581 19.6474C17.2581 19.5159 17.2581 19.3845 17.2581 19.253Z"
+                fill="#98A2C3"
+              />
+            </svg>
+          </button>
+          <button style="transform: rotate(180deg)" (click)="pageChanged(1)" [disabled]="currentPageNmuber === totalPages">
+            <svg xmlns="http://www.w3.org/2000/svg" width="41" height="39" viewBox="0 0 41 39" fill="none">
+              <rect width="39" height="39" rx="10" fill="#DCE0EC" />
+              <rect x="2" y="2" width="35" height="35" rx="8" fill="white" />
+              <path
+                d="M17.2581 19.253C17.2581 19.1632 17.2581 19.0735 17.2573 18.9844C17.3387 18.2826 17.6322 17.6764 18.143 17.1772C18.8462 16.4905 19.5567 15.8117 20.2694 15.1358C20.7433 14.6869 21.4109 14.679 21.8545 15.1049C22.3062 15.5388 22.3003 16.2032 21.8242 16.6665C21.1662 17.3072 20.4956 17.9364 19.8339 18.5742C19.2735 19.1144 19.2742 19.7882 19.8339 20.3262C20.503 20.9697 21.1787 21.6061 21.8434 22.2533C22.199 22.5995 22.2781 23.0442 22.0866 23.4651C21.9018 23.8716 21.4834 24.1259 21.0272 24.1051C20.7388 24.0921 20.4926 23.9794 20.2879 23.7833C19.5589 23.0844 18.8232 22.3912 18.1046 21.6823C17.6122 21.196 17.3387 20.5969 17.2573 19.916C17.2573 19.8262 17.2581 19.7364 17.2581 19.6474C17.2581 19.5159 17.2581 19.3845 17.2581 19.253Z"
+                fill="#98A2C3"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="card-body scrollbox">
+        <div class="dash-news" (onLoad)="getAllNewspagination()">
+          <div class="empty-data-image" *ngIf="dashboardData?.length == 0">
+            <img onContextMenu="return false;" src="assets/img/no-news-img.png" alt="{{ language.group_news.no_news }}" loading="lazy" /><br />
+            <span>{{ language.group_news.no_news }}</span>
+          </div>
+          <ng-container *ngFor="let data of dashboardData | paginate: { itemsPerPage: itemPerPage, currentPage: currentPageNmuber, totalItems: newsTotalRecords }; let i = index">
+            <div class="news-item large-item" [ngClass]="{ 'highlighted-news': data.is_highlighted == 'true' }" *ngIf="i < 1">
+              <div class="news-item-image">
+                <ng-container *ngIf="data.token">
+                  <ng-container *ngIf="!data.token.isLoading && data.token.imageLoaded">
+                    <!-- If the image has finished loading, display it -->
+                    <img [src]="data.token.url" alt="Image" alt="" loading="lazy" data-bs-toggle="modal" data-bs-target="#exModal" (click)="getNewsDetails(data.id)" />
+                  </ng-container>
+                  <ng-container *ngIf="data.token.isLoading">
+                    <!-- If the image is still loading, display a loader -->
+                    <img [src]="'../../../../assets/img/loading.gif'" alt="Image" />
+                  </ng-container>
+                </ng-container>
+                <div class="new-action">
+                  <a class="green" *ngIf="data?.user?.id == userData['userId'] || role == 'admin'" (click)="updateNews(data.id)"> {{ language.club_news.Edit }}</a>
+                  <a class="red" *ngIf="data?.user?.id == userData['userId'] || role == 'admin'" (click)="deleteNews(data.id)"> {{ language.club_news.Delete }}</a>
+                </div>
+              </div>
+
+              <div class="news-item-content">
+                <div class="news-top-content" data-bs-toggle="modal" data-bs-target="#exModal" (click)="getNewsDetails(data.id)">
+                  <span *ngIf="data.audience == '0'" class="news-badge">{{ language.create_news.title }}</span>
+                  <span *ngIf="data.audience == '2'" class="news-badge-group">{{ language.create_news.group_news }}</span>
+                  <span *ngIf="data.audience == '3'" class="news-badge-chairman">{{ language.create_news.chairman }}</span>
+                  <span class="news-date">
+                    {{ data.created_at | date: 'dd.MM.YYYY' }}
+                  </span>
+                </div>
+                <div class="news-description" data-bs-toggle="modal" data-bs-target="#exModal" (click)="getNewsDetails(data.id)">
+                  <h5>{{ data.title }}</h5>
+                  <div class="news-summery">
+                    <p [innerHTML]="data.text.length > 0 ? (data.text | slice: 0:490) : data.text"></p>
+                  </div>
+                </div>
+                <div class="news-footer">
+                  <div class="news-author" data-bs-toggle="modal" data-bs-target="#exModal" (click)="getNewsDetails(data.id)">
+                    <img [src]="data?.user?.member_id | memberPhoto | async" alt="User Photo" />
+                    <!-- <img onContextMenu="return false;" [src]="data.user.image != null ? data.user.image : 'assets/img/defaultProfile.jpeg'" alt="{{ data?.user?.firstname }}" loading="lazy" /> -->
+                    <div class="author-des">
+                      <span>{{ language.dashboard.dashboardNewsAuthor }}</span> <br />
+                      <span
+                        ><strong> {{ data.user.firstname }} {{ data.user.lastname }} </strong></span
+                      >
+                      <span class="author-status" *ngIf="data.approved_status == 0 && !data.deny_by_id">{{ language.theme.status }}:-{{ language.community_groups.waitingApproval }}</span>
+                      <span class="deny-reason" *ngIf="data.approved_status == 0 && data.deny_by_id">{{ language.theme.status }}:-{{ language.community_groups.admin_deny }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+          <div class="news-item multi-item">
+            <div class="dashboard-slider">
+              <div class="multi-item-carousel" *ngIf="bannerData?.length > 0 && allowAdvertisment == 0 && sliderOptionsOne != undefined">
+                <owl-carousel-o *ngIf="sliderOptionsOne != undefined" [options]="sliderOptionsOne">
+                  <ng-template carouselSlide *ngFor="let item of bannerData; let i = index">
+                    <div class="news-widget com-g-widget">
+                      <a [href]="item.redirectLink" target="_blank" (click)="onClickBanner(item.id)">
+                        <div class="news-image" [ngClass]="item?.banner_image[0]?.banner_image == null ? 'no_image' : ''">
+                          <img onContextMenu="return false;" [src]="item?.banner_image[0]?.banner_image != null ? item?.banner_image[0]?.banner_image : '../../assets/img/no_image.png'" alt="{{ item.bannerName }}" loading="lazy" />
+                        </div>
+                        <div class="news-content">
+                          <div class="car-badge"></div>
+                          <h5 [innerHTML]="item?.bannerName?.length > 0 ? (item?.bannerName | slice: 0:30) + '...' : item?.bannerName"></h5>
+                          <p [innerHTML]="item?.description?.length > 0 ? (item?.description | slice: 0:30) + '...' : item?.description"></p>
+                        </div>
+                      </a>
+                    </div>
+                  </ng-template>
+                </owl-carousel-o>
+              </div>
+              <ng-container *ngFor="let data of dashboardData | paginate: { itemsPerPage: itemPerPage, currentPage: currentPageNmuber, totalItems: newsTotalRecords }; let i = index">
+                <div class="multi-item-single" [ngClass]="{ 'highlighted-news': data.is_highlighted == 'true' }" *ngIf="i >= 1 && i <= newsDisplay">
+                  <div class="news-item-image" [ngClass]="data.imageUrls == null ? 'no_image' : ''">
+                    <ng-container *ngIf="data.token">
+                      <ng-container *ngIf="!data.token.isLoading && data.token.imageLoaded">
+                        <!-- If the image has finished loading, display it -->
+                        <img [src]="data.token.url" alt="Image" alt="" loading="lazy" data-bs-toggle="modal" data-bs-target="#exModal" (click)="getNewsDetails(data.id)" />
+                      </ng-container>
+                      <ng-container *ngIf="data.token.isLoading">
+                        <!-- If the image is still loading, display a loader -->
+                        <img [src]="'../../../../assets/img/loading.gif'" alt="Image" />
+                      </ng-container>
+                    </ng-container>
+                    <div class="new-action">
+                      <a class="green" *ngIf="data?.user?.id == userData['userId'] || role == 'admin'" (click)="updateNews(data.id)"> {{ language.club_news.Edit }}</a>
+                      <a class="red" *ngIf="data?.user?.id == userData['userId'] || role == 'admin'" (click)="deleteNews(data.id)"> {{ language.club_news.Delete }}</a>
+                    </div>
+                  </div>
+                  <div class="news-item-content">
+                    <div class="news-top-content" data-bs-toggle="modal" data-bs-target="#exModal" (click)="getNewsDetails(data.id)">
+                      <span *ngIf="data.audience == '0'" class="news-badge">{{ language.create_news.title }}</span>
+                      <span *ngIf="data.audience == '2'" class="news-badge-group">{{ language.create_news.group_news }}</span>
+                      <span *ngIf="data.audience == '3'" class="news-badge-chairman">{{ language.create_news.chairman }}</span>
+                      <span class="news-date">
+                        {{ data.created_at | date: 'dd.MM.YYYY' }}
+                      </span>
+                    </div>
+                    <div class="news-description" data-bs-toggle="modal" data-bs-target="#exModal" (click)="getNewsDetails(data.id)">
+                      <h5>{{ data.title }}</h5>
+                      <div class="news-summery">
+                        <p [innerHTML]="data.text.length > 0 ? (removeHtml(data.text) | slice: 0:150) : removeHtml(data.text)"></p>
+                      </div>
+                    </div>
+
+                    <div class="news-footer">
+                      <div class="news-author" data-bs-toggle="modal" data-bs-target="#exModal" (click)="getNewsDetails(data.id)">
+                        <img [src]="data?.user?.member_id | memberPhoto | async" alt="User Photo" />
+                        <!-- <img onContextMenu="return false;" [src]="data.user.image != null ? data.user.image : 'assets/img/defaultProfile.jpeg'" alt="{{ data?.user?.firstname }}" loading="lazy" /> -->
+                        <div class="author-des">
+                          <span>{{ language.dashboard.dashboardNewsAuthor }}</span
+                          ><br />
+                          <span
+                            ><strong>{{ data.user.firstname }} {{ data.user.lastname }}</strong></span
+                          >
+                          <span class="author-status" *ngIf="data.approved_status == 0 && !data.deny_by_id">{{ language.theme.status }}:-{{ language.community_groups.waitingApproval }}</span>
+                          <span class="deny-reason" *ngIf="data.approved_status == 0 && data.deny_by_id">{{ language.theme.status }}:-{{ language.community_groups.admin_deny }}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </div>
+      <br />
+    </div>
+  </div>
+</div>
+<!-- Clubwall - News End -->
+
+<div class="modal fade change_pass_section news_detail_popup all_news" id="exModal" tabindex="-1" aria-labelledby="exampleModalLabel">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>{{ language.club_news.clubNewsDetails }}</h3>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <path d="M32 3.72111L28.2789 0L16 12.2789L3.72111 0L0 3.72111L12.2789 16L0 28.2789L3.72111 32L16 19.7211L28.2789 32L32 28.2789L19.7211 16L32 3.72111Z" fill="#98A5C6" />
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="n-detail-main">
+          <div class="news_details_main">
+            <div class="row">
+              <div class="col-md-12 news_detail_inner">
+                <!-- <div class="card"> -->
+                <div class="card-body">
+                  <!-- news details data start -->
+                  <div class="news_details" *ngIf="newsData">
+                    <!-- <div class=""> -->
+                    <div class="news_content">
+                      <div class="news_image">
+                        <app-image-viewer *ngIf="imageUrls" [imageURL]="imageUrls" [open]="viewImage" (close)="viewImage = false"> </app-image-viewer>
+                        <div class="news_image_container" (click)="viewImage = true">
+                          <ng-container *ngIf="newsData.token">
+                            <ng-container *ngIf="!newsData.token.isLoading && newsData.token.imageLoaded">
+                              <img [src]="newsData.token.url" alt="Image" />
+                            </ng-container>
+                            <ng-container *ngIf="newsData.token.isLoading">
+                              <img [src]="'../../../../assets/img/loading.gif'" alt="Image" />
+                            </ng-container>
+                          </ng-container>
+                          <div class="new-action" *ngIf="role != 'guest'">
+                            <a class="green" *ngIf="newsData.user.id == userData['userId'] || role == 'admin'" (click)="updateNews(newsData.id)"> {{ language.club_news.Edit }}</a>
+
+                            <a class="red" *ngIf="newsData.user.id == userData['userId'] || role == 'admin'" (click)="deleteNews(newsData.id)"> {{ language.club_news.Delete }}</a>
+                          </div>
+                        </div>
+                      </div>
+                      <!--Remove the tag-->
+                      <div class="news-top-content">
+                        <span *ngIf="newsData.audience == '0'" class="news-badge">{{ language.create_news.title }}</span>
+                        <span *ngIf="newsData.audience == '2'" class="news-badge-group">{{ language.create_news.group_news }}</span>
+                        <span *ngIf="newsData.audience == '3'" class="news-badge-chairman">{{ language.create_news.chairman }}</span>
+                        <span class="news-date">
+                          {{ newsData?.created_at | date: 'dd.MM.YYYY' }}
+                        </span>
+                      </div>
+                      <div class="news_heading">
+                        <h2>{{ newsData.title }}</h2>
+                      </div>
+                      <div class="news_content_text scrollbox" [innerHTML]="newsData.text">
+                        ...<a href="#">{{ language.dashboard.dashboardNewsContent }}</a>
+                      </div>
+                      <hr />
+                      <div class="author-info club-new-popup">
+                        <div class="author-img">
+                          <img [src]="this.newsData?.user?.member_id | memberPhoto | async" alt="User Photo" />
+                        </div>
+                        <div class="author-des">
+                          <div>
+                            <span class="author-id">
+                              {{ language.dashboard.dashboardNewsAuthor }}
+                            </span>
+                            <span class="author-id"> {{ newsData?.user?.firstname }} {{ newsData?.user?.lastname }} </span>
+                          </div>
+                          <span class="author-status" *ngIf="newsData.approved_status == 0 && !newsData.deny_by_id"> {{ language.theme.status }}:-{{ language.community_groups.waitingApproval }} </span>
+                          <span class="author-status" *ngIf="newsData.approved_status == 0 && newsData.deny_by_id"> {{ language.theme.status }}:-{{ language.community_groups.admin_deny }} </span>
+                          <span class="author-id" *ngIf="newsData.approved_status == 0 && newsData.deny_by_id != null">
+                            {{ language.dashboard.denyBy }}:-
+                            {{ newsData.denybyuser?.firstname }}
+                            {{ newsData.denybyuser?.lastname }}
+                          </span>
+                          <span class="deny-reason" *ngIf="newsData.approved_status == 0 && newsData.deny_by_id != null"> {{ language.dashboard.denyReason }}:- {{ newsData.deny_reason }} </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- news details data End -->
+              </div>
+              <!-- </div> -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

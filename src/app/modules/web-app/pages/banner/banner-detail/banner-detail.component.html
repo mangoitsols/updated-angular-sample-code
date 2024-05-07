@@ -1,0 +1,151 @@
+<div class="content">
+  <div class="survey-main">
+    <div class="page-main">
+      <div class="page-action">
+        <div class="page-heading">
+          <vc-page-header [breadcrumbs]="breadCrumbItems" [headerTitle]="language.banner.banner_detail"> </vc-page-header>
+        </div>
+
+        <div class="page-action-right">
+          <button type="button" class="white_btn" routerLink="/web/banner-list" [ngStyle]="{ 'border-color': this.setTheme.button_bgcolor, color: this.setTheme.button_bgcolor }">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M9.68969 13.75L5.96875 10L9.68969 6.25M6.48578 10H14.0312" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M19 10C19 5.03125 14.9688 1 10 1C5.03125 1 1 5.03125 1 10C1 14.9688 5.03125 19 10 19C14.9688 19 19 14.9688 19 10Z" stroke="white" stroke-width="1.5" stroke-miterlimit="10" />
+            </svg>
+            &nbsp;{{ language.Survey.back }}
+          </button>
+        </div>
+      </div>
+      <div class="title-wrapper">
+        <ng-container>
+          <div class="survey-view-wrapper" *ngIf="bannerDetail">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="msg-text-wrap">
+                      <div class="detail-big-img" *ngIf="bannerDetail.token">
+                        <ng-container *ngIf="bannerDetail.token">
+                          <ng-container *ngIf="!bannerDetail.token.isLoading && bannerDetail.token.imageLoaded">
+                            <img [src]="bannerDetail.token.url" alt="Image" />
+                          </ng-container>
+                          <ng-container *ngIf="bannerDetail.token.isLoading">
+                            <img [src]="'../../../../assets/img/loading.gif'" alt="Image" />
+                          </ng-container>
+                        </ng-container>
+
+                        <div class="dropdown action_group" *ngIf="role != 'guest'">
+                          <button class="dropdown-toggle" type="button" (click)="onShow()">
+                            <i class="fa fa-pencil"></i>
+                          </button>
+                          <ul class="dropdown-menu bunch_drop" aria-labelledby="dropdownMenuLink">
+                            <li>
+                              <a class="dropdown-item" routerLink="/web/update-banner/{{ bannerDetail.id }}">{{ language.organizer.Edit }}</a>
+                            </li>
+                            <li>
+                              <a class="dropdown-item" *ngIf="bannerDetail" (click)="deleteBanner(bannerDetail.id)">{{ language.organizer.Delete }}</a>
+                            </li>
+                            <li>
+                              <a class="dropdown-item" (click)="goBack()">{{ language.organizer.Back }}</a>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                      <div class="banner-content">
+                        <div class="title-survey-wrap">
+                          <h2>{{ bannerDetail.bannerName }}</h2>
+                        </div>
+                        <p [innerHTML]="bannerDetail.description"></p>
+                      </div>
+                    </div>
+                    <div class="schedule_list">
+                      <ul>
+                        <li>{{ language.courses.start_date }}</li>
+                        <li>{{ bannerDetail.bannerStartDate.split('T')[0] | date: 'dd.MM.YYYY' }}</li>
+                      </ul>
+                      <ul>
+                        <li>{{ language.courses.end_date }}</li>
+                        <li>{{ bannerDetail.bannerEndDate.split('T')[0] | date: 'dd.MM.YYYY' }}</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="create-survey-right">
+                      <div class="event_field">
+                        <h3>{{ language.banner.banner_status }}</h3>
+                        <div class="radio-inline banner-specialize">
+                          <div class="custom-control custom-radio" *ngIf="bannerDetail.status == 0">
+                            <label for="active">{{ language.banner.active }}</label>
+                          </div>
+                          <div class="custom-control custom-radio" *ngIf="bannerDetail.status == 1">
+                            <label for="inactive">{{ language.banner.inactive }}</label>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="event_field">
+                        <h4>{{ language.banner.banner_invoice }}</h4>
+                        <div class="radio-inline banner-specialize">
+                          <div class="custom-control custom-radio" *ngIf="bannerDetail.invoice == 0">
+                            <label for="created">{{ language.banner.created }}</label>
+                          </div>
+                          <div class="custom-control custom-radio" *ngIf="bannerDetail.invoice == 1">
+                            <label for="paid">{{ language.banner.paid }}</label>
+                          </div>
+                          <div class="custom-control custom-radio" *ngIf="bannerDetail.invoice == 2">
+                            <label for="not_paid">{{ language.banner.not_paid }}</label>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="row update-btm-field">
+                        <div class="col-md-12 event_field">
+                          <h4>{{ language.banner.banner_category }}</h4>
+                          <div class="radio-inline banner-specialize">
+                            <div class="check_field" *ngFor="let data of selectedCategory; let i = index">
+                              <label for="email_no">{{ data.name }}</label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="row update-btm-field">
+                        <div class="col-md-12 event_field">
+                          <h4>{{ language.banner.banner_placement }}</h4>
+                          <div class="radio-inline banner-specialize">
+                            <div class="check_field" *ngFor="let data of selectedPlacement; let i = index">
+                              <label for="email_no">{{ data.name }}</label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="row update-btm-field">
+                        <div class="col-md-12 event_field">
+                          <h4>{{ language.banner.banner_display }}</h4>
+                          <div class="radio-inline banner-specialize">
+                            <div class="check_field" *ngFor="let data of selectedDisplayed; let i = index">
+                              <label for="email_no">{{ data.name }}</label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <div class="empty-data-image" *ngIf="!bannerDetail || bannerDetail?.length == 0">
+          <span style="margin-left: 700px">{{ language.banner.no_banner_available }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

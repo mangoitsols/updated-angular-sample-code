@@ -1,0 +1,81 @@
+<div class="profile-sidebar">
+  <div class="top-card">
+    <a>
+      <div class="card card-stats profile-card">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-12 col-md-12">
+              <div class="widget-top widget-col education profile-widget">
+                <owl-carousel-o [options]="customOptions">
+                  <ng-template carouselSlide>
+                    <div class="profile-card-content">
+                      <div class="profile-image">
+                        <Span>
+                          <!-- <img onContextMenu="return false;" [src]="userDetails && thumbnail != null && thumbnail != '' ? thumbnail : '../../../assets/img/defaultProfile.jpeg'" alt="" loading="lazy" /> -->
+                          <img onContextMenu="return false;" [src]="userData?.member_id | memberPhoto | async" alt="User Photo" loading="lazy" />
+                        </Span>
+                      </div>
+                    </div>
+                  </ng-template>
+                </owl-carousel-o>
+                <div class="profile-card-description">
+                  <h3>{{ userData.firstName }} {{ userData.lastName }}</h3>
+                  <ul>
+                    <li>{{ userData.Club.name }}</li>
+                    <li *ngIf="userData.roles[0] != 'user'">{{ userData.roles[0] }}</li>
+                    <li *ngIf="userData.roles[0] == 'user'">Mitglied</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </a>
+  </div>
+  <div class="profile_navigation">
+    <ul class="nav nav-tabs" role="tablist">
+      <li class="nav-item" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{ exact: true }">
+        <a
+          class="nav-link active"
+          data-toggle="tab"
+          role="tab"
+          routerLink="/web/profile"
+          (click)="onGeneralInfo()"
+          [ngStyle]="displayGeneral == true ? { 'border-color': setTheme.default_status == true ? setTheme.create_button_bgcolor : setTheme.create_button_bgcolor, color: setTheme.button_bgcolor } : { 'border-color': '#808183', color: '#808183' }"
+        >
+          <span class="profile-menu-ic">
+            <img src="../../../../../../assets/icons/user.svg" />
+          </span>
+          <span>{{ language.profile.profile_nav.general_info }}</span>
+        </a>
+      </li>
+      <li class="nav-item" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{ exact: true }">
+        <a class="nav-link data_ic" data-toggle="tab" role="tab" routerLink="/web/profile-bank" (click)="onPaymentData()">
+          <span class="profile-menu-ic">
+            <img src="../../../../../../assets/icons/payment.svg" />
+          </span>
+          <span>{{ language.profile.profile_nav.payment_data }}</span>
+        </a>
+      </li>
+      <li class="nav-item" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{ exact: true }">
+        <a class="nav-link c_data" data-toggle="tab" role="tab" routerLink="/web/profile-club" (click)="onMasterData()">
+          <span class="profile-menu-ic">
+            <img src="../../../../../../assets/icons/master-data.svg" />
+          </span>
+          <span>{{ language.profile.profile_nav.club_data }}</span>
+        </a>
+      </li>
+      <li class="nav-item" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{ exact: true }">
+        <a class="nav-link c_data" data-toggle="tab" role="tab" routerLink="/web/profile-my-club" (click)="onClubData()">
+          <span class="profile-menu-ic">
+            <img src="../../../../../../assets/icons/club-info.svg" />
+          </span>
+          <span *ngIf="headline_word_option == 0">{{ language.profile.profile_nav.my_club_data_stand }}</span>
+          <span *ngIf="headline_word_option == 1">{{ language.profile.profile_nav.my_club_data_untern }}</span>
+        </a>
+      </li>
+    </ul>
+    <!-- Tab panes -->
+  </div>
+</div>

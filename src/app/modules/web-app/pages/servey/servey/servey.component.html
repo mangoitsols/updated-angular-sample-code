@@ -1,0 +1,77 @@
+<div class="content" *ngIf="participateAccess.survey == 'Yes'">
+  <vc-page-header [breadcrumbs]="breadCrumbItems" [headerTitle]="language.Survey.survey">
+    <div class="page-action-right" *ngIf="userDetails.isAdmin || userDetails.isEditor || userDetails.isFunctionary || userDetails.isSecretary">
+      <button type="button" class="vc-button-with-icon disabled vc-button-create" routerLink="/web/create-survey">
+        <vc-icon color="#ffffff" iconName="add-event" size="20px"></vc-icon>
+        &nbsp;&nbsp;<span>{{ language.Survey.create_survey }}</span>
+      </button>
+    </div>
+  </vc-page-header>
+
+  <div class="row">
+    <div class="col-md-12 page-main">
+      <div class="survey-tabs-wrapper">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card">
+              <div class="card-body card-body-new">
+                <div class="tasks_navigation">
+                  <ul class="nav nav-tabs" role="tablist">
+                    <li class="nav-item">
+                      <a class="nav-link active" id="head-allTask" (click)="onSurvey(1)" [ngStyle]="displayActiveSurvey == true ? { color: '#68759F' } : { color: '#C4CBE0' }">
+                        <div class="tab_value">{{ language.Survey.active_survey }} {{ language.Survey.survey }}</div>
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" id="head-personalTask" (click)="onSurvey(2)" [ngStyle]="displayMySurvey == true ? { color: '#68759F' } : { color: '#C4CBE0' }">
+                        <div class="tab_value">{{ language.Survey.my_votes }} {{ language.Survey.survey }}</div>
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" id="head-groupTask" (click)="onSurvey(3)" [ngStyle]="displayCompletedSurvey == true ? { color: '#68759F' } : { color: '#C4CBE0' }">
+                        <div class="tab_value">{{ language.Survey.completed_votes }} {{ language.Survey.survey }}</div>
+                      </a>
+                    </li>
+                  </ul>
+                  <!-- Tab panes -->
+                </div>
+                <div class="tab-content">
+                  <div class="active" id="tabs-1" *ngIf="displayActiveSurvey">
+                    <div class="chat-navigation chat-navigation-new">
+                      <div class="tab-content">
+                        <app-active-survey></app-active-survey>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="" id="tabs-2" *ngIf="displayMySurvey">
+                    <div class="chat-navigation chat-navigation-new">
+                      <div class="tab-content">
+                        <app-my-survey></app-my-survey>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="" id="tabs-3" *ngIf="displayCompletedSurvey">
+                    <div class="chat-navigation chat-navigation-new">
+                      <div class="tab-content">
+                        <app-completed-survey></app-completed-survey>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="not-f-main" *ngIf="participateAccess.survey == 'No'">
+  <div class="page-not-available">
+    <div class="not-available-user">
+      <vc-icon color="blue" iconName="feature-locked" size="50px"></vc-icon>
+      <h1>{{ language.genral_message.feature_locked }}</h1>
+      <span>{{ language.genral_message.not_available_msg }}</span>
+    </div>
+  </div>
+</div>

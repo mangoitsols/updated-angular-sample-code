@@ -1,0 +1,448 @@
+<div class="content n-detail-main">
+  <div class="news_details_main">
+    <div class="news-details">
+      <div class="page-action">
+        <div class="page-heading">
+          <vc-page-header [breadcrumbs]="breadCrumbItems" [headerTitle]="language.create_faq.faqDetail"> </vc-page-header>
+        </div>
+      </div>
+      <div class="news_detail_inner">
+        <div class="card">
+          <mat-tab-group *ngIf="updateFaqsData">
+            <mat-tab label="{{ language.create_faq.currentFAQS }}">
+              <div class="card-body">
+                <div class="news_details" *ngIf="faqsData">
+                  <div class="faq-details">
+                    <div class="news_content">
+                      <div class="news_heading">
+                        <h2>{{ faqsData.title }}</h2>
+                        <div class="dropdown action_group">
+                          <button class="dropdown-toggle" type="button" (click)="onShow()">
+                            <i class="fa fa-pencil"></i>
+                          </button>
+                          <ul class="dropdown-menu bunch_drop" aria-labelledby="dropdownMenuLink">
+                            <li *ngIf="userDetails.userId == faqsData.user.id || userDetails.isAdmin">
+                              <a class="dropdown-item" (click)="editFAQById(faqsData.id)">{{ language.club_news.Edit }}</a>
+                            </li>
+                            <li *ngIf="userDetails.userId == faqsData.user.id || userDetails.isAdmin">
+                              <a class="dropdown-item" (click)="deleteFaqs(faqsData.id)">{{ language.club_news.Delete }}</a>
+                            </li>
+                            <li (click)="goBack()">
+                              <a class="dropdown-item">{{ language.club_news.Back }}</a>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                      <div class="category-section">
+                        <span>{{ language.create_faq.category }}</span> :- <span>{{ faqsData.faqCategory.category_title }}</span>
+                      </div>
+                      <div class="news_content_text" [innerHTML]="faqsData.description">
+                        ...<a href="#">{{ language.dashboard.dashboardNewsContent }}</a>
+                      </div>
+
+                      <div class="attach_btn" *ngIf="(faqsData?.image && faqsData?.image != '') || (faqsData?.document && faqsData?.document != '')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#E12217" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-download">
+                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                          <polyline points="7 10 12 15 17 10" />
+                          <line x1="12" y1="15" x2="12" y2="3" />
+                        </svg>
+                        <span *ngIf="faqsData?.image && faqsData?.image != ''">
+                          <a href="javascript:void(0)" (click)="downloadDoc(faqsData?.image, faqsData.id, 0)">
+                            {{ language.create_event.download_attachment }}
+                          </a>
+                        </span>
+                        <span *ngIf="faqsData?.document && faqsData?.document != ''">
+                          <a href="javascript:void(0)" (click)="downloadDoc(faqsData.document, faqsData.id, 0)">
+                            {{ language.create_event.download_attachment }}
+                          </a>
+                        </span>
+                      </div>
+                      <div class="author-info">
+                        <div class="author-img">
+                          <img onContextMenu="return false;" [src]="faqsData?.user?.member_id | memberPhoto | async" style="width: 100px" alt="User Photo" loading="lazy" />
+                        </div>
+                        <div class="author-des">
+                          <span class="author-id">{{ language.dashboard.dashboardNewsAuthor }}:- {{ faqsData.user.firstname }} {{ faqsData.user.lastname }}</span>
+                          <span class="author-date">{{ faqsData.created_at | date: 'dd.MM.YYYY' }}</span> <br />
+                          <span class="author-status" *ngIf="faqsData.approved_status == 0 && !faqsData.deny_by_id">{{ language.theme.status }}:-{{ language.community_groups.waitingApproval }}</span>
+                          <span class="author-status" *ngIf="faqsData.approved_status == 0 && faqsData.deny_by_id">{{ language.theme.status }}:-{{ language.community_groups.admin_deny }}</span>
+                          <span class="author-id" *ngIf="faqsData.approved_status == 0 && faqsData.deny_by_id >= 1">
+                            {{ language.dashboard.denyBy }}:-{{ faqsData.denybyuser.firstname }}
+                            {{ faqsData.denybyuser.lastname }}
+                          </span>
+                          <span class="deny-reason" *ngIf="faqsData.approved_status == 0 && faqsData.deny_by_id >= 1"> {{ language.dashboard.denyReason }}:- {{ faqsData.deny_reason }} </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </mat-tab>
+            <mat-tab label="{{ language.create_faq.updatedFAQS }}">
+              <div class="card-body">
+                <div class="news_details" *ngIf="updateFaqsData">
+                  <div class="faq-details">
+                    <div class="news_content">
+                      <div class="page-action-right">
+                        <button class="button-publish" *ngIf="userDetails.isAdmin && faqsData.author != userDetails.userId && (faqsData.deny_by_id == null || faqsData.approved_by == null)" (click)="approveUpdteFaqs(faqsData.id)" type="button">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="18" viewBox="0 0 20 18" fill="none">
+                            <path
+                              [ngStyle]="{ fill: setTheme.button_ic_color }"
+                              d="M20 5.58888C20 8.86343 20 12.1385 20 15.413C19.9208 15.5063 19.9312 15.6272 19.9015 15.7355C19.5321 17.086 18.3687 17.9592 16.9214 17.9597C12.3073 17.9613 7.69271 17.9603 3.07865 17.9603C3.00727 17.9603 2.93537 17.9592 2.86399 17.9561C1.56928 17.9019 0.461615 17.0214 0.108891 15.7731C0.0750254 15.6527 0.0854456 15.5178 0 15.413C0 11.1246 0 6.83618 0 2.54775C0.0729414 2.51023 0.0494959 2.43312 0.0625212 2.37633C0.384505 0.958666 1.5573 0.00573894 3.01925 0.00313389C6.3386 -0.00259722 9.65744 0.00157086 12.9768 0.000528842C13.3847 0.000528842 13.7823 0.060966 14.1543 0.229252C15.2375 0.720043 15.8653 1.55157 15.9788 2.74052C15.9992 2.95101 16.058 3.01249 16.2644 2.99477C16.5035 2.97445 16.7458 2.98748 16.9865 2.9906C18.3843 3.0078 19.5436 3.8982 19.9036 5.22574C19.937 5.34661 19.925 5.47947 20 5.58888ZM14.1564 15.9637C13.8938 15.0577 14.0058 14.1439 14.0021 13.2394C13.9902 9.86845 13.9881 6.497 14.0047 3.12607C14.0084 2.4102 13.503 1.98558 12.8705 1.98922C9.62305 2.00694 6.37507 2.00694 3.12762 1.98974C2.45291 1.9861 1.98869 2.45657 1.99078 3.12763C2.0038 7.03156 2.0038 10.9355 1.99078 14.8389C1.98869 15.4933 2.44093 15.9752 3.13283 15.9716C6.73197 15.9544 10.3311 15.9637 13.9302 15.9637C14.0011 15.9637 14.072 15.9637 14.1564 15.9637ZM16.0028 10.0753C16.0028 11.6607 16.0028 13.2462 16.0033 14.8316C16.0033 14.9676 15.9997 15.1041 16.0382 15.2375C16.1794 15.7246 16.6374 16.0231 17.1459 15.957C17.6367 15.8929 18.0014 15.4646 18.0019 14.9311C18.004 11.9619 18.0045 8.99264 18.0019 6.02288C18.0014 5.41643 17.5789 5.0017 16.9682 4.99232C16.7077 4.98816 16.4467 5.00274 16.1873 4.98763C16.0257 4.97826 15.9997 5.03765 15.9997 5.18301C16.0044 6.81325 16.0028 8.44453 16.0028 10.0753ZM7.99854 3.99042C8.96866 3.99042 9.93878 3.9899 10.9089 3.99042C11.5919 3.99094 11.9968 4.39629 11.9973 5.08194C11.9983 6.34903 11.9983 7.61613 11.9973 8.88322C11.9968 9.57721 11.5919 9.98047 10.8922 9.98099C8.96501 9.98203 7.03832 9.98203 5.11111 9.98099C4.40514 9.98047 3.99875 9.57304 3.99771 8.86707C3.99667 7.613 3.99667 6.35893 3.99771 5.10486C3.99823 4.39525 4.40253 3.99094 5.10798 3.99042C6.07133 3.99042 7.03467 3.99042 7.99854 3.99042ZM8.00323 7.97979C8.61437 7.97979 9.22604 7.97719 9.83718 7.98188C9.95389 7.98292 10.006 7.96781 10.0039 7.8287C9.99453 7.26445 9.99713 6.69967 10.0023 6.1349C10.0034 6.02184 9.98359 5.97964 9.85594 5.98016C8.62063 5.98537 7.38479 5.98537 6.14948 5.98068C6.02391 5.98016 5.99943 6.02184 6.00047 6.13646C6.00568 6.69446 6.00724 7.25298 5.99943 7.81099C5.99734 7.94593 6.03017 7.98552 6.16928 7.98344C6.78094 7.97562 7.39209 7.97979 8.00323 7.97979ZM10.9464 13.9719C11.1392 13.9724 11.3215 13.937 11.4893 13.8427C11.878 13.6239 12.078 13.1685 11.9728 12.747C11.8571 12.2839 11.4815 11.9801 10.9964 11.9796C8.99888 11.9765 7.00185 11.978 5.0043 11.9791C4.92667 11.9791 4.84747 11.9848 4.77245 12.0025C4.28531 12.1197 3.95342 12.5767 4.00448 13.0544C4.06023 13.5822 4.46662 13.9657 4.99336 13.9688C5.99526 13.9745 6.99716 13.9704 7.99906 13.9704C8.98169 13.9709 9.96431 13.9698 10.9464 13.9719Z"
+                              fill="white"
+                            />
+                          </svg>
+                          &nbsp;<span [ngStyle]="{ color: '#ffffff' }">{{ language.create_faq.faq_publish }}</span>
+                        </button>
+                        <button class="button-deny" *ngIf="userDetails.isAdmin && (faqsData.deny_by_id == '' || faqsData.deny_by_id == null)" (click)="denyFaqs(faqsData.id)" type="button">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="18" viewBox="0 0 20 18" fill="none">
+                            <path
+                              [ngStyle]="{ fill: setTheme.button_ic_color }"
+                              d="M20 5.58888C20 8.86343 20 12.1385 20 15.413C19.9208 15.5063 19.9312 15.6272 19.9015 15.7355C19.5321 17.086 18.3687 17.9592 16.9214 17.9597C12.3073 17.9613 7.69271 17.9603 3.07865 17.9603C3.00727 17.9603 2.93537 17.9592 2.86399 17.9561C1.56928 17.9019 0.461615 17.0214 0.108891 15.7731C0.0750254 15.6527 0.0854456 15.5178 0 15.413C0 11.1246 0 6.83618 0 2.54775C0.0729414 2.51023 0.0494959 2.43312 0.0625212 2.37633C0.384505 0.958666 1.5573 0.00573894 3.01925 0.00313389C6.3386 -0.00259722 9.65744 0.00157086 12.9768 0.000528842C13.3847 0.000528842 13.7823 0.060966 14.1543 0.229252C15.2375 0.720043 15.8653 1.55157 15.9788 2.74052C15.9992 2.95101 16.058 3.01249 16.2644 2.99477C16.5035 2.97445 16.7458 2.98748 16.9865 2.9906C18.3843 3.0078 19.5436 3.8982 19.9036 5.22574C19.937 5.34661 19.925 5.47947 20 5.58888ZM14.1564 15.9637C13.8938 15.0577 14.0058 14.1439 14.0021 13.2394C13.9902 9.86845 13.9881 6.497 14.0047 3.12607C14.0084 2.4102 13.503 1.98558 12.8705 1.98922C9.62305 2.00694 6.37507 2.00694 3.12762 1.98974C2.45291 1.9861 1.98869 2.45657 1.99078 3.12763C2.0038 7.03156 2.0038 10.9355 1.99078 14.8389C1.98869 15.4933 2.44093 15.9752 3.13283 15.9716C6.73197 15.9544 10.3311 15.9637 13.9302 15.9637C14.0011 15.9637 14.072 15.9637 14.1564 15.9637ZM16.0028 10.0753C16.0028 11.6607 16.0028 13.2462 16.0033 14.8316C16.0033 14.9676 15.9997 15.1041 16.0382 15.2375C16.1794 15.7246 16.6374 16.0231 17.1459 15.957C17.6367 15.8929 18.0014 15.4646 18.0019 14.9311C18.004 11.9619 18.0045 8.99264 18.0019 6.02288C18.0014 5.41643 17.5789 5.0017 16.9682 4.99232C16.7077 4.98816 16.4467 5.00274 16.1873 4.98763C16.0257 4.97826 15.9997 5.03765 15.9997 5.18301C16.0044 6.81325 16.0028 8.44453 16.0028 10.0753ZM7.99854 3.99042C8.96866 3.99042 9.93878 3.9899 10.9089 3.99042C11.5919 3.99094 11.9968 4.39629 11.9973 5.08194C11.9983 6.34903 11.9983 7.61613 11.9973 8.88322C11.9968 9.57721 11.5919 9.98047 10.8922 9.98099C8.96501 9.98203 7.03832 9.98203 5.11111 9.98099C4.40514 9.98047 3.99875 9.57304 3.99771 8.86707C3.99667 7.613 3.99667 6.35893 3.99771 5.10486C3.99823 4.39525 4.40253 3.99094 5.10798 3.99042C6.07133 3.99042 7.03467 3.99042 7.99854 3.99042ZM8.00323 7.97979C8.61437 7.97979 9.22604 7.97719 9.83718 7.98188C9.95389 7.98292 10.006 7.96781 10.0039 7.8287C9.99453 7.26445 9.99713 6.69967 10.0023 6.1349C10.0034 6.02184 9.98359 5.97964 9.85594 5.98016C8.62063 5.98537 7.38479 5.98537 6.14948 5.98068C6.02391 5.98016 5.99943 6.02184 6.00047 6.13646C6.00568 6.69446 6.00724 7.25298 5.99943 7.81099C5.99734 7.94593 6.03017 7.98552 6.16928 7.98344C6.78094 7.97562 7.39209 7.97979 8.00323 7.97979ZM10.9464 13.9719C11.1392 13.9724 11.3215 13.937 11.4893 13.8427C11.878 13.6239 12.078 13.1685 11.9728 12.747C11.8571 12.2839 11.4815 11.9801 10.9964 11.9796C8.99888 11.9765 7.00185 11.978 5.0043 11.9791C4.92667 11.9791 4.84747 11.9848 4.77245 12.0025C4.28531 12.1197 3.95342 12.5767 4.00448 13.0544C4.06023 13.5822 4.46662 13.9657 4.99336 13.9688C5.99526 13.9745 6.99716 13.9704 7.99906 13.9704C8.98169 13.9709 9.96431 13.9698 10.9464 13.9719Z"
+                              fill="white"
+                            />
+                          </svg>
+                          &nbsp;<span [ngStyle]="{ color: '#ffffff' }">{{ language.create_faq.faq_deny }}</span>
+                        </button>
+                        <button class="button-deny delete-btn" *ngIf="userDetails.userId == faqsData.user.id" (click)="deleteUpdateFaqs(faqsData.id)" type="button">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="18" viewBox="0 0 20 18" fill="none">
+                            <path
+                              [ngStyle]="{ fill: setTheme.button_ic_color }"
+                              d="M20 5.58888C20 8.86343 20 12.1385 20 15.413C19.9208 15.5063 19.9312 15.6272 19.9015 15.7355C19.5321 17.086 18.3687 17.9592 16.9214 17.9597C12.3073 17.9613 7.69271 17.9603 3.07865 17.9603C3.00727 17.9603 2.93537 17.9592 2.86399 17.9561C1.56928 17.9019 0.461615 17.0214 0.108891 15.7731C0.0750254 15.6527 0.0854456 15.5178 0 15.413C0 11.1246 0 6.83618 0 2.54775C0.0729414 2.51023 0.0494959 2.43312 0.0625212 2.37633C0.384505 0.958666 1.5573 0.00573894 3.01925 0.00313389C6.3386 -0.00259722 9.65744 0.00157086 12.9768 0.000528842C13.3847 0.000528842 13.7823 0.060966 14.1543 0.229252C15.2375 0.720043 15.8653 1.55157 15.9788 2.74052C15.9992 2.95101 16.058 3.01249 16.2644 2.99477C16.5035 2.97445 16.7458 2.98748 16.9865 2.9906C18.3843 3.0078 19.5436 3.8982 19.9036 5.22574C19.937 5.34661 19.925 5.47947 20 5.58888ZM14.1564 15.9637C13.8938 15.0577 14.0058 14.1439 14.0021 13.2394C13.9902 9.86845 13.9881 6.497 14.0047 3.12607C14.0084 2.4102 13.503 1.98558 12.8705 1.98922C9.62305 2.00694 6.37507 2.00694 3.12762 1.98974C2.45291 1.9861 1.98869 2.45657 1.99078 3.12763C2.0038 7.03156 2.0038 10.9355 1.99078 14.8389C1.98869 15.4933 2.44093 15.9752 3.13283 15.9716C6.73197 15.9544 10.3311 15.9637 13.9302 15.9637C14.0011 15.9637 14.072 15.9637 14.1564 15.9637ZM16.0028 10.0753C16.0028 11.6607 16.0028 13.2462 16.0033 14.8316C16.0033 14.9676 15.9997 15.1041 16.0382 15.2375C16.1794 15.7246 16.6374 16.0231 17.1459 15.957C17.6367 15.8929 18.0014 15.4646 18.0019 14.9311C18.004 11.9619 18.0045 8.99264 18.0019 6.02288C18.0014 5.41643 17.5789 5.0017 16.9682 4.99232C16.7077 4.98816 16.4467 5.00274 16.1873 4.98763C16.0257 4.97826 15.9997 5.03765 15.9997 5.18301C16.0044 6.81325 16.0028 8.44453 16.0028 10.0753ZM7.99854 3.99042C8.96866 3.99042 9.93878 3.9899 10.9089 3.99042C11.5919 3.99094 11.9968 4.39629 11.9973 5.08194C11.9983 6.34903 11.9983 7.61613 11.9973 8.88322C11.9968 9.57721 11.5919 9.98047 10.8922 9.98099C8.96501 9.98203 7.03832 9.98203 5.11111 9.98099C4.40514 9.98047 3.99875 9.57304 3.99771 8.86707C3.99667 7.613 3.99667 6.35893 3.99771 5.10486C3.99823 4.39525 4.40253 3.99094 5.10798 3.99042C6.07133 3.99042 7.03467 3.99042 7.99854 3.99042ZM8.00323 7.97979C8.61437 7.97979 9.22604 7.97719 9.83718 7.98188C9.95389 7.98292 10.006 7.96781 10.0039 7.8287C9.99453 7.26445 9.99713 6.69967 10.0023 6.1349C10.0034 6.02184 9.98359 5.97964 9.85594 5.98016C8.62063 5.98537 7.38479 5.98537 6.14948 5.98068C6.02391 5.98016 5.99943 6.02184 6.00047 6.13646C6.00568 6.69446 6.00724 7.25298 5.99943 7.81099C5.99734 7.94593 6.03017 7.98552 6.16928 7.98344C6.78094 7.97562 7.39209 7.97979 8.00323 7.97979ZM10.9464 13.9719C11.1392 13.9724 11.3215 13.937 11.4893 13.8427C11.878 13.6239 12.078 13.1685 11.9728 12.747C11.8571 12.2839 11.4815 11.9801 10.9964 11.9796C8.99888 11.9765 7.00185 11.978 5.0043 11.9791C4.92667 11.9791 4.84747 11.9848 4.77245 12.0025C4.28531 12.1197 3.95342 12.5767 4.00448 13.0544C4.06023 13.5822 4.46662 13.9657 4.99336 13.9688C5.99526 13.9745 6.99716 13.9704 7.99906 13.9704C8.98169 13.9709 9.96431 13.9698 10.9464 13.9719Z"
+                              fill="white"
+                            />
+                          </svg>
+                          &nbsp;<span [ngStyle]="{ color: '#ffffff' }">{{ language.create_faq.RestUpdateFaqs }}</span>
+                        </button>
+                      </div>
+                      <div class="news_heading">
+                        <h2>{{ updateFaqsData.title }}</h2>
+                        <div class="dropdown action_group">
+                          <button class="dropdown-toggle" type="button" (click)="onShow()">
+                            <i class="fa fa-pencil"></i>
+                          </button>
+                          <ul class="dropdown-menu bunch_drop" aria-labelledby="dropdownMenuLink">
+                            <li *ngIf="userDetails.isAdmin && faqsData.author != userDetails.userId && (faqsData.deny_by_id == '' || faqsData.deny_by_id == null)">
+                              <a class="dropdown-item" (click)="approveUpdteFaqs(faqsData.id)">{{ language.create_faq.faq_publish }}</a>
+                            </li>
+                            <li *ngIf="userDetails.isAdmin && faqsData.author != userDetails.userId && (faqsData.deny_by_id == '' || faqsData.deny_by_id == null)">
+                              <a class="dropdown-item" (click)="denyFaqs(faqsData.id)">{{ language.create_faq.faq_deny }}</a>
+                            </li>
+                            <li *ngIf="userDetails.userId == faqsData.user.id || userDetails.isAdmin">
+                              <a class="dropdown-item" (click)="deleteUpdateFaqs(faqsData.id)">{{ language.create_faq.RestUpdateFaqs }}</a>
+                            </li>
+                            <li (click)="goBack()">
+                              <a class="dropdown-item">{{ language.club_news.Back }}</a>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                      <div class="category-section">
+                        <span>{{ language.create_faq.category }}</span
+                        >:-<span>{{ updateFaqsData.faqCategory.category_title }}</span>
+                      </div>
+                      <div class="news_content_text" [innerHTML]="updateFaqsData.description">
+                        ...<a href="#">{{ language.dashboard.dashboardNewsContent }}</a>
+                      </div>
+
+                      <div class="attach_btn" *ngIf="(updateFaqsData?.image && updateFaqsData?.image != '') || (updateFaqsData?.document && updateFaqsData?.document != '')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#E12217" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-download">
+                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                          <polyline points="7 10 12 15 17 10" />
+                          <line x1="12" y1="15" x2="12" y2="3" />
+                        </svg>
+                        <span *ngIf="updateFaqsData?.image && updateFaqsData?.image != ''">
+                          <a href="javascript:void(0)" (click)="downloadDoc(updateFaqsData?.image, faqsData.id, 1)">
+                            {{ language.create_event.download_attachment }}
+                          </a>
+                        </span>
+                        <span *ngIf="updateFaqsData?.document && updateFaqsData?.document != ''">
+                          <a href="javascript:void(0)" (click)="downloadDoc(updateFaqsData?.document, faqsData.id, 1)">
+                            {{ language.create_event.download_attachment }}
+                          </a>
+                        </span>
+                      </div>
+                      <div class="author-info">
+                        <div class="author-img">
+                          <img onContextMenu="return false;" [src]="faqsData?.user?.member_id | memberPhoto | async" style="width: 100px" alt="User Photo" loading="lazy" />
+                        </div>
+                        <div class="author-des">
+                          <span class="author-id">{{ language.dashboard.dashboardNewsAuthor }}:- {{ faqsData.user.firstname }} {{ faqsData.user.lastname }}</span>
+                          <span class="author-date">{{ faqsData.created_at | date: 'dd.MM.YYYY' }}</span
+                          ><br />
+                          <span class="author-status" *ngIf="faqsData.approved_status == 0 && !faqsData.deny_by_id">{{ language.theme.status }}:-{{ language.community_groups.waitingApproval }}</span>
+                          <span class="author-status" *ngIf="faqsData.approved_status == 0 && faqsData.deny_by_id">{{ language.theme.status }}:-{{ language.community_groups.admin_deny }}</span>
+                          <span class="author-status" *ngIf="faqsData.approved_status == 1 && !faqsData.deny_by_id">{{ language.theme.status }}:-{{ language.community_groups.waitingApproval }}</span>
+                          <span class="author-status" *ngIf="faqsData.approved_status == 1 && faqsData.deny_by_id">{{ language.theme.status }}:-{{ language.community_groups.admin_deny }}</span>
+                          <span class="author-id" *ngIf="faqsData.deny_by_id >= 1"> {{ language.dashboard.denyBy }}:-{{ faqsData.denybyuser.firstname }} {{ faqsData.denybyuser.lastname }}</span>
+                          <span class="deny-reason" *ngIf="faqsData.deny_by_id >= 1">{{ language.dashboard.denyReason }}:- {{ faqsData.deny_reason }}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </mat-tab>
+          </mat-tab-group>
+          <div class="card-body" *ngIf="!updateFaqsData">
+            <div class="news_details" *ngIf="faqsData">
+              <div class="row">
+                <div class="news_content col-md-12">
+                  <div class="news_heading">
+                    <h2>{{ faqsData.title }}</h2>
+                    <div class="dropdown action_group">
+                      <button class="dropdown-toggle" type="button" (click)="onShow()">
+                        <i class="fa fa-pencil"></i>
+                      </button>
+                      <ul class="dropdown-menu bunch_drop" aria-labelledby="dropdownMenuLink">
+                        <li *ngIf="userDetails.userId == faqsData.user.id || userDetails.isAdmin" (click)="editFAQById(faqsData.id)">
+                          <a class="dropdown-item">{{ language.club_news.Edit }}</a>
+                        </li>
+                        <li *ngIf="faqsData.approved_status == 0 && userDetails.isAdmin && (faqsData.deny_by_id == '' || faqsData.deny_by_id == null)">
+                          <a class="dropdown-item" (click)="approveFaqs(faqsData.id)">{{ language.create_faq.faq_publish }}</a>
+                        </li>
+                        <li *ngIf="faqsData.approved_status == 0 && userDetails.isAdmin && (faqsData.deny_by_id == '' || faqsData.deny_by_id == null)">
+                          <a class="dropdown-item" (click)="denyFaqs(faqsData.id)">{{ language.create_faq.faq_deny }}</a>
+                        </li>
+                        <li *ngIf="userDetails.userId == faqsData.user.id || userDetails.isAdmin">
+                          <a class="dropdown-item" (click)="deleteFaqs(faqsData.id)">{{ language.club_news.Delete }}</a>
+                        </li>
+                        <li routerLink="/web/vereins-faq">
+                          <a class="dropdown-item">{{ language.club_news.Back }}</a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="category-section">
+                    <span>{{ language.create_faq.category }} </span> :- <span> {{ faqsData.faqCategory.category_title }}</span>
+                  </div>
+                  <div class="news_content_text" [innerHTML]="faqsData.description">
+                    ...<a href="#">{{ language.dashboard.dashboardNewsContent }}</a>
+                  </div>
+                  <div class="attach_btn" *ngIf="(faqsData?.image && faqsData?.image != '') || (faqsData?.document && faqsData?.document != '')">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#E12217" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-download">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                      <polyline points="7 10 12 15 17 10" />
+                      <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                    <span *ngIf="faqsData?.image && faqsData?.image != ''">
+                      <a href="javascript:void(0)" (click)="downloadDoc(faqsData?.image, faqsData.id, 0)">
+                        {{ language.create_event.download_attachment }}
+                      </a>
+                    </span>
+                    <span *ngIf="faqsData?.document && faqsData?.document != ''">
+                      <a href="javascript:void(0)" (click)="downloadDoc(faqsData.document, faqsData.id, 0)">
+                        {{ language.create_event.download_attachment }}
+                      </a>
+                    </span>
+                  </div>
+                  <div class="author-info">
+                    <div class="author-img">
+                      <img onContextMenu="return false;" [src]="faqsData?.user?.member_id | memberPhoto | async" style="width: 100px" alt="User Photo" loading="lazy" />
+                    </div>
+                    <div class="author-des">
+                      <span class="author-id">{{ language.dashboard.dashboardNewsAuthor }}:- {{ faqsData.user.firstname }} {{ faqsData.user.lastname }}</span>
+                      <span class="author-date">{{ faqsData.created_at | date: 'dd.MM.YYYY' }}</span
+                      ><br />
+                      <span class="author-status" *ngIf="faqsData.approved_status == 0 && !faqsData.deny_by_id">{{ language.theme.status }}:-{{ language.community_groups.waitingApproval }}</span>
+                      <span class="deny-reason" *ngIf="faqsData.approved_status == 0 && faqsData.deny_by_id">{{ language.theme.status }}:-{{ language.community_groups.admin_deny }}</span>
+                      <span class="author-id" *ngIf="faqsData.deny_by_id >= 1">{{ language.dashboard.denyBy }}:-{{ faqsData.denybyuser.firstname }} {{ faqsData.denybyuser.lastname }}</span>
+                      <span class="deny-reason" *ngIf="faqsData.deny_by_id >= 1">{{ language.dashboard.denyReason }}:- {{ faqsData.deny_reason }}</span>
+                    </div>
+                  </div>
+                  <div class="page-action-right" *ngIf="userDetails.isAdmin && faqsData.author != userDetails.userId && faqsData.deny_by_id == null && faqsData.approved_by == null">
+                    <button class="button-publish" (click)="approveFaqs(faqsData.id)" type="button">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="18" viewBox="0 0 20 18" fill="none">
+                        <path
+                          [ngStyle]="{ fill: setTheme.button_ic_color }"
+                          d="M20 5.58888C20 8.86343 20 12.1385 20 15.413C19.9208 15.5063 19.9312 15.6272 19.9015 15.7355C19.5321 17.086 18.3687 17.9592 16.9214 17.9597C12.3073 17.9613 7.69271 17.9603 3.07865 17.9603C3.00727 17.9603 2.93537 17.9592 2.86399 17.9561C1.56928 17.9019 0.461615 17.0214 0.108891 15.7731C0.0750254 15.6527 0.0854456 15.5178 0 15.413C0 11.1246 0 6.83618 0 2.54775C0.0729414 2.51023 0.0494959 2.43312 0.0625212 2.37633C0.384505 0.958666 1.5573 0.00573894 3.01925 0.00313389C6.3386 -0.00259722 9.65744 0.00157086 12.9768 0.000528842C13.3847 0.000528842 13.7823 0.060966 14.1543 0.229252C15.2375 0.720043 15.8653 1.55157 15.9788 2.74052C15.9992 2.95101 16.058 3.01249 16.2644 2.99477C16.5035 2.97445 16.7458 2.98748 16.9865 2.9906C18.3843 3.0078 19.5436 3.8982 19.9036 5.22574C19.937 5.34661 19.925 5.47947 20 5.58888ZM14.1564 15.9637C13.8938 15.0577 14.0058 14.1439 14.0021 13.2394C13.9902 9.86845 13.9881 6.497 14.0047 3.12607C14.0084 2.4102 13.503 1.98558 12.8705 1.98922C9.62305 2.00694 6.37507 2.00694 3.12762 1.98974C2.45291 1.9861 1.98869 2.45657 1.99078 3.12763C2.0038 7.03156 2.0038 10.9355 1.99078 14.8389C1.98869 15.4933 2.44093 15.9752 3.13283 15.9716C6.73197 15.9544 10.3311 15.9637 13.9302 15.9637C14.0011 15.9637 14.072 15.9637 14.1564 15.9637ZM16.0028 10.0753C16.0028 11.6607 16.0028 13.2462 16.0033 14.8316C16.0033 14.9676 15.9997 15.1041 16.0382 15.2375C16.1794 15.7246 16.6374 16.0231 17.1459 15.957C17.6367 15.8929 18.0014 15.4646 18.0019 14.9311C18.004 11.9619 18.0045 8.99264 18.0019 6.02288C18.0014 5.41643 17.5789 5.0017 16.9682 4.99232C16.7077 4.98816 16.4467 5.00274 16.1873 4.98763C16.0257 4.97826 15.9997 5.03765 15.9997 5.18301C16.0044 6.81325 16.0028 8.44453 16.0028 10.0753ZM7.99854 3.99042C8.96866 3.99042 9.93878 3.9899 10.9089 3.99042C11.5919 3.99094 11.9968 4.39629 11.9973 5.08194C11.9983 6.34903 11.9983 7.61613 11.9973 8.88322C11.9968 9.57721 11.5919 9.98047 10.8922 9.98099C8.96501 9.98203 7.03832 9.98203 5.11111 9.98099C4.40514 9.98047 3.99875 9.57304 3.99771 8.86707C3.99667 7.613 3.99667 6.35893 3.99771 5.10486C3.99823 4.39525 4.40253 3.99094 5.10798 3.99042C6.07133 3.99042 7.03467 3.99042 7.99854 3.99042ZM8.00323 7.97979C8.61437 7.97979 9.22604 7.97719 9.83718 7.98188C9.95389 7.98292 10.006 7.96781 10.0039 7.8287C9.99453 7.26445 9.99713 6.69967 10.0023 6.1349C10.0034 6.02184 9.98359 5.97964 9.85594 5.98016C8.62063 5.98537 7.38479 5.98537 6.14948 5.98068C6.02391 5.98016 5.99943 6.02184 6.00047 6.13646C6.00568 6.69446 6.00724 7.25298 5.99943 7.81099C5.99734 7.94593 6.03017 7.98552 6.16928 7.98344C6.78094 7.97562 7.39209 7.97979 8.00323 7.97979ZM10.9464 13.9719C11.1392 13.9724 11.3215 13.937 11.4893 13.8427C11.878 13.6239 12.078 13.1685 11.9728 12.747C11.8571 12.2839 11.4815 11.9801 10.9964 11.9796C8.99888 11.9765 7.00185 11.978 5.0043 11.9791C4.92667 11.9791 4.84747 11.9848 4.77245 12.0025C4.28531 12.1197 3.95342 12.5767 4.00448 13.0544C4.06023 13.5822 4.46662 13.9657 4.99336 13.9688C5.99526 13.9745 6.99716 13.9704 7.99906 13.9704C8.98169 13.9709 9.96431 13.9698 10.9464 13.9719Z"
+                          fill="white"
+                        />
+                      </svg>
+                      &nbsp;
+                      <span [ngStyle]="{ color: '#ffffff' }">{{ language.create_faq.faq_publish }}</span>
+                    </button>
+                    <button class="button-deny" (click)="denyFaqs(faqsData.id)" type="button">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="18" viewBox="0 0 20 18" fill="none">
+                        <path
+                          [ngStyle]="{ fill: setTheme.button_ic_color }"
+                          d="M20 5.58888C20 8.86343 20 12.1385 20 15.413C19.9208 15.5063 19.9312 15.6272 19.9015 15.7355C19.5321 17.086 18.3687 17.9592 16.9214 17.9597C12.3073 17.9613 7.69271 17.9603 3.07865 17.9603C3.00727 17.9603 2.93537 17.9592 2.86399 17.9561C1.56928 17.9019 0.461615 17.0214 0.108891 15.7731C0.0750254 15.6527 0.0854456 15.5178 0 15.413C0 11.1246 0 6.83618 0 2.54775C0.0729414 2.51023 0.0494959 2.43312 0.0625212 2.37633C0.384505 0.958666 1.5573 0.00573894 3.01925 0.00313389C6.3386 -0.00259722 9.65744 0.00157086 12.9768 0.000528842C13.3847 0.000528842 13.7823 0.060966 14.1543 0.229252C15.2375 0.720043 15.8653 1.55157 15.9788 2.74052C15.9992 2.95101 16.058 3.01249 16.2644 2.99477C16.5035 2.97445 16.7458 2.98748 16.9865 2.9906C18.3843 3.0078 19.5436 3.8982 19.9036 5.22574C19.937 5.34661 19.925 5.47947 20 5.58888ZM14.1564 15.9637C13.8938 15.0577 14.0058 14.1439 14.0021 13.2394C13.9902 9.86845 13.9881 6.497 14.0047 3.12607C14.0084 2.4102 13.503 1.98558 12.8705 1.98922C9.62305 2.00694 6.37507 2.00694 3.12762 1.98974C2.45291 1.9861 1.98869 2.45657 1.99078 3.12763C2.0038 7.03156 2.0038 10.9355 1.99078 14.8389C1.98869 15.4933 2.44093 15.9752 3.13283 15.9716C6.73197 15.9544 10.3311 15.9637 13.9302 15.9637C14.0011 15.9637 14.072 15.9637 14.1564 15.9637ZM16.0028 10.0753C16.0028 11.6607 16.0028 13.2462 16.0033 14.8316C16.0033 14.9676 15.9997 15.1041 16.0382 15.2375C16.1794 15.7246 16.6374 16.0231 17.1459 15.957C17.6367 15.8929 18.0014 15.4646 18.0019 14.9311C18.004 11.9619 18.0045 8.99264 18.0019 6.02288C18.0014 5.41643 17.5789 5.0017 16.9682 4.99232C16.7077 4.98816 16.4467 5.00274 16.1873 4.98763C16.0257 4.97826 15.9997 5.03765 15.9997 5.18301C16.0044 6.81325 16.0028 8.44453 16.0028 10.0753ZM7.99854 3.99042C8.96866 3.99042 9.93878 3.9899 10.9089 3.99042C11.5919 3.99094 11.9968 4.39629 11.9973 5.08194C11.9983 6.34903 11.9983 7.61613 11.9973 8.88322C11.9968 9.57721 11.5919 9.98047 10.8922 9.98099C8.96501 9.98203 7.03832 9.98203 5.11111 9.98099C4.40514 9.98047 3.99875 9.57304 3.99771 8.86707C3.99667 7.613 3.99667 6.35893 3.99771 5.10486C3.99823 4.39525 4.40253 3.99094 5.10798 3.99042C6.07133 3.99042 7.03467 3.99042 7.99854 3.99042ZM8.00323 7.97979C8.61437 7.97979 9.22604 7.97719 9.83718 7.98188C9.95389 7.98292 10.006 7.96781 10.0039 7.8287C9.99453 7.26445 9.99713 6.69967 10.0023 6.1349C10.0034 6.02184 9.98359 5.97964 9.85594 5.98016C8.62063 5.98537 7.38479 5.98537 6.14948 5.98068C6.02391 5.98016 5.99943 6.02184 6.00047 6.13646C6.00568 6.69446 6.00724 7.25298 5.99943 7.81099C5.99734 7.94593 6.03017 7.98552 6.16928 7.98344C6.78094 7.97562 7.39209 7.97979 8.00323 7.97979ZM10.9464 13.9719C11.1392 13.9724 11.3215 13.937 11.4893 13.8427C11.878 13.6239 12.078 13.1685 11.9728 12.747C11.8571 12.2839 11.4815 11.9801 10.9964 11.9796C8.99888 11.9765 7.00185 11.978 5.0043 11.9791C4.92667 11.9791 4.84747 11.9848 4.77245 12.0025C4.28531 12.1197 3.95342 12.5767 4.00448 13.0544C4.06023 13.5822 4.46662 13.9657 4.99336 13.9688C5.99526 13.9745 6.99716 13.9704 7.99906 13.9704C8.98169 13.9709 9.96431 13.9698 10.9464 13.9719Z"
+                          fill="white"
+                        />
+                      </svg>
+                      &nbsp;
+                      <span [ngStyle]="{ color: '#ffffff' }">{{ language.create_faq.faq_deny }}</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="empty-data-image" *ngIf="!faqsData || faqsData?.length == 0">
+              <!-- <img onContextMenu="return false;"  src="assets/img/no_record_img.png" alt="{{language.create_faq.no_faq}}" loading="lazy"><br> -->
+              <span>{{ language.create_faq.no_faq }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade change_pass_section faq_edit all_news" id="exModal" tabindex="-1" aria-labelledby="exampleModalLabel">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="editFaq">{{ language.create_faq.edit_faqs }}</h3>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="nc-icon nc-simple-remove"></i></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="FAQForm" (ngSubmit)="editFAQ()">
+          <!-- profile header end -->
+          <!-- profile details data start -->
+          <div class="profile_details">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="event_field">
+                  <!-- <label>{{ language.create_faq.title_label }}</label> -->
+                  <input formControlName="title" type="text" placeholder="{{ language.courses.title_placeholder }}" />
+                  <span class="text-danger" *ngIf="FAQSubmit || FAQForm.controls['title'].touched">
+                    <span *ngIf="FAQForm.controls['title'].errors">{{ language.error_message.common_required }}</span>
+                  </span>
+                </div>
+                <div class="news-dropdown">
+                  <div class="event_field" *ngIf="catListArray && catListArray.length > 0">
+                    <!-- <label>{{ language.create_faq.select_category }}</label> -->
+                    <ng-multiselect-dropdown
+                      formControlName="category"
+                      [ngClass]="{ 'is-invalid': FAQSubmit || FAQForm.controls.category.errors }"
+                      [placeholder]="language.create_faq.category"
+                      [settings]="categoryDropdownSettings"
+                      [data]="catListArray"
+                      (onSelect)="onCategoryItemSelect($event)"
+                      (onDeSelect)="onCategoryItemDeSelect($event)"
+                    >
+                    </ng-multiselect-dropdown>
+                    <span class="text-danger" *ngIf="FAQSubmit || FAQForm.controls.category.touched">
+                      <span *ngIf="FAQForm.controls.category.errors">{{ language.error_message.common_required }}</span>
+                    </span>
+                  </div>
+                  <div class="event_field" *ngIf="positionList && positionList.length > 0">
+                    <!-- <label>{{ language.create_faq.position }}</label> -->
+                    <ng-multiselect-dropdown
+                      formControlName="position"
+                      [ngClass]="{ 'is-invalid': FAQSubmit && FAQForm.controls.position.errors }"
+                      [placeholder]="language.header.position"
+                      [settings]="positionDropdownSettings"
+                      [data]="positionList"
+                      (onSelect)="onPositionItemSelect($event)"
+                      (onDeSelect)="onPositionItemDeSelect($event)"
+                    >
+                    </ng-multiselect-dropdown>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="event_field">
+                  <!-- <label>{{ language.create_news.add_picture }}</label> -->
+                  <div class="event_upload news_pic_upload">
+                    <label class="preview_txt" style="display: none"></label>
+                    <input type="file" (change)="uploadFile($event)" id="image" accept="/" />
+                    <span class="event_uplod_overlay">
+                      <label *ngIf="errorImage.isError" class="text-danger">
+                        {{ errorImage.errorMessage }}
+                        <label *ngIf="docErrorMsg && errorFile.isError" class="text-danger">{{ language.create_message.file_size }}</label>
+                      </label>
+                      <div class="loader_image" *ngIf="isImage"></div>
+                      <img onContextMenu="return false;" class="preview_img" *ngIf="croppedImage" [src]="croppedImage" />
+                      <img onContextMenu="return false;" class="preview_img" *ngIf="hasDoc == true && (croppedImage == null || croppedImage == '') && !isImage" src="assets/img/event_upload.png" />
+                      <img onContextMenu="return false;" class="preview_img" *ngIf="hasPicture == true && (croppedImage == null || croppedImage == '') && !isImage && imageUrl != undefined" [src]="imageUrl" />
+                      <ng-container *ngIf="faqDataById && faqDataById['token'] && faqDataById['token'].isLoading">
+                        <img [src]="'../../../../assets/img/loading.gif'" alt="Image" />
+                      </ng-container>
+                    </span>
+                  </div>
+                </div>
+                <div class="card-body" id="imageCrope">
+                  <div class="row" style="margin-top: 1px">
+                    <div class="text-center col-md-6">
+                      <image-cropper
+                        [imageChangedEvent]="imageChangedEvent"
+                        [maintainAspectRatio]="true"
+                        [aspectRatio]="4 / 3"
+                        autoCrop="false"
+                        hideResizeSquares="true"
+                        [resizeToHeight]="500"
+                        [onlyScaleDown]="true"
+                        [roundCropper]="false"
+                        format="webp"
+                        (imageCropped)="imageCropped($event)"
+                        (imageLoaded)="imageLoaded()"
+                        (cropperReady)="cropperReady()"
+                        (loadImageFailed)="loadImageFailed()"
+                      >
+                      </image-cropper>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="attach_btn" *ngIf="faqsData?.document && faqsData?.document != '' && hasDoc && !croppedImage">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#E12217" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-download">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
+                  </svg>
+                  <span *ngIf="faqsData?.document && faqsData?.document != ''">
+                    <a href="javascript:void(0)" (click)="downloadDoc(faqsData.document, faqsData.id, 0)">
+                      {{ language.create_event.download_attachment }}
+                    </a>
+                  </span>
+                </div>
+              </div>
+              <div class="col-md-12">
+                <div class="event_field task_area_field">
+                  <!-- <label>{{ language.create_faq.description }}</label> -->
+                  <angular-editor placeholder="{{ language.room.angular_editor_text }}" formControlName="description" [config]="editorConfig"> </angular-editor>
+                  <span class="text-danger" *ngIf="FAQSubmit || FAQForm.controls['description'].touched">
+                    <span *ngIf="FAQForm.controls['description'].errors">{{ language.error_message.common_required }}</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="profile_sub_btn event_sub_btn">
+            <button
+              type="submit"
+              class="save_btn"
+              [ngStyle]="{
+                'border-color': setTheme.default_status == true ? setTheme.create_button_bgcolor : setTheme.create_button_bgcolor,
+                'background-color': setTheme.default_status == true ? setTheme.create_button_bgcolor : setTheme.create_button_bgcolor,
+                color: setTheme.default_status == true ? setTheme.create_button_text : setTheme.create_button_text
+              }"
+            >
+              <span
+                ><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <path
+                    [ngStyle]="{ fill: setTheme.default_status == true ? setTheme.create_button_ic_color : setTheme.create_button_ic_color }"
+                    d="M5.97189 11.3126C5.81901 10.8625 5.96101 10.3781 6.33376 10.0781C6.53932 9.91259 6.78439 9.82842 7.06037 9.82842C7.06152 9.82842 7.06324 9.82842 7.06438 9.82842C7.26078 9.82899 7.4566 9.82842 7.653 9.82784C8.03549 9.8267 8.43114 9.82555 8.8205 9.833C8.84569 9.83357 8.8623 9.83242 8.87318 9.83071C8.87432 9.81983 8.87489 9.80265 8.87375 9.77517C8.86459 9.56045 8.86688 9.34344 8.8686 9.1333C8.86917 9.04569 8.87031 8.95866 8.87031 8.87105L8.87089 8.72791C8.87089 8.68496 8.87031 8.64259 8.87031 8.59965C8.86917 8.40096 8.86745 8.19541 8.8726 7.99214C8.88864 7.356 9.37075 6.87903 9.99544 6.87903C9.99773 6.87903 10 6.87903 10.0023 6.87903C10.615 6.88247 11.104 7.36745 11.1154 7.98355C11.1252 8.50116 11.1252 9.05657 11.116 9.78433C11.116 9.80609 11.1166 9.82097 11.1177 9.83128C11.1269 9.83242 11.1406 9.833 11.1595 9.83242C11.6536 9.82384 12.1552 9.82613 12.6402 9.82784L12.8933 9.82899C13.5701 9.83128 14.0665 10.2979 14.074 10.9392C14.0774 11.2576 13.9612 11.5479 13.7464 11.7569C13.5329 11.9647 13.2323 12.081 12.9002 12.0844C12.2835 12.0907 11.7161 12.0901 11.1658 12.0827C11.1429 12.0821 11.128 12.0833 11.1177 12.0844C11.1166 12.0936 11.116 12.1079 11.116 12.1279C11.1263 12.8654 11.1257 13.4283 11.1143 13.9522C11.1022 14.5099 10.6894 14.9513 10.11 15.0263C10.0664 15.0321 10.0235 15.0344 9.98055 15.0344C9.5076 15.0344 9.06327 14.7063 8.91497 14.2276C8.87203 14.0884 8.87146 13.9545 8.87089 13.8251C8.87031 13.6871 8.86974 13.5531 8.86917 13.4197C8.86688 13.0068 8.86459 12.5797 8.87547 12.1594C8.87661 12.1193 8.87318 12.0976 8.87089 12.0873C8.85943 12.085 8.83596 12.0815 8.78786 12.0827C8.21413 12.0924 7.63009 12.093 7.05236 12.0838C6.53646 12.0747 6.13221 11.7867 5.97189 11.3126ZM19.9767 15.0057C19.963 16.3118 19.4454 17.5411 18.5189 18.4676C17.5942 19.3917 16.3637 19.9133 15.0542 19.9363C14.4124 19.9471 13.7648 19.9506 13.1218 19.9506C12.5967 19.9506 12.0745 19.9483 11.5603 19.946C11.0856 19.9437 10.6104 19.942 10.1357 19.9414L9.99487 19.9448C9.49271 19.9448 8.98998 19.9454 8.48783 19.946C7.38446 19.9471 6.24387 19.9483 5.12217 19.9437C2.60452 19.9345 0.579287 18.274 0.0834288 15.8125C0.0273155 15.5337 0.00212177 15.2353 0.00212177 14.8448C0.00212177 13.9155 0.00154919 12.9856 0.000976604 12.0563C-0.000168566 10.0992 -0.00131374 8.07631 0.00383953 6.08658C0.010138 3.64278 1.61051 1.63702 3.98674 1.09535C4.31998 1.0192 4.62174 0.983701 4.91032 0.983701C4.92234 0.983701 4.9315 0.983128 4.9378 0.982555C4.94009 0.976257 4.94238 0.96595 4.94525 0.951636C5.06205 0.364164 5.48691 0 6.05377 0C6.05491 0 6.05606 0 6.0572 0C6.63036 0.00171775 7.06553 0.379624 7.16573 0.963087C7.16687 0.969386 7.16802 0.975112 7.16916 0.979692C7.18062 0.980265 7.19264 0.980265 7.19951 0.980265C8.98025 0.978547 10.8784 0.977402 12.7885 0.981983C12.8005 0.981983 12.8097 0.98141 12.8166 0.980838C12.8189 0.972821 12.8217 0.959652 12.8252 0.940757C12.9259 0.380196 13.3697 0.00229034 13.9297 0C13.9314 0 13.9331 0 13.9348 0C14.4925 0 14.9363 0.372753 15.0393 0.929305C15.0445 0.957362 15.0496 0.972249 15.0519 0.97912C15.0594 0.980838 15.0754 0.983701 15.1063 0.984846C17.8106 1.08161 19.9498 3.25114 19.9773 5.92282C20.0077 8.94835 20.0077 12.0042 19.9767 15.0057ZM4.9252 3.30152C4.9275 3.2706 4.92635 3.25171 4.9252 3.24026C4.91719 3.23911 4.90459 3.23797 4.88627 3.23797C4.87539 3.23797 4.86279 3.23854 4.84791 3.23911C3.39526 3.31527 2.25524 4.56923 2.25238 6.09402C2.24837 8.40383 2.24952 10.7526 2.25066 13.0234L2.25123 14.8271C2.25123 15.118 2.28559 15.3808 2.35602 15.6298C2.7093 16.8832 3.80008 17.6952 5.13534 17.698C6.25417 17.7003 7.3919 17.6997 8.49183 17.6992C8.98941 17.6992 9.48641 17.6986 9.98399 17.6986H11.1904C12.3969 17.6986 13.6033 17.6986 14.8097 17.6986C15.131 17.6986 15.4092 17.6642 15.6612 17.5938C16.9209 17.2422 17.7356 16.1457 17.7368 14.8007C17.7397 11.8159 17.7379 8.80406 17.7362 6.25148C17.7362 6.05279 17.7248 5.84952 17.7036 5.64626C17.5684 4.37684 16.3735 3.27289 15.0949 3.23625C15.0823 3.23568 15.0726 3.23568 15.0651 3.23625C15.0645 3.24426 15.0645 3.25457 15.0645 3.26717C15.0651 3.35248 15.0674 3.4378 15.0703 3.52311C15.0777 3.76245 15.0851 4.00924 15.0434 4.25774C14.9431 4.84979 14.4456 5.23285 13.8323 5.18819C13.2741 5.14754 12.8252 4.66828 12.8103 4.09799C12.8028 3.82315 12.7977 3.55403 12.8126 3.28034C12.8137 3.25858 12.8131 3.24369 12.8126 3.23396C12.8011 3.23224 12.7822 3.23052 12.7542 3.2311C11.9216 3.23682 11.0748 3.23625 10.256 3.23568C9.7916 3.2351 9.32724 3.2351 8.86287 3.23625C8.32865 3.23739 7.7761 3.23854 7.23272 3.2311C7.20638 3.2311 7.1892 3.23224 7.17833 3.23339C7.17775 3.24369 7.17718 3.25972 7.17833 3.2832C7.1892 3.48017 7.18634 3.67828 7.18405 3.8701C7.18348 3.92335 7.18233 3.9766 7.18176 4.02985C7.17604 4.6929 6.7111 5.18189 6.07725 5.19277C5.42736 5.20594 4.94181 4.7244 4.92291 4.05275L4.92234 4.03672C4.9149 3.79624 4.90803 3.54773 4.9252 3.30152Z"
+                    fill="white"
+                  />
+                </svg>
+                &nbsp;
+                <span [ngStyle]="{ color: setTheme.default_status == true ? setTheme.create_button_text : setTheme.create_button_text }"> {{ language.profile.save }}</span></span
+              >
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="dowloading">
+  <div class="overlay download-overlay">
+    <div class="overlay__inner">
+      <div class="overlay__content">
+        <div class="loading" data-loading-text="Downloading..."></div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,152 @@
+<div class="content">
+  <vc-page-header class="tag-list" [breadcrumbs]="breadCrumbItems" [headerTitle]="language.email.email_template">
+    <div class="page-action-right" *ngIf="userRole == 'admin'">
+      <button type="button" class="vc-button-with-icon disabled vc-button-create" routerLink="/web/create-email-template">
+        <vc-icon color="#ffffff" iconName="add-event" size="20px"></vc-icon>
+        &nbsp;&nbsp;<span [ngStyle]="{ color: '#ffffff' }">{{ language.email.create_email }}</span>
+      </button>
+    </div>
+  </vc-page-header>
+
+  <div class="email-contents">
+    <div class="col-md-12 page-main">
+      <div class="page-action">
+        <div></div>
+      </div>
+      <div class="survey-tabs-wrapper">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card">
+              <div class="card-body">
+                <table class="table content_table table-responsive active-survey-data">
+                  <thead>
+                    <tr>
+                      <th>
+                        {{ language.email.template_type }}
+                      </th>
+                      <th>
+                        {{ language.email.header_content }}
+                      </th>
+                      <th>
+                        {{ language.email.body_content }}
+                      </th>
+                      <th>
+                        {{ language.email.footer_content }}
+                      </th>
+                      <th>{{ language.email.logo }}</th>
+                      <th class="text-center">
+                        {{ language.create_faq.action }}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody
+                    *ngIf="
+                      emailData && emailData.length > 0
+                        | paginate
+                          : {
+                              itemsPerPage: itemPerPage,
+                              currentPage: currentPageNmuber,
+                              totalItems: totalEmails
+                            }
+                    "
+                  >
+                    <tr *ngFor="let item of emailData">
+                      <td class="content_wrapping" *ngIf="item.template_type == 'course'">
+                        <span>{{ language.header.course }}</span>
+                      </td>
+                      <td class="content_wrapping" *ngIf="item.template_type == 'updatedcourse'">
+                        <span>{{ language.courses.update_course }}</span>
+                      </td>
+                      <td class="content_wrapping" *ngIf="item.template_type == 'instructor'">
+                        <span>{{ language.room.instructor }}</span>
+                      </td>
+                      <td class="content_wrapping" *ngIf="item.template_type == 'survey'">
+                        <span>{{ language.Survey.survey }}</span>
+                      </td>
+                      <td class="content_wrapping">
+                        <p [innerHTML]="item['header_content'].length > 0 ? (item['header_content'] | slice: 0:50) + '...' : item['header_content']"></p>
+                      </td>
+                      <td class="content_wrapping">
+                        <p [innerHTML]="item['template_body'].length > 0 ? (item['template_body'] | slice: 0:50) + '...' : item['template_body']"></p>
+                      </td>
+                      <td class="content_wrapping">
+                        <p [innerHTML]="item['footer_content'].length > 0 ? (item['footer_content'] | slice: 0:50) + '...' : item['footer_content']"></p>
+                      </td>
+                      <td>
+                        <div class="email_img">
+                          <!-- <img onContextMenu="return false;" [src]="item.template_logo[0]?.template_image ? item.template_logo[0]?.template_image : '../../../assets/img/no_image.png'" alt="" loading="lazy" /> -->
+
+                          <ng-container *ngIf="item.token">
+                            <ng-container *ngIf="!item.token.isLoading && item.token.imageLoaded">
+                              <img [src]="item.token.url" alt="Image" alt="" loading="lazy" />
+                            </ng-container>
+                            <ng-container *ngIf="item.token.isLoading">
+                              <img [src]="'../../../../assets/img/loading.gif'" alt="Image" />
+                            </ng-container>
+                          </ng-container>
+                        </div>
+                      </td>
+                      <td>
+                        <div class="event-action text-center">
+                          <button mat-button [matMenuTriggerFor]="menu">
+                            <img onContextMenu="return false;" src="../../../../assets/img/new-design/dashboard/event-action.svg" alt="" loading="lazy" />
+                          </button>
+                          <mat-menu #menu="matMenu" xPosition="before">
+                            <button mat-menu-item *ngIf="userRole == 'admin'" routerLink="/web/update-email/{{ item.id }}">
+                              {{ language.Survey.edit }}
+                            </button>
+                            <button mat-menu-item *ngIf="userRole == 'admin'" (click)="deleteEmail(item.id)">
+                              {{ language.email.delete_email }}
+                            </button>
+                          </mat-menu>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <br />
+                <!-- PAGINATION START -->
+                <!-- <div class="paginationHead full_width" *ngIf="emailData?.length > 0">
+                  <div class="pagintHeadLeft">
+                    <pagination-controls (pageChange)="pageChanged($event)" (pageBoundsCorrection)="pageChanged($event)" autoHide="true" previousLabel="{{ language.pagination.previous }}" nextLabel="{{ language.pagination.next }}">
+                    </pagination-controls>
+                  </div>
+                  <div class="searchRefine">
+                    <span
+                      >{{ language.pagination.go_to_page }}
+                      <input type="text" #cPg value="{{ currentPageNmuber }}" (change)="goToPg(cPg.value)" />
+                    </span>
+                    <span
+                      >{{ language.pagination.limit_per_page }}
+                      <select #lPg value="{{ itemPerPage }}" (change)="setItemPerPage(lPg.value)">
+                        <option *ngFor="let limitValue of limitPerPage" value="{{ limitValue.value }}">
+                          {{ limitValue.value }}
+                        </option>
+                      </select>
+                    </span>
+                    <div class="pagintHeadRight text-center">
+                      {{ (currentPageNmuber - 1) * itemPerPage + 1 }}
+                      {{ language.header.to }}
+                      {{ currentPageNmuber * itemPerPage > totalEmails ? totalEmails : currentPageNmuber * itemPerPage }}
+                      {{ language.header.of }}
+                      {{ totalEmails | number }}
+                      {{ language.email.email_template }}
+                    </div>
+                  </div>
+                </div> -->
+                <!-- PAGINATION END -->
+
+                <div class="container">
+                  <div class="empty-data-image" *ngIf="emailData && emailData.length == 0">
+                    <!-- <img onContextMenu="return false;" src="assets/img/no-event-img.png"/><br /> -->
+                    <span>{{ language.email.no_email }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,80 @@
+<div class="main-dialog-area">
+  <div class="position-relative">
+    <div class="tasks-wrapper">
+      <div class="vc-card-shadow vc-radius w-75">
+        <div class="task-image-wrapper">
+          <!-- <img [src]="selectedTask.taskImage ? selectedTask.taskImage[0]?.taskImage : '../../../../assets/img/no-image.png'" alt="task-image" class="tasks-wrapper__image" /> -->
+          <ng-container *ngIf="selectedTask['token']">
+            <ng-container *ngIf="!selectedTask.token.isLoading && selectedTask.token.imageLoaded">
+              <img [src]="selectedTask.token.url" alt="Image" />
+            </ng-container>
+            <ng-container *ngIf="selectedTask.token.isLoading">
+              <img [src]="'../../../../assets/img/loading.gif'" alt="Image" />
+            </ng-container>
+          </ng-container>
+        </div>
+        <div class="tasks-wrapper__body">
+          <div class="d-flex mb-1 justify-content-between align-items-center">
+            <p class="tasks-wrapper__title mb-1">{{ selectedTask.title }}</p>
+          </div>
+          <vc-badge [cssStyle]="{ borderRadius: '5px' }" text="{{ selectedTask.taskType }}"></vc-badge>
+          <p [innerHTML]="selectedTask.description" class="tasks-wrapper__text mt-1">...</p>
+          <p class="tasks-wrapper__progress">{{ language.organizer_task.progress }} : {{ getSubTaskStatusCount.count }}</p>
+
+          <div aria-label="Success example" aria-valuemax="100" aria-valuemin="0" aria-valuenow="0" class="progress" role="progressbar">
+            <div
+              [ngStyle]="{
+                width: getSubTaskStatusCount.percentage + '%',
+                'background-color': selectedTask.status === TaskStatus.InProgress ? 'var(--vc-color-yellow)' : selectedTask.status === TaskStatus.Completed ? 'var(--vc-color-green)' : 'transparent'
+              }"
+              class="progress-bar"
+            ></div>
+          </div>
+        </div>
+      </div>
+      <!-- SubTasks -->
+      <ng-container *ngIf="selectedTask.subtasks && selectedTask.subtasks.length">
+        <div class="vc-card-shadow vc-radius mt-27 sub-task-padding w-75 subtasks-card">
+          <ul class="list-group list-group-flush check-box">
+            <li *ngFor="let subTask of selectedTask.subtasks" class="list-group-item tasks-wrapper__alignment">
+              <input (change)="completeSubTask($event.target.checked, subTask)" [checked]="subTask.status === Status.SubtaskStatus.Complete" id="{{ subTask.id }}" name="{{ subTask.id }}" type="checkbox" />&nbsp;
+              <label [ngClass]="{ 'text-muted': subTask.status === Status.SubtaskStatus.Complete }" for="{{ subTask.id }}">{{ subTask.title }}</label>
+            </li>
+          </ul>
+        </div>
+      </ng-container>
+    </div>
+
+    <div class="arrow-position">
+      <div class="icon-left-position">
+        <vc-icon *ngIf="isFirstRecord" [color]="'#68759F'" iconName="chevron-left" size="65px" style="filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25)); cursor: pointer"></vc-icon>
+        <vc-icon (click)="loadPrevTask()" *ngIf="!isFirstRecord" [color]="'#EF4968'" iconName="chevron-left" size="65px" style="filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25)); cursor: pointer"></vc-icon>
+      </div>
+      <div class="icon-right-position">
+        <vc-icon (click)="loadNextTask()" *ngIf="!isLastRecord" [color]="'#EF4968'" iconName="chevron-right" size="65px" style="filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25)); cursor: pointer"></vc-icon>
+        <vc-icon *ngIf="isLastRecord" [color]="'#68759F'" iconName="chevron-right" size="65px" style="filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25)); cursor: pointer"></vc-icon>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Card Footer -->
+
+<div class="footer-wrapper">
+  <div class="separater-line mt-4"></div>
+  <div class="d-flex justify-content-between align-items-start mt-3">
+    <div class="d-flex align-items-center">
+      <div class="author-img">
+        <img [src]="selectedTask.user && selectedTask.user.imageUrl ? selectedTask.user.imageUrl : 'assets/img/default-user.png'" alt="" loading="lazy" onContextMenu="return false;" />
+      </div>
+      <div class="line-height-13">
+        <span class="author-id"> {{ language.organizer_task.task_created_by }}</span>
+        <span class="author-name">{{ selectedTask?.user?.fullName }}</span>
+      </div>
+    </div>
+    <div (click)="closeModal()" class="close-task-style">
+      <p class="d-inline">{{ language.community_groups?.vc_close_task }}</p>
+      <vc-icon [cssStyle]="{ bottom: '-13px' }" iconName="close" size="20px"></vc-icon>
+    </div>
+  </div>
+</div>

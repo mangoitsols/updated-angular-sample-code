@@ -1,0 +1,60 @@
+<section class="w-news-dialog">
+  <div class="image-container">
+    <!-- <img [src]="newImg ?? 'assets/img/no-image.png'" alt="news-image" onContextMenu="return false;" /> -->
+    <ng-container *ngIf="news.token">
+      <ng-container *ngIf="!news.token.isLoading && news.token.imageLoaded">
+        <!-- If the image has finished loading, display it -->
+        <img [src]="news.token.url" alt="Image" />
+      </ng-container>
+      <ng-container *ngIf="news.token.isLoading">
+        <!-- If the image is still loading, display a loader -->
+        <img [src]="'../../../../assets/img/loading.gif'" alt="Image" />
+      </ng-container>
+    </ng-container>
+    <div *ngIf="userData?.roles[0] != 'guest'" class="action-btn">
+      <a (click)="updateNews(news.id)" *ngIf="news?.user.id == userData['userId'] || userData?.roles[0] == 'admin'" class="green"> {{ language.club_news.Edit }}</a>
+      <a (click)="deleteNews(news.id)" *ngIf="news?.user.id == userData['userId'] || userData?.roles[0] == 'admin'" class="red"> {{ language.club_news.Delete }}</a>
+    </div>
+  </div>
+
+  <div class="news-top-content">
+    <span *ngIf="news?.audience == '0'" class="badge news">{{ language.create_news.title }}</span>
+    <span *ngIf="news?.audience == '2'" class="badge group">{{ language.create_news.group_news }}</span>
+    <span *ngIf="news?.audience == '3'" class="badge chairman">{{ language.create_news.chairman }}</span>
+    <span class="news-date">
+      {{ news?.createdAt | date: 'dd.MM.YYYY' }}
+    </span>
+  </div>
+
+  <div class="news-mid-content">
+    <h2 class="heading">{{ news?.title }}</h2>
+    <div [innerHTML]="news?.headline" class="text">
+      ...<a href="#">{{ language.dashboard.dashboardNewsContent }}</a>
+    </div>
+  </div>
+
+  <div class="news-footer-content">
+    <hr class="ruler" />
+    <div class="author-close">
+      <div class="author">
+        <div class="image">
+          <img [src]="thumbnail != null && thumbnail != '' ? thumbnail : 'assets/img/defaultProfile.jpeg'" alt="auther-image" loading="lazy" onContextMenu="return false;" />
+        </div>
+        <div class="details">
+          <span class="title">
+            {{ language.dashboard.dashboardNewsAuthor }}
+          </span>
+          <span class="name">
+            {{ news?.user?.fullName }}
+          </span>
+        </div>
+      </div>
+      <div>
+        <span class="close-btn" (click)="closeModal()">
+          <span>{{ language.community_groups.close_news }}</span>
+          <vc-icon [cssStyle]="{ 'margin-top': '6px' }" iconName="close" size="20px"></vc-icon>
+        </span>
+      </div>
+    </div>
+  </div>
+</section>

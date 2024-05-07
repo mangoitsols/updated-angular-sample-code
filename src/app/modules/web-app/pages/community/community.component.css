@@ -1,0 +1,164 @@
+@media only screen and (min-width: 1025px) and (max-width: 1780px) {
+  .page-action-right button:first-child {
+    margin-right: 10px;
+  }
+  .page-action-right button {
+    padding: 0 10px 0 15px;
+  }
+}
+
+/* new desig css start */
+
+.tab-button button {
+  height: 41px;
+  border-radius: 10px;
+  box-shadow: none;
+  font-family: 'Gellix', sans-serif;
+  border: none !important;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 0 35px;
+}
+.tab-button {
+  background: #fff;
+  display: inline-block;
+  padding: 3px;
+  border-radius: 10px;
+}
+.page-action-right button {
+  box-shadow: none;
+  height: 44px;
+  border-radius: 10px;
+  border: none;
+  padding: 0 15px 0 15px;
+  font-weight: 700;
+  font-family: 'Gellix', sans-serif;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #fff !important;
+}
+.page-action-right button:first-child {
+  margin-right: 25px;
+  background: #41ae4c;
+}
+.page-action-right button:last-child {
+  background: #41ae4c;
+}
+.page-action-right button svg {
+  margin-right: 5px;
+}
+.page-action-right {
+  display: flex;
+  flex-wrap: wrap;
+  width: 30%;
+  justify-content: flex-end;
+  margin-bottom: 0px;
+}
+.page-action-left {
+  width: 50%;
+  justify-content: flex-start;
+  margin-bottom: 30px;
+}
+.page-heading h1 {
+  font-size: 24px;
+  font-family: 'Gellix', sans-serif !important;
+  font-weight: 700;
+  color: #68759f;
+  text-transform: uppercase;
+  margin: 0;
+  padding-left: 20px;
+}
+.page-heading {
+  display: flex;
+  align-items: center;
+  width: 20%;
+  margin-bottom: 30px;
+}
+.page-action {
+  display: flex;
+  flex-wrap: nowrap;
+}
+.page-action {
+  margin-top: 0px;
+}
+.tab-button button span {
+  position: relative;
+  top: -2px;
+}
+
+.not-available-use h1 {
+  font-size: 24px;
+  font-family: 'Gellix', sans-serif;
+  font-weight: 700;
+  color: #68759f;
+  text-transform: uppercase;
+  margin: 0;
+  padding-left: 20px;
+}
+.page-not-available {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.not-f-main {
+  height: 84vh;
+  display: inline-block;
+  width: 100%;
+}
+.not-available-user h1 {
+  font-size: 30px;
+  font-weight: 900;
+  text-transform: capitalize;
+  color: #68759f;
+}
+.not-available-user {
+  text-align: center;
+  max-width: 550px;
+  line-height: 22px;
+  background-color: #ffffff;
+  padding: 60px 40px;
+}
+
+.button-create {
+  /* background: rgb(88,191,56) !important;
+    border-color:rgb(88,191,56) !important; */
+  background: #41ae4c !important;
+  border-color: #41ae4c !important;
+}
+@media only screen and (min-width: 1025px) and (max-width: 1780px) {
+  .page-action-right button:first-child {
+    margin-right: 10px;
+  }
+  .page-action-right button {
+    padding: 0 15px 0 15px;
+  }
+}
+
+@media only screen and (max-width: 1260px) {
+  .page-action {
+    flex-flow: row wrap !important;
+  }
+  .page-heading {
+    width: 100%;
+  }
+  .page-action-right {
+    width: 46%;
+  }
+  .page-action-right {
+    flex-wrap: nowrap;
+  }
+  .page-action-right button {
+    line-height: 15px;
+  }
+  .page-action-left {
+    width: 54%;
+  }
+  .tab-button button {
+    padding: 0 25px;
+  }
+  .page-action-right button:first-child {
+    margin-right: 10px;
+  }
+}

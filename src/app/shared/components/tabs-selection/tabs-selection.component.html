@@ -1,0 +1,10 @@
+<div class="tabs">
+    <div class="tab-slider-bg"></div>
+    <button (click)="selectTab(i)"
+            *ngFor="let tab of tabs; let i = index"
+            [class.active]="activeTab === i"
+            [routerLink]="tab.routerLink"
+            class="tab">
+        {{ tab.label }}
+    </button>
+</div>

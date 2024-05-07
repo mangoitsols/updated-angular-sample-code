@@ -1,0 +1,234 @@
+<!-- Instructor details modal start -->
+<div class="w-news-dialog">
+  <div class="modal-header">
+    <h3>{{ language.instructor.instructor_detail }}</h3>
+    <button type="button" class="btn-close">
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+        <path d="M32 3.72111L28.2789 0L16 12.2789L3.72111 0L0 3.72111L12.2789 16L0 28.2789L3.72111 32L16 19.7211L28.2789 32L32 28.2789L19.7211 16L32 3.72111Z" fill="#98A5C6"></path>
+      </svg>
+    </button>
+  </div>
+  <div class="" *ngIf="surveyVoteResult">
+    <div class="instructor-modal-content">
+      <!-- instructor description -->
+      <div class="instructor-m-description">
+        <div class="ins-image">
+          <div class="arrow left-arrow">
+            <svg xmlns="http://www.w3.org/2000/svg" width="19" height="32" viewBox="0 0 19 32" fill="none" (click)="navigateToPreviousTask()" [class.disabled]="selectedIndex === 0">
+              <path d="M16 3L3 16L16 29" stroke="#EF4968" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </div>
+
+          <div class="box-img-survey">
+            <ng-container *ngIf="imageShow">
+              <img *ngIf="!imageShow.isLoading && imageShow.imageLoaded" [src]="imageShow.url" alt="Image" loading="lazy" />
+              <img *ngIf="imageShow.isLoading" [src]="'../../../../assets/img/loading.gif'" alt="Image" />
+            </ng-container>
+            <ng-container *ngIf="!imageShow">
+              <img [src]="'../../../assets/img/no_image.png'" alt="Image" />
+            </ng-container>
+          </div>
+          <div class="arrow right-arrow" (click)="navigateToNextTask()" [class.disabled]="selectedIndex === surveys?.length - 1">
+            <svg xmlns="http://www.w3.org/2000/svg" width="19" height="32" viewBox="0 0 19 32" fill="none">
+              <path d="M3 29L16 16L3 3" stroke="#EF4968" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </div>
+        </div>
+
+        <div class="ins-description">
+          <h3>{{ surveyData.title }}</h3>
+          <p *ngIf="surveyData?.description" [innerHTML]="surveyData.description"></p>
+        </div>
+      </div>
+
+      <!-- survey options -->
+      <div class="survery-box-bottom" *ngIf="!showVoteResult && data.type !== 'mySurvey' && data.type !== 'Completed'">
+        <ng-container *ngIf="surveyData?.surveyOption == 0 && surveyData?.survey_status == 0 && additionalCastVote && checkMyVote()">
+          <h3>
+            {{ language.Survey.my_voice }}
+            <span class="survey-selection">{{ language.Survey.single_option }}</span>
+          </h3>
+        </ng-container>
+
+        <ng-container *ngIf="surveyData?.surveyOption == 1 && surveyData?.survey_status == 0 && additionalCastVote && checkMyVote()">
+          <h3>
+            {{ language.Survey.my_voice }}
+            <span class="survey-selection">{{ language.Survey.multiple_option }}</span>
+          </h3>
+        </ng-container>
+
+        <ng-container *ngIf="surveyData?.surveyOption == 0 && surveyData?.survey_status == 0 && !additionalCastVote">
+          <h3>
+            {{ language.Survey.my_voice }}
+            <span class="survey-selection">{{ language.Survey.single_option }}</span>
+          </h3>
+        </ng-container>
+        <ng-container *ngIf="surveyData?.surveyOption == 1 && surveyData?.survey_status == 0 && !additionalCastVote">
+          <h3>
+            {{ language.Survey.my_voice }}
+            <span class="survey-selection">{{ language.Survey.multiple_option }}</span>
+          </h3>
+        </ng-container>
+
+        <div class="voting-options 1" *ngIf="surveyData?.surveyOption == 0 && surveyData?.survey_status == 0 && additionalCastVote && checkMyVote()">
+          <form [formGroup]="surveyVoteForm" (ngSubmit)="serveyProcess()">
+            <div class="custom-control custom-radio" *ngFor="let fields of surveyData?.surveyAnswer; let i = index">
+              <input [type]="'radio'" class="input-radio" name="radio" id="{{ i }}" [value]="fields.id" (change)="onradioChange($event)" />
+              <label for="{{ i }}">{{ fields.surveyAnswer }}</label>
+            </div>
+            <div *ngIf="errorAnswer.isError == true" class="text-danger">
+              {{ errorAnswer.errorMessage }}
+            </div>
+            <div class="profile_sub_btn event_sub_btn" *ngIf="btnDisable == 'true'">
+              <button type="button" disabled class="save_btn">{{ language.Survey.to_vote }}</button>
+            </div>
+            <div class="profile_sub_btn event_sub_btn" *ngIf="btnDisable == 'false'">
+              <button type="submit" class="save_btn">{{ language.Survey.to_vote }}</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="voting-options 1" *ngIf="surveyData?.surveyOption == 0 && surveyData?.survey_status == 0 && !additionalCastVote">
+          <form [formGroup]="surveyVoteForm" (ngSubmit)="serveyProcess()">
+            <div class="custom-control custom-radio" *ngFor="let fields of surveyData?.surveyAnswer; let i = index">
+              <input [type]="'radio'" class="input-radio" name="radio" id="{{ i }}" [value]="fields.id" (change)="onradioChange($event)" />
+              <label for="{{ i }}">{{ fields.surveyAnswer }}</label>
+            </div>
+            <div *ngIf="errorAnswer.isError == true" class="text-danger">
+              {{ errorAnswer.errorMessage }}
+            </div>
+            <div class="profile_sub_btn event_sub_btn" *ngIf="btnDisable == 'true'">
+              <button type="button" disabled class="save_btn">{{ language.Survey.to_vote }}</button>
+            </div>
+            <div class="profile_sub_btn event_sub_btn" *ngIf="btnDisable == 'false'">
+              <button type="submit" class="save_btn">{{ language.Survey.to_vote }}</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="voting-options 2" *ngIf="surveyData?.surveyOption == 1 && surveyData?.survey_status == 0 && !additionalCastVote">
+          <form [formGroup]="surveyVoteForm" (ngSubmit)="serveyProcess()">
+            <div class="custom-control custom-radio" *ngFor="let fields of surveyData?.surveyAnswer; let i = index">
+              <input [type]="'checkbox'" class="input-checkbox" id="{{ i }}" [value]="fields.id" (change)="onCheckboxChange($event)" />
+              <label for="{{ i }}">{{ fields.surveyAnswer }}</label>
+            </div>
+            <div *ngIf="errorAnswer.isError == true" class="text-danger">{{ errorAnswer.errorMessage }}</div>
+            <div class="profile_sub_btn event_sub_btn">
+              <button type="submit" *ngIf="btnDisable == 'false'" class="save_btn">
+                <span>{{ language.Survey.to_vote }}!</span>
+              </button>
+              <button type="button" *ngIf="btnDisable == 'true'" disabled class="Cancel_btn">
+                <span>{{ language.Survey.to_vote }}!</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div class="voting-options 2" *ngIf="surveyData?.surveyOption == 1 && surveyData?.survey_status == 0 && additionalCastVote && checkMyVote()">
+          <form [formGroup]="surveyVoteForm" (ngSubmit)="serveyProcess()">
+            <div class="custom-control custom-radio" *ngFor="let fields of surveyData?.surveyAnswer; let i = index">
+              <input [type]="'checkbox'" class="input-checkbox" id="{{ i }}" [value]="fields.id" (change)="onCheckboxChange($event)" />
+              <label for="{{ i }}">{{ fields.surveyAnswer }}</label>
+            </div>
+            <div *ngIf="errorAnswer.isError == true" class="text-danger">{{ errorAnswer.errorMessage }}</div>
+            <div class="profile_sub_btn event_sub_btn">
+              <button type="submit" *ngIf="btnDisable == 'false'" class="save_btn">
+                <span>{{ language.Survey.to_vote }}!</span>
+              </button>
+              <button type="button" *ngIf="btnDisable == 'true'" disabled class="Cancel_btn">
+                <span>{{ language.Survey.to_vote }}!</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="survery-box-bottom result-first" *ngIf="showVoteResult || (additionalCastVote && vote_answer && vote_answer.length > 0)">
+        <h3>{{ language.Survey.my_voice }}</h3>
+        <div class="voting-options 3">
+          <div class="custom-control custom-radio" *ngIf="voteAnswer">
+            <input [type]="'radio'" class="input-radio" readonly checked />
+            <label>{{ voteAnswer.survey_answer?.surveyAnswer }}</label>
+          </div>
+          <div class="custom-control custom-radio" *ngIf="!voteAnswer || voteAnswer == undefined">
+            <span>{{ language.Survey.not_voted }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="survery-box-bottom result-first" *ngIf="surveyData?.survey_status == 1">
+        <div class="voting-options 2">
+          <span>{{ language.Survey.survey_close }}</span>
+        </div>
+      </div>
+
+      <ng-container *ngIf="showVote(surveyData)">
+        <!-- VOTE RESULT START -->
+        <div class="survery-box-bottom result-first result-last">
+          <h3>{{ language.Survey.survey_result }}</h3>
+          <div class="voting-options 4">
+            <ul>
+              <li *ngFor="let value of surveyData.surveyAnswer; let j = index">
+                <h4>{{ value.surveyAnswer }}</h4>
+                <ng-container *ngFor="let val of surveyVoteResult.answerCount">
+                  <div *ngIf="val.AnswerId == value.id">
+                    <mat-progress-bar mode="determinate" [ngClass]="{ 'green-progress': j == 0, 'yellow-progress': j > 0 }" [value]="val.per"></mat-progress-bar>
+                  </div>
+                  <span *ngIf="val.AnswerId == value.id"
+                    ><a data-bs-toggle="modal" data-bs-target="#exAnswerModal" (click)="getAnswerResult(value.id)">{{ val.count }} {{ language.Survey.votes }}</a>
+                  </span>
+                </ng-container>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <!-- VOTE RESULT END -->
+      </ng-container>
+    </div>
+    <div class="pop-bottom">
+      <div>
+        <div class="left-popup">
+          <div class="img-profile">
+            <img onContextMenu="return false;" [src]="surveyData?.user_name?.member_id | memberPhoto | async" alt="User Photo" loading="lazy" style="width: 100px" />
+          </div>
+          <div>
+            <span>{{ language.Survey.survey_created_by }}</span>
+            <label>{{ surveyData?.user_name?.firstname }} {{ surveyData?.user_name?.lastname }}</label>
+          </div>
+        </div>
+        <div class="right-popup"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal listof-votemember change_pass_section faq_edit all_news small-box-popup" id="exAnswerModal" tabindex="-1" aria-labelledby="exampleModalLabel">
+  {{ voteCount }}
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="editFaq">{{ language.Survey.voting_setting }}</h3>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="nc-icon nc-simple-remove"></i></button>
+      </div>
+      <div class="modal-body">
+        <p>{{ language.Survey.people_voting }}: {{ surveyAnswerName }}</p>
+        <h5>{{ language.Survey.number_of_vote }}: {{ voteCount }}</h5>
+
+        <div *ngIf="!show_name">
+          <div *ngFor="let val of vote_setting">
+            <h3>{{ val.user_details.firstname }} {{ val.user_details.lastname }}</h3>
+          </div>
+        </div>
+        <div *ngIf="show_name">
+          <div *ngFor="let val of vote_setting; let i = index">
+            <h3 *ngIf="val.id">{{ language.Survey.anonymous }}</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- </div>
+</div> -->
+<!-- Instructor details modal end -->

@@ -1,0 +1,38 @@
+.app-page-box h1 {
+  color: #3d475c;
+  font-family: Gellix;
+  font-size: 28px;
+  font-style: normal;
+  font-weight: 800;
+  line-height: 19px; /* 67.857% */
+  letter-spacing: 0.485px;
+}
+
+.app-page-box h3 {
+  color: #3d475c;
+
+  font-family: Gellix;
+  font-size: 28px;
+  font-style: normal;
+  font-weight: 800;
+  line-height: 19px; /* 67.857% */
+  letter-spacing: 0.485px;
+  margin-top: 61px;
+}
+
+.app-img-part {
+  margin-top: 70px;
+  display: flex;
+  align-items: center;
+  gap: 100px;
+}
+
+.app-img-part > div > span {
+  width: 100%;
+  display: inline-block;
+  margin-bottom: 58px;
+}
+
+.app-page-box {
+  padding-top: 22px;
+}

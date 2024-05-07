@@ -1,0 +1,22 @@
+<div class="row">
+  <div class="col">
+    <div [ngClass]="cssClass" class="vc-page-header">
+      <ng-container *ngIf="headerTitle">
+        <h1 [ngStyle]="headerTitleStyles">{{ headerTitle }}</h1>
+      </ng-container>
+      <ng-container *ngIf="breadcrumbs && breadcrumbs.length">
+        <div [ngStyle]="breadcrumbsStyles" class="vc-page-header__bread-crumbs">
+          <ng-container *ngFor="let breadcrumb of breadcrumbs; let isLast = last">
+            <a *ngIf="breadcrumb.link" [routerLink]="breadcrumb.link" class="cursor-pointer">{{ breadcrumb.label }}</a>
+            <span *ngIf="!breadcrumb.link">{{ breadcrumb.label }}</span>
+            <vc-icon *ngIf="!isLast" [cssStyle]="{ 'margin-bottom': '-7px' }" class="mx-1" color="var(--vc-color-dark-grey)" iconName="chevron-right-slim" size="12px"></vc-icon>
+          </ng-container>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+  <div class="col d-flex align-items-center justify-content-end">
+    <!-- Content projection for right side content -->
+    <ng-content></ng-content>
+  </div>
+</div>

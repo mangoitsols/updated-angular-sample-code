@@ -1,0 +1,51 @@
+<ng-container *ngIf="pagination && pagination.rowCount > 0">
+  <div class="pagination-container">
+    <!-- Items per page dropdown -->
+    <div *ngIf="showPageSizeSelector" class="page-size-selector">
+      <label for="pageSize">{{ language.club_events.items_per_page }}</label>
+      <div *ngIf="showPageSizeSelector" class="vc-mini-dropdown">
+        <button (click)="toggleDropdown()" [disabled]="loading" class="vc-mini-dropdown__btn" id="pageSize">
+          {{ pagination.pageSize }}
+          <span>
+            <vc-icon [cssStyle]="{ marginBottom: '-2px' }" color="var(--vc-color-dark-grey)" iconName="chevron-down" size="7px"></vc-icon>
+          </span>
+        </button>
+        <div [class.open]="isDropdownOpen" class="vc-mini-dropdown__content">
+          <a (click)="onPageSizeChange(size)" *ngFor="let size of itemsPerPageOptions">{{ size }}</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pagination controls -->
+    <div *ngIf="showPagination" class="pagination-controls">
+      <button (click)="changePage(1)" *ngIf="showFirstLastButtons" [disabled]="pagination.page === 1 || loading" class="nav-button">
+        <vc-icon [color]="selectedPageBgColor" [cssStyle]="{ marginBottom: '-6px' }" iconName="chevron-double-left" size="14px"></vc-icon>
+      </button>
+      <button (click)="changePage(pagination.page - 1)" *ngIf="showPreviousNextButtons" [disabled]="pagination.page === 1 || loading" class="nav-button">
+        <vc-icon [color]="selectedPageBgColor" [cssStyle]="{ marginBottom: '-6px' }" iconName="chevron-left-slim" size="14px"></vc-icon>
+      </button>
+
+      <!-- Show ellipsis with logic -->
+      <!-- Dynamically create page number buttons based on pageCount -->
+      <button
+        (click)="p !== '...' && changePage(p)"
+        *ngFor="let p of getPages()"
+        [disabled]="p === '...' || loading"
+        [ngStyle]="{
+          'background-color': p === pagination.page ? selectedPageBgColor : '',
+          color: p === pagination.page ? selectedPageTextColor : '',
+          'border-color': p === pagination.page ? selectedPageBgColor : '#ddd'
+        }"
+      >
+        {{ p }}
+      </button>
+
+      <button (click)="changePage(pagination.page + 1)" *ngIf="showPreviousNextButtons" [disabled]="pagination.page === pagination.pageCount || loading" class="nav-button">
+        <vc-icon [color]="selectedPageBgColor" [cssStyle]="{ marginBottom: '-6px' }" iconName="chevron-right-slim" size="14px"></vc-icon>
+      </button>
+      <button (click)="changePage(pagination.pageCount)" *ngIf="showFirstLastButtons" [disabled]="pagination.page === pagination.pageCount || loading" class="nav-button">
+        <vc-icon [color]="selectedPageBgColor" [cssStyle]="{ marginBottom: '-6px' }" iconName="chevron-double-right" size="14px"></vc-icon>
+      </button>
+    </div>
+  </div>
+</ng-container>

@@ -1,0 +1,296 @@
+@media only screen and (max-width: 1480px) and (min-width: 1261px) {
+  .row.eve_grid_main .col-lg-3.col-md-6.col-sm-6 {
+    flex: 0 0 33.3%;
+    max-width: 33.3%;
+  }
+  .create_msg_main .widget-appointment.widget {
+    max-height: 84vh !important;
+  }
+}
+@media only screen and (max-width: 1260px) and (min-width: 1024px) {
+  .row.eve_grid_main .col-lg-3.col-md-6.col-sm-6 {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+}
+@media only screen and (max-width: 1024px) and (min-width: 768px) {
+  .row.cm_row .col-md-6 {
+    max-width: 100%;
+    flex: 0 0 100%;
+  }
+}
+.event_field.all_participants .card {
+  box-shadow: none;
+}
+.create_msg_main .widget-appointment.widget {
+  max-height: 65vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 10vh;
+}
+.event_field.all_participants .card-body,
+.event_field.all_participants .card-header {
+  padding: 0;
+}
+.create_msg_main .parti_name {
+  width: 45px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: #fff;
+  background: #4fb96d;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+.create_msg_main .widget-appointment.widget h5.card-title {
+  font-size: 18px;
+}
+
+.save_btn.draft {
+  margin-left: 18px;
+  background: rgb(104, 117, 159) !important;
+  border-color: rgb(104, 117, 159) !important;
+}
+
+.save_btn {
+  background: #41ae4c !important;
+  border-color: #41ae4c !important;
+}
+.create_msg_main .widget-app-content {
+  display: flex;
+  padding: 15px 10px;
+  box-shadow: 0px 0px 4px 1px #eaeaff;
+  border-radius: 10px;
+  flex-wrap: nowrap;
+  width: 100%;
+}
+h5.card-title.message-recipent {
+  margin-top: 10px;
+  background: #e9eeff;
+  padding: 15px 20px;
+  border-radius: 15px;
+  color: #68759f;
+  font-family: 'Gellix', sans-serif;
+}
+@media only screen and (max-width: 1260px) and (min-width: 1025px) {
+  .widget-app-content {
+    display: inline-block;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .app-right-content {
+    float: right;
+  }
+}
+@media only screen and (max-width: 1024px) {
+  .col-md-12.add_event_content.create_group_section .col-md-6 {
+    max-width: 100%;
+    flex: 0 0 100%;
+  }
+}
+@media only screen and (max-width: 767px) {
+  .col-md-6.all_participants .card-body {
+    padding: 0;
+  }
+  .widget-app-content {
+    display: flex;
+    width: 100%;
+  }
+  .profile_main_head {
+    margin-bottom: 0;
+  }
+  .profile_title {
+    margin: 0px;
+  }
+}
+@media only screen and (max-width: 500px) {
+  .all_participants .user-content {
+    padding-top: 6px;
+    color: #192838;
+    width: 227px;
+    float: left;
+  }
+  .app-right-content {
+    float: right;
+  }
+}
+@media only screen and (max-width: 320px) {
+  .all_participants .user-content {
+    width: 192px;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .widget-app-content {
+    display: inline-block;
+    width: 100%;
+  }
+}
+.user-content {
+  padding-top: 0;
+}
+.card .card-header .card-title {
+  margin-bottom: 30px;
+}
+
+/* new design css start */
+.page-action {
+  margin-top: 0px;
+}
+.page-heading {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 30px;
+}
+.create-news-main .card {
+  padding: 35px 25px;
+  border-radius: 20px;
+}
+.message_upload.create_upload_event span.message_upload_overlay img {
+  padding: 0px 5px 0 0px;
+  width: 22px;
+}
+.message_upload.create_upload_event span.message_upload_overlay {
+  background: #979797;
+  padding: 8px 15px;
+  border-radius: 10px;
+  width: 100%;
+  height: 40px;
+  left: 0;
+}
+.message_upload.create_upload_event .upload_label span {
+  width: inherit;
+  display: inline;
+}
+.message_upload.create_upload_event .upload_label {
+  color: #ffffff;
+  text-align: center;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+.event_field.task_area_field textarea {
+  border-color: #e9eeff;
+  border-radius: 10px;
+}
+.event_field.task_area_field textarea::placeholder {
+  color: #cbd2eb;
+}
+.event_field.all_participants.create_msg_main .card {
+  padding: 25px;
+  border: 1px solid #eaedf5;
+}
+.page-heading.page-heading-event {
+  justify-content: space-between;
+  margin-bottom: 0;
+}
+
+.mobile {
+  display: none;
+}
+
+.page-heading.page-heading-event .profile_sub_btn.event_sub_btn {
+  margin: 0;
+}
+
+.page-heading.page-heading-event .profile_sub_btn.event_sub_btn .save_btn {
+  border-radius: 5px;
+  background: #41ae4c !important;
+  border-color: #41ae4c !important;
+  width: 150px;
+  height: 45px;
+  text-align: center;
+  color: #fff;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  padding: 0px;
+}
+
+.page-heading.page-heading-event .profile_sub_btn.event_sub_btn .Cancel_btn {
+  border-radius: 5px;
+  background: #ef4968 !important;
+  border-color: #ef4968 !important;
+  width: 150px;
+  height: 45px;
+  text-align: center;
+  color: #fff !important;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  padding: 0px;
+}
+
+.page-heading.page-heading-event .profile_sub_btn.event_sub_btn .save_btn span,
+.page-heading.page-heading-event .profile_sub_btn.event_sub_btn .Cancel_btn span {
+  justify-content: center;
+  color: #fff !important;
+}
+
+.page-heading.page-heading-event h1 {
+  padding-left: 0;
+  color: #3d475c;
+  font-family: Gellix !important;
+  font-size: 28px;
+  font-style: normal;
+  font-weight: 800;
+  line-height: 28px;
+  letter-spacing: 0.485px;
+}
+.create-news-main .card {
+  padding: 37px 0px;
+  border-radius: 0px;
+  background: none;
+}
+.card.body-bg.create-event-main-box .card-body {
+  padding-left: 0px;
+}
+.message_upload.create_upload_event {
+  position: relative;
+}
+
+.card.body-bg.create-event-main-box.isLoading .col-md-6 {
+  filter: blur(15px);
+}
+@media (max-width: 1024px) {
+  .create-news-main .card {
+    padding: 0;
+  }
+  .create-news-main .card-body {
+    padding: 0;
+  }
+}
+
+@media (max-width: 767px) {
+  .save_btn.draft {
+    margin-left: 0px;
+  }
+
+  .event_field.all_participants.create_msg_main .card {
+    padding: 25px;
+    border: none;
+  }
+
+  .create_msg_main .widget-app-content {
+    margin-bottom: 15px;
+  }
+
+  .create-news-main .card {
+    padding-bottom: 0px !important;
+  }
+
+  .mobile {
+    display: block;
+  }
+  .desktop {
+    display: none;
+  }
+}
+
+/* mobile back header */

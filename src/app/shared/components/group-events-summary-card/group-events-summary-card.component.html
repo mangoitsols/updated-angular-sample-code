@@ -1,0 +1,48 @@
+<div [ngClass]="isMobileView ? 'mobile-events-card-wrapper' : 'events-card-wrapper'">
+  <div class="card vc-radius">
+    <div class="card-image-wrapper">
+      <!-- <img [src]="event.eventImages ? event?.eventImages[0]?.eventImage : 'assets/img/no-image.png'" alt="" alt="news-image" class="vc-radius" /> -->
+      <ng-container *ngIf="event.token">
+        <!-- If the image has finished loading, display it -->
+        <img appDefaultImage *ngIf="!event.token.isLoading && event.token.imageLoaded" [src]="event.token.url" alt="Image" loading="lazy" class="vc-radius" />
+        <!-- If the image is still loading, display a loader -->
+        <img *ngIf="event.token.isLoading" [src]="'../../../../assets/img/loading.gif'" alt="Image" loading="lazy" />
+      </ng-container>
+
+      <div class="card-image-wrapper__content-top">
+        <vc-badge [positionTop]="isMobileView ? '15px' : '20px'" positionLeft="17px" text="{{ event?.participantCount }} {{ language.create_event.participants }}"></vc-badge>
+        <vc-badge
+          [cssStyle]="{ padding: '6.5px 0px 5px' }"
+          [fullDate]="event.dateFrom"
+          borderBottomLeftRadius="11px"
+          borderBottomRightRadius="0"
+          borderTopLeftRadius="0"
+          borderTopRightRadius="11px"
+          class="text-center overflow-hidden"
+          fontSize="12px"
+          height="68px"
+          isDateBadge="true"
+          width="68px"
+        ></vc-badge>
+      </div>
+      <div class="card-image-wrapper__content-bottom w-100 d-flex align-items-center box-position">
+        <div class="card-image-wrapper__content-bottom__left-text">
+          <span>{{ event?.place }} </span>
+        </div>
+        <div class="card-image-wrapper__content-bottom__right-text">
+          <span>{{ event?.recurringDates && event?.recurringDates.length ? event?.recurringDates[0].startTime + '-' + event?.recurringDates[0].endTime : event.startTime + ' - ' + event.endTime }} {{ language.login.o_clock }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="card-body-area">
+      <p class="card-body-area__heading">
+        {{ event.name }}
+      </p>
+      <div *ngIf="!isMobileView" class="text-alignment d-flex align-items-center justify-content-end">
+        <!-- <a class="card-body-area__link" routerLink="../event/{{ event?.id }}/details">{{ language.create_event.to_the_event }}</a> -->
+        <a class="card-body-area__link" [routerLink]="['../event', event?.id, 'details', 'date', event?.dateFrom | date: 'yyyy-MM-dd']">{{ language.create_event.to_the_event }}</a>
+        <vc-icon cssClass="mt-1" iconName="chevron-right" size="20px"></vc-icon>
+      </div>
+    </div>
+  </div>
+</div>

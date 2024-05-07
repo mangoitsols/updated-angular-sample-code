@@ -1,0 +1,96 @@
+<div class="add_content_main">
+  <div class="panel news_zone_main">
+    <div class="panel-inner">
+      <div class="mat-elevation-z8" *ngIf="isData == true">
+        <!-- search heading of list start -->
+        <table mat-table [dataSource]="dataSource" matSort (matSortChange)="sortData($event)" class="table table-bordered" data-plugin="floatThead">
+          <!-- Position Column -->
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+              {{ language.create_news.title_label }}
+            </th>
+            <td class="odd" mat-cell *matCellDef="let row">
+              <p [innerHTML]="row.title.length > 0 ? (row.title | slice: 0:100) + '...' : row.title"></p>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="description">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+              {{ language.create_event.description }}
+            </th>
+            <td class="odd" mat-cell *matCellDef="let row">
+              <p [innerHTML]="row.description.length > 0 ? (row.description | slice: 0:100) + '...' : row.description"></p>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="place">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+              {{ language.create_event.location }}
+            </th>
+            <td class="odd" mat-cell *matCellDef="let row">
+              {{ row.place }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="picture_video">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+              {{ language.banner.image }}
+            </th>
+            <td class="odd" mat-cell *matCellDef="let row">
+              <ng-container *ngIf="row?.token">
+                <img *ngIf="!row.token.isLoading && row.token.imageLoaded" [src]="row.token.url" alt="Image" loading="lazy" />
+                <img *ngIf="row.token.isLoading" src="../../../../assets/img/loading.gif" alt="Loading" />
+              </ng-container>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="View">
+            <th class="text-center" mat-header-cell *matHeaderCellDef>
+              <!-- {{language.header.view}} -->
+            </th>
+            <td class="odd table_action view" mat-cell *matCellDef="let row">
+              <!-- <button class="btn btn-outline-secondary" routerLink="/web/vereins-faq-detail/{{row.id}}">{{language.header.view}}</button> -->
+              <a routerLink="/web/vereins-faq-detail/{{ row.id }}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M0 7C3.869 14 10.131 14 14 7C10.131 0 3.869 0 0 7ZM7 9.15C6.57477 9.15 6.15909 9.0239 5.80552 8.78766C5.45196 8.55141 5.17639 8.21563 5.01366 7.82277C4.85093 7.42991 4.80835 6.99761 4.89131 6.58056C4.97427 6.1635 5.17904 5.7804 5.47972 5.47972C5.7804 5.17904 6.1635 4.97427 6.58056 4.89131C6.99761 4.80835 7.42991 4.85093 7.82277 5.01366C8.21563 5.17639 8.55141 5.45196 8.78766 5.80552C9.0239 6.15909 9.15 6.57477 9.15 7C9.14973 7.57013 8.92313 8.11684 8.51999 8.51999C8.11684 8.92313 7.57013 9.14973 7 9.15Z"
+                    fill="#68759F"
+                  />
+                </svg> </a
+              >&nbsp;&nbsp;
+
+              <a (click)="deleteFaqs(row.id)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <g clip-path="url(#clip0_2807_896)">
+                    <path
+                      d="M13.0601 0.832H9.48508V0.66C9.48508 0.1 9.02308 0 8.45908 0H5.52208C4.95808 0 4.50008 0.1 4.50008 0.66V0.832H0.939079C0.859067 0.831868 0.779816 0.847531 0.705869 0.878089C0.631922 0.908648 0.564734 0.953501 0.508157 1.01008C0.45158 1.06666 0.406727 1.13384 0.376168 1.20779C0.34561 1.28174 0.329947 1.36099 0.330079 1.441V2.617C0.330079 2.77852 0.394241 2.93342 0.508451 3.04763C0.622661 3.16184 0.777562 3.226 0.939079 3.226H13.0601C13.2216 3.226 13.3765 3.16184 13.4907 3.04763C13.6049 2.93342 13.6691 2.77852 13.6691 2.617V1.441C13.6691 1.27948 13.6049 1.12458 13.4907 1.01037C13.3765 0.896162 13.2216 0.832 13.0601 0.832Z"
+                      fill="#68759F"
+                    />
+                    <path
+                      d="M11.7819 4.84399H2.21694C2.13095 4.84475 2.0461 4.86368 1.96794 4.89953C1.88979 4.93539 1.8201 4.98736 1.76344 5.05205C1.70678 5.11673 1.66444 5.19266 1.63919 5.27486C1.61395 5.35705 1.60636 5.44366 1.61694 5.52899L2.59794 12.951C2.63453 13.2395 2.77465 13.5049 2.99225 13.6979C3.20985 13.8908 3.49012 13.9982 3.78094 14H10.2179C10.5096 13.9994 10.7911 13.8926 11.0097 13.6995C11.2284 13.5065 11.3692 13.2404 11.4059 12.951L12.3859 5.52899C12.3967 5.4433 12.3891 5.35629 12.3637 5.27374C12.3383 5.1912 12.2956 5.115 12.2385 5.05022C12.1814 4.98544 12.1111 4.93354 12.0324 4.89799C11.9537 4.86243 11.8683 4.84403 11.7819 4.84399Z"
+                      fill="#68759F"
+                    />
+                  </g>
+                  <defs>
+                    <clipPath id="clip0_2807_896">
+                      <rect width="14" height="14" fill="white" />
+                    </clipPath>
+                  </defs>
+                </svg> </a
+              >&nbsp;
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+          <tr mat-row *matRowDef="let row; columns: columnsToDisplay"></tr>
+
+          <!-- Row shown when there is no matching data. -->
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" colspan="6">{{ language.create_faq.no_faq }}</td>
+          </tr>
+        </table>
+        <mat-paginator [length]="totalRows" [pageIndex]="currentPage" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" (page)="pageChanged($event)" showFirstLastButtons aria-label="Select page"> </mat-paginator>
+      </div>
+    </div>
+  </div>
+</div>

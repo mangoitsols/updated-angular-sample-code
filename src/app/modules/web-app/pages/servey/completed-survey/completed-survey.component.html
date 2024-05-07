@@ -1,0 +1,80 @@
+<table class="table active-survey-data table-responsive table-responsive-new">
+  <thead>
+    <tr>
+      <th>{{ language.Survey.title }}</th>
+      <th>{{ language.Survey.author }}</th>
+      <th>
+        <span
+          >{{ language.Survey.expired_date }}&nbsp;&nbsp;
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 15 15" fill="none">
+            <path
+              d="M7.48651 0.00148296C6.25621 0.00148296 5.02544 -0.00180149 3.79514 0.00242043C1.92694 0.00851822 0.433039 1.23319 0.0624953 3.05636C0.0146529 3.29229 0.0015197 3.5315 0.0015197 3.77165C0.0015197 6.24539 -0.00270169 8.71959 0.00292683 11.1933C0.00714822 13.0554 1.2412 14.5451 3.07 14.9119C3.3003 14.9583 3.53435 14.9705 3.76934 14.9705C6.25387 14.9705 8.73792 14.9757 11.2224 14.9687C13.0808 14.9635 14.5681 13.7341 14.9373 11.9161C14.9865 11.6746 14.9987 11.4293 14.9987 11.1835C14.9987 8.71537 15.0034 6.24726 14.9968 3.77916C14.9921 1.99023 13.8336 0.518368 12.1188 0.0995121C11.8041 0.0225897 11.4837 -0.000393867 11.1605 7.53403e-05C9.93538 0.00242043 8.71118 0.00148296 7.48651 0.00148296ZM6.75293 8.63329C6.75293 8.57278 6.75293 8.51649 6.75293 8.46068C6.75293 7.66518 6.75293 6.86968 6.75293 6.07418C6.75293 5.54792 6.74917 5.02118 6.75433 4.49492C6.75809 4.13047 6.98839 3.84154 7.32141 3.76556C7.81437 3.65252 8.24402 3.99773 8.24589 4.52071C8.24964 5.83122 8.24683 7.14126 8.24871 8.45177C8.24871 8.5118 8.22713 8.577 8.27263 8.64548C8.31812 8.60233 8.36081 8.5648 8.40114 8.52447C8.92366 8.00336 9.44289 7.47944 9.96869 6.96255C10.2717 6.66471 10.7342 6.66612 11.0268 6.95411C11.3209 7.24351 11.3331 7.70927 11.0344 8.00993C10.0358 9.01509 9.03248 10.0156 8.02591 11.0127C7.7276 11.3082 7.27919 11.3129 6.98229 11.0193C5.97103 10.0188 4.96587 9.01133 3.96071 8.00477C3.79889 7.84295 3.72713 7.63985 3.75433 7.41283C3.79092 7.10889 3.95321 6.88891 4.24495 6.78619C4.54139 6.68207 4.8125 6.74398 5.03717 6.9663C5.56109 7.48554 6.08173 8.00805 6.60518 8.52775C6.64364 8.56574 6.67084 8.6239 6.75293 8.63329Z"
+              fill="#98A5C6"
+            />
+          </svg>
+        </span>
+      </th>
+      <th class="text-center"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let item of Completed | paginate: { itemsPerPage: itemPerPage, currentPage: currentPageNmuber, totalItems: totalCompletedSurvey }; let i = index">
+      <td class="survey-title survey-title-new">
+        <p *ngIf="item?.title" [innerHTML]="item.title.length > 0 ? (item.title | slice: 0:30) + '...' : item.title"></p>
+      </td>
+      <td class="crm-author">
+        <img onContextMenu="return false;" [src]="item?.user_name?.member_id | memberPhoto | async" alt="User Photo" loading="lazy" />
+        &nbsp;&nbsp;{{ item.user_name.firstname }} {{ item.user_name.lastname }}
+      </td>
+      <td class="remaining-time">
+        <div>
+          <span>{{ item.surveyEndDate | date: 'dd.MM.YYYY':'UTC' }}</span>
+          <span class="span-progress-bar"><mat-progress-bar mode="determinate" value="100"></mat-progress-bar></span>
+        </div>
+      </td>
+      <td>
+        <div class="event-action text-center">
+          <button mat-button [matMenuTriggerFor]="menu">
+            <svg xmlns="http://www.w3.org/2000/svg" width="8" height="27" viewBox="0 0 8 27" fill="none">
+              <path
+                d="M3.46638 26.5073C3.04429 26.369 2.60512 26.2883 2.19957 26.092C0.646745 25.3415 -0.219317 23.6796 0.0597653 21.9534C0.31857 20.352 1.74546 19.007 3.41729 18.7895C5.96158 18.4591 8.11099 20.3676 7.9936 22.8546C7.91088 24.6087 6.52241 26.121 4.69477 26.4493C4.63874 26.4597 4.5651 26.4312 4.53362 26.5073C4.17769 26.5073 3.8223 26.5073 3.46638 26.5073ZM3.51974 0.000507355C3.5016 0.0548878 3.45251 0.0440121 3.41089 0.0491905C1.56777 0.295713 0.0907152 1.85926 0.00640353 3.6538C-0.110459 6.14025 2.03842 8.04873 4.58324 7.71779C6.254 7.50079 7.68196 6.15527 7.94023 4.55391C8.21878 2.82722 7.35325 1.16579 5.80043 0.415348C5.39488 0.21958 4.95571 0.138786 4.53362 -1.14441e-05C4.19584 0.000507355 3.85806 0.000507355 3.51974 0.000507355ZM4.00107 9.37197C1.80256 9.37145 0.000533736 11.1194 1.18551e-07 13.2537C-0.000533499 15.3874 1.80043 17.1364 3.99947 17.1369C6.19797 17.1374 8 15.3895 8.00053 13.2552C8.00053 11.1209 6.19957 9.37249 4.00107 9.37197Z"
+                fill="#E8E5FF"
+              />
+            </svg>
+          </button>
+          <mat-menu #menu="matMenu" xPosition="before">
+            <button mat-menu-item (click)="openModal(item, Completed, i, 'Completed')">{{ language.Survey.view_survey }}</button>
+            <button mat-menu-item *ngIf="userRole == 'admin'" routerLink="/web/update-survey/{{ item.id }}">{{ language.Survey.edit }}</button>
+            <button mat-menu-item *ngIf="userRole == 'admin'" (click)="surveyDelete(item.id)">{{ language.Survey.delete_survey }}</button>
+          </mat-menu>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<div class="paginationHead full_width" *ngIf="Completed?.length > 0">
+  <div class="pagintHeadLeft">
+    <pagination-controls (pageChange)="pageChanged($event)" (pageBoundsCorrection)="pageChanged($event)" autoHide="true" previousLabel="{{ language.pagination.previous }}" nextLabel="{{ language.pagination.next }}"> </pagination-controls>
+  </div>
+  <div class="searchRefine">
+    <span
+      >{{ language.pagination.go_to_page }}
+      <input type="text" #cPg value="{{ currentPageNmuber }}" (change)="goToPg(cPg.value)" />
+    </span>
+    <span
+      >{{ language.pagination.limit_per_page }}
+      <select #lPg value="{{ itemPerPage }}" (change)="setItemPerPage(lPg.value)">
+        <option *ngFor="let limitValue of limitPerPage" value="{{ limitValue.value }}">{{ limitValue.value }}</option>
+      </select>
+    </span>
+    <div class="pagintHeadRight text-center">
+      {{ (currentPageNmuber - 1) * itemPerPage + 1 }} {{ language.header.to }} {{ currentPageNmuber * itemPerPage > totalCompletedSurvey ? totalCompletedSurvey : currentPageNmuber * itemPerPage }} {{ language.header.of }}
+      {{ totalCompletedSurvey | number }}
+      {{ language.Survey.survey }}
+    </div>
+  </div>
+</div>
+
+<div class="empty-data-image" *ngIf="Completed && Completed.length == 0">
+  <span>{{ language.Survey.no_completed_votes }}</span>
+</div>

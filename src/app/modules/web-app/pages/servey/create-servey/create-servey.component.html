@@ -1,0 +1,325 @@
+<div class="content create-component">
+  <div class="mobile-back-main">
+    <div class="back-button">
+      <button type="button" (click)="navigation.back()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none">
+          <path
+            d="M13.5 15L18.375 19.875C18.6042 20.1042 18.7188 20.3958 18.7188 20.75C18.7188 21.1042 18.6042 21.3958 18.375 21.625C18.1458 21.8542 17.8542 21.9687 17.5 21.9687C17.1458 21.9687 16.8542 21.8542 16.625 21.625L10.875 15.875C10.75 15.75 10.6617 15.6146 10.61 15.4687C10.5583 15.3229 10.5321 15.1667 10.5312 15C10.5312 14.8333 10.5575 14.6771 10.61 14.5312C10.6625 14.3854 10.7508 14.25 10.875 14.125L16.625 8.375C16.8542 8.14583 17.1458 8.03125 17.5 8.03125C17.8542 8.03125 18.1458 8.14583 18.375 8.375C18.6042 8.60417 18.7188 8.89583 18.7188 9.25C18.7188 9.60417 18.6042 9.89583 18.375 10.125L13.5 15Z"
+            fill="#E93608"
+          />
+        </svg>
+      </button>
+    </div>
+    <div class="mb-title">{{ language.Survey.create_survey }}</div>
+    <div class="empty-area">&nbsp;</div>
+  </div>
+  <div class="create-survey-main">
+    <form [formGroup]="createServeyForm" (ngSubmit)="serveyProcess()">
+      <div class="page-main create-news-main">
+        <div class="page-heading page-heading-event">
+          <vc-page-header [breadcrumbs]="breadCrumbItems" [headerTitle]="language.Survey.create_survey">
+            <div class="profile_sub_btn event_sub_btn">
+              <button
+                type="submit"
+                class="save_btn"
+                [ngStyle]="{
+                  'border-color': setTheme.default_status == true ? setTheme.create_button_bgcolor : setTheme.create_button_bgcolor,
+                  'background-color': setTheme.default_status == true ? setTheme.create_button_bgcolor : setTheme.create_button_bgcolor,
+                  color: setTheme.default_status == true ? setTheme.create_button_text : setTheme.create_button_text
+                }"
+              >
+                <span>
+                  <span [ngStyle]="{ color: setTheme.default_status == true ? setTheme.create_button_text : setTheme.create_button_text }">{{ language.create_event.save_and_update }}</span></span
+                >
+              </button>
+
+              <button
+                type="button"
+                (click)="onCancel()"
+                class="Cancel_btn"
+                [ngStyle]="{
+                  'border-color': setTheme.default_status == true ? setTheme.cancel_button_bgcolor : setTheme.cancel_button_bgcolor,
+                  'background-color': setTheme.default_status == true ? setTheme.cancel_button_bgcolor : setTheme.cancel_button_bgcolor,
+                  color: setTheme.default_status == true ? setTheme.cancel_button_text : setTheme.cancel_button_text
+                }"
+              >
+                <span>
+                  <span [ngStyle]="{ color: setTheme.default_status == true ? setTheme.cancel_button_text : setTheme.cancel_button_text }">{{ language.Survey.cancel }}</span></span
+                >
+              </button>
+            </div>
+          </vc-page-header>
+        </div>
+        <div class="create-survey-wrapper">
+          <div class="card body-bg create-event-main-box">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="event_field">
+                    <!-- <label>{{ language.Survey.title }} <span class="mandatory">*</span></label> -->
+                    <input type="text" placeholder="{{ language.Survey.survey_title }}" formControlName="title" />
+                    <span class="text-danger" *ngIf="formSubmit || createServeyForm.controls['title'].touched">
+                      <span *ngIf="createServeyForm.controls['title'].errors">{{ language.error_message.common_required }}</span>
+                    </span>
+                  </div>
+                  <div class="event_field anonymous-field">
+                    <div class="event_field" [ngClass]="{ imageUpload: imageFile }">
+                      <!-- <label>{{ language.create_news.add_picture }}</label> -->
+                      <div class="event_upload news_pic_upload">
+                        <label class="preview_txt" style="display: none"></label>
+                        <input type="file" (change)="uploadFile($event)" id="image" accept="/" />
+                        <span class="event_uplod_overlay">
+                          <label *ngIf="errorImage.isError" class="text-danger">{{ errorImage.errorMessage }}</label>
+                          <div class="loader_image" *ngIf="isImage"></div>
+                          <img onContextMenu="return false;" *ngIf="croppedImage == null || (croppedImage == '' && !isImage)" class="preview_img" src="assets/img/event_upload.svg" />
+                          <img onContextMenu="return false;" *ngIf="croppedImage" class="preview_img" [src]="croppedImage" />
+                        </span>
+                        <div *ngIf="(createServeyForm.controls.image.touched || formSubmit) && createServeyForm.controls.image.errors?.required" class="text-danger">
+                          <div *ngIf="createServeyForm.controls.image.errors.required">
+                            {{ language.error_message.common_required }}
+                          </div>
+                        </div>
+                      </div>
+                      <div class="card-body" *ngIf="imageFile">
+                        <div class="row" style="margin-top: 1px">
+                          <div class="text-center col-md-6">
+                            <image-cropper
+                              [imageChangedEvent]="imageChangedEvent"
+                              [maintainAspectRatio]="true"
+                              [aspectRatio]="4 / 3"
+                              autoCrop="false"
+                              hideResizeSquares="true"
+                              [resizeToHeight]="500"
+                              [onlyScaleDown]="true"
+                              [roundCropper]="false"
+                              format="webp"
+                              (imageCropped)="imageCropped($event)"
+                              (imageLoaded)="imageLoaded()"
+                              (cropperReady)="cropperReady()"
+                              (loadImageFailed)="loadImageFailed()"
+                            >
+                            </image-cropper>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="event_field">
+                    <!-- <label>{{ language.room.description }} <span class="mandatory">*</span></label> -->
+                    <div class="event_upload paragr">
+                      <angular-editor placeholder="{{ language.Survey.description }}" [config]="editorConfig" formControlName="description"> </angular-editor>
+                      <span class="text-danger" *ngIf="formSubmit || createServeyForm.controls['description'].touched">
+                        <span *ngIf="createServeyForm.controls['description'].errors">{{ language.error_message.common_required }}</span>
+                      </span>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="event_field">
+                        <input matInput [matDatepicker]="picker" placeholder="{{ language.Survey.active_from_new }}" [min]="getToday()" formControlName="surveyStartDate" onfocus="blur()" readonly />
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+
+                        <span class="text-danger" *ngIf="formSubmit || createServeyForm.controls['surveyStartDate'].touched">
+                          <span *ngIf="createServeyForm.controls['surveyStartDate'].errors">{{ language.error_message.common_required }}</span>
+                        </span>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="event_field">
+                        <input matInput [matDatepicker]="picker1" placeholder="{{ language.Survey.active_until_new }}" [min]="getEndDate()" formControlName="surveyEndDate" onfocus="blur()" readonly />
+                        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                        <mat-datepicker #picker1></mat-datepicker>
+
+                        <span class="text-danger" *ngIf="formSubmit || createServeyForm.controls['surveyEndDate'].touched">
+                          <span *ngIf="createServeyForm.controls['surveyEndDate'].errors">{{ language.error_message.common_required }}</span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="event_field">
+                        <mat-chip-list #chipList>
+                          <mat-chip *ngFor="let tag of tagsName" [selectable]="selectable" [removable]="removable" (removed)="remove(tag)">
+                            {{ tag }}
+                            <mat-icon matChipRemove *ngIf="removable"><i class="bx ri-close-circle-fill"></i></mat-icon>
+                          </mat-chip>
+                          <input
+                            class="form-control"
+                            placeholder="{{ language.tags.addTags }}"
+                            #tagInput
+                            [formControl]="tagCtrl"
+                            [matAutocomplete]="auto"
+                            [matChipInputFor]="chipList"
+                            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                            [matChipInputAddOnBlur]="addOnBlur"
+                            (matChipInputTokenEnd)="addTags($event)"
+                          />
+                          <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+                            <mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
+                              {{ tag.name }}
+                            </mat-option>
+                          </mat-autocomplete>
+                        </mat-chip-list>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="news-dropdown event_type">
+                        <!-- <label>{{ language.Survey.vote_related }} <span class="mandatory">*</span></label> -->
+                        <div class="field-col">
+                          <div class="col-md-16 news-dropdown event_type">
+                            <ng-multiselect-dropdown formControlName="surveyType" [placeholder]="language.Survey.type" [settings]="TypeDropdownSettings" [data]="TypeDropdownList" (onSelect)="onTypeSelect($event)" (click)="changeType()">
+                            </ng-multiselect-dropdown>
+                            <span class="text-danger" *ngIf="formSubmit || createServeyForm.controls['surveyType'].touched">
+                              <span *ngIf="createServeyForm.controls['surveyType'].errors">{{ language.error_message.common_required }}</span>
+                            </span>
+                          </div>
+                          <div *ngIf="surveyType == 'Group'">
+                            <div class="col-md-14 news-dropdown event_type">
+                              <ng-multiselect-dropdown
+                                formControlName="groupType"
+                                [placeholder]="language.community.groups"
+                                [settings]="groupTypeDropdownSettings"
+                                [data]="groupTypeDropdownList"
+                                (onSelect)="onGroupTypeSelect($event)"
+                                (onDeSelect)="onGroupTypeDeSelect($event)"
+                              >
+                              </ng-multiselect-dropdown>
+                              <span class="text-danger" *ngIf="formSubmit || createServeyForm.controls['groupType'].touched">
+                                <span *ngIf="createServeyForm.controls['groupType'].errors">{{ language.error_message.common_required }}</span>
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="create-survey-right">
+                    <div class="field-col">
+                      <div class="col-md-16 news-dropdown event_type">
+                        <ng-multiselect-dropdown formControlName="surveyOption" placeholder="{{ language.Survey.survey_option }}" [settings]="optionsDropdownSettings" [data]="optionsDropdownList" (onSelect)="onOptionSelect($event)">
+                        </ng-multiselect-dropdown>
+                        <span class="text-danger" *ngIf="formSubmit || createServeyForm.controls['surveyOption'].touched">
+                          <span *ngIf="createServeyForm.controls['surveyOption'].errors">{{ language.error_message.common_required }}</span>
+                        </span>
+                      </div>
+                    </div>
+
+                    <div class="row" formArrayName="survey_Answers">
+                      <div class="col-md-12" *ngFor="let item of createServeyForm.controls.survey_Answers['controls']; let i = index">
+                        <div class="row add_field_input">
+                          <div class="col-md-12">
+                            <div class="event_field">
+                              <input type="text" placeholder="{{ language.Survey.answer_option }}" [formControlName]="i" />
+                              <span class="text-danger" *ngIf="formSubmit || createServeyForm.controls.survey_Answers.controls[i].touched">
+                                <span *ngIf="createServeyForm.controls.survey_Answers.controls[i].errors?.required">{{ language.error_message.common_required }} </span>
+                              </span>
+                            </div>
+                            <div *ngIf="i > 1">
+                              <div class="inst-add-btn">
+                                <a (click)="removeAnswerOptions(i)">
+                                  <button type="button" class="add_btn remove-btn">
+                                    {{ language.Survey.remove }}
+                                  </button>
+                                </a>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="col-md-12" *ngIf="i == 1">
+                            <div class="inst-add-btn">
+                              <a (click)="addAnswerOptions()">
+                                <button type="button" class="add_btn">
+                                  {{ language.Survey.add_another }}
+                                </button>
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="field-col">
+                      <div class="col-md-16 news-dropdown event_type">
+                        <ng-multiselect-dropdown formControlName="surveyViewOption" placeholder="{{ language.Survey.view_result }}" [settings]="surveyViewDropdownSettings" [data]="surveyViewDropdownList" (onSelect)="surveyViewSelect($event)">
+                        </ng-multiselect-dropdown>
+                      </div>
+                    </div>
+                    <div class="field-col">
+                      <div class="col-md-16 news-dropdown event_type">
+                        <ng-multiselect-dropdown formControlName="surveyNotificationOption" placeholder="{{ language.Survey.set_notfications }}" [settings]="notificationDropdownSettings" [data]="choiceData" (onSelect)="notificationSelect($event)">
+                        </ng-multiselect-dropdown>
+                      </div>
+                    </div>
+
+                    <div class="row update-btm-field">
+                      <div class="col-md-12 event_field anonymous-field">
+                        <!-- <h4>{{ language.Survey.additional_settings }}</h4> -->
+                        <div class="additional_option_setting">
+                          <div class="switch_toggle">
+                            <input type="checkbox" id="switch" formControlName="additional_anonymous_voting" value="1" />
+                            <label for="switch">{{ language.Survey.toggle }}</label>
+                            <span>{{ language.Survey.anonymous_voting }}</span>
+                          </div>
+                        </div>
+                        <div class="additional_option_setting">
+                          <div class="switch_toggle">
+                            <input type="checkbox" id="switch2" formControlName="additional_cast_vote" value="1" />
+                            <label for="switch2">{{ language.Survey.toggle }}</label>
+                            <span>{{ language.Survey.cast_vote }}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-12">
+                      <div class="row">
+                        <div class="profile_sub_btn event_sub_btn col-md-12 mobile">
+                          <button
+                            type="submit"
+                            class="save_btn"
+                            [ngStyle]="{
+                              'border-color': setTheme.default_status == true ? setTheme.create_button_bgcolor : setTheme.create_button_bgcolor,
+                              'background-color': setTheme.default_status == true ? setTheme.create_button_bgcolor : setTheme.create_button_bgcolor,
+                              color: setTheme.default_status == true ? setTheme.create_button_text : setTheme.create_button_text
+                            }"
+                          >
+                            <span>
+                              <span [ngStyle]="{ color: setTheme.default_status == true ? setTheme.create_button_text : setTheme.create_button_text }">{{ language.create_event.save_and_update }}</span></span
+                            >
+                          </button>
+
+                          <button
+                            type="button"
+                            (click)="onCancel()"
+                            class="Cancel_btn"
+                            [ngStyle]="{
+                              'border-color': setTheme.default_status == true ? setTheme.cancel_button_bgcolor : setTheme.cancel_button_bgcolor,
+                              'background-color': setTheme.default_status == true ? setTheme.cancel_button_bgcolor : setTheme.cancel_button_bgcolor,
+                              color: setTheme.default_status == true ? setTheme.cancel_button_text : setTheme.cancel_button_text
+                            }"
+                          >
+                            <span>
+                              <span [ngStyle]="{ color: setTheme.default_status == true ? setTheme.cancel_button_text : setTheme.cancel_button_text }">{{ language.Survey.cancel }}</span></span
+                            >
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

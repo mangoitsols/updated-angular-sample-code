@@ -1,0 +1,345 @@
+<div class="content n-detail-main">
+  <div class="news_details_main">
+    <div class="page_heading heading-block">
+      <div class="heading-box">
+        <h1>News Detail</h1>
+        <span routerLink="/web/clubwall">News &nbsp; >&nbsp; News Detail</span>
+      </div>
+    </div>
+    <div class="news-details">
+      <div class="page-action"></div>
+      <div class="news_detail_inner">
+        <mat-tab-group *ngIf="updateNewsData">
+          <mat-tab label="{{ language.club_news.currentNews }}">
+            <div class="card-body">
+              <div class="news_details" *ngIf="newsData">
+                <div class="row">
+                  <div class="news_image col-md-6">
+                    <div class="group_detail_main">
+                      <div class="detail-big-img" (click)="viewImage = true">
+                        <ng-container *ngIf="newsData.token">
+                          <ng-container *ngIf="!newsData.token.isLoading && newsData.token.imageLoaded">
+                            <img [src]="newsData.token.url" alt="{{ language.group_news.title }}" loading="lazy" />
+                          </ng-container>
+                          <ng-container *ngIf="newsData.token.isLoading">
+                            <img [src]="'../../../../assets/img/loading.gif'" alt="Image" />
+                          </ng-container>
+                        </ng-container>
+                      </div>
+                      <div class="dropdown action_group">
+                        <button class="dropdown-toggle" type="button" (click)="onShow()">
+                          <i class="fa fa-pencil"></i>
+                        </button>
+                        <ul class="dropdown-menu bunch_drop" aria-labelledby="dropdownMenuLink">
+                          <li *ngIf="userDetails.userId == newsData.author || userDetails.isAdmin">
+                            <a class="dropdown-item" (click)="updateNews(newsData.id)">{{ language.club_news.Edit }}</a>
+                          </li>
+                          <li *ngIf="userDetails.userId == newsData.author || userDetails.isAdmin">
+                            <a class="dropdown-item" (click)="deleteNews(newsData.id)">{{ language.club_news.Delete }}</a>
+                          </li>
+                          <li (click)="goBack()">
+                            <a class="dropdown-item">{{ language.club_news.Back }}</a>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="news_content col-md-6">
+                    <div class="group_detail_main">
+                      <div class="news_heading">
+                        <h2>{{ newsData.title }}</h2>
+                      </div>
+                      <div class="news_content_text" [innerHTML]="newsData.text">
+                        ...<a href="#">{{ language.dashboard.dashboardNewsContent }}</a>
+                      </div>
+                      <div class="author-info">
+                        <div class="author-img">
+                          <img onContextMenu="return false;" [src]="newsData?.user?.member_id | memberPhoto | async" alt="User Photo" loading="lazy" style="width: 100px" />
+                          <!-- <img onContextMenu="return false;" [src]="thumbnail != null && thumbnail != '' ? thumbnail : 'assets/img/defaultProfile.jpeg'" alt="" loading="lazy" style="width: 100px" /> -->
+                        </div>
+                        <div class="author-des">
+                          <span class="author-id">{{ language.dashboard.dashboardNewsAuthor }} {{ newsData.user.firstname }} {{ newsData.user.lastname }}</span>
+                          <span class="author-date">{{ newsData.created_at | date: 'dd.MM.YYYY' }}</span>
+                          <span class="author-status" *ngIf="newsData.approved_status == 0">{{ language.theme.status }}:- {{ language.community_groups.waitingApproval }}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </mat-tab>
+          <mat-tab label="{{ language.club_news.updatedNews }}">
+            <div class="card-body">
+              <div class="news_details" *ngIf="updateNewsData">
+                <div class="row">
+                  <div class="news_image col-md-6">
+                    <div class="group_detail_main">
+                      <div class="detail-big-img" (click)="viewImage = true">
+                        <ng-container *ngIf="updateNewsData?.newImage || newsData.token">
+                          <img
+                            *ngIf="(!updateNewsData?.newImage || !updateNewsData?.newImage?.isLoading) && (!newsData.token || !newsData.token.isLoading)"
+                            [src]="updateNewsData?.newImage && !updateNewsData?.newImage?.isLoading ? updateNewsData?.newImage?.url : newsData.token?.url"
+                            alt="{{ language.group_news.title }}"
+                            loading="lazy"
+                          />
+                          <img *ngIf="(updateNewsData?.newImage && updateNewsData?.newImage?.isLoading) || (newsData.token && newsData.token.isLoading)" [src]="'../../../../assets/img/loading.gif'" alt="Image" />
+                        </ng-container>
+                      </div>
+                      <div class="dropdown action_group">
+                        <button class="dropdown-toggle" type="button" (click)="onShow()">
+                          <i class="fa fa-pencil"></i>
+                        </button>
+                        <ul class="dropdown-menu bunch_drop" aria-labelledby="dropdownMenuLink">
+                          <li *ngIf="userDetails.isAdmin && (newsData.deny_by_id == '' || newsData.deny_by_id == null)">
+                            <a class="dropdown-item" (click)="approveUpdteNews(newsData.id)">{{ language.club_news.PublishNews }}</a>
+                          </li>
+                          <li *ngIf="userDetails.isAdmin && (newsData.deny_by_id == '' || newsData.deny_by_id == null)">
+                            <a class="dropdown-item" (click)="denyNews(newsData.id)">{{ language.club_news.DenyNews }}</a>
+                          </li>
+                          <li *ngIf="userDetails.userId == newsData.author">
+                            <a class="dropdown-item" (click)="deleteUpdateNews(newsData.id)">{{ language.club_news.RestUpdateNews }}</a>
+                          </li>
+                          <li (click)="goBack()">
+                            <a class="dropdown-item">{{ language.club_news.Back }}</a>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="news_content col-md-6">
+                    <div class="group_detail_main">
+                      <div class="page-action-right" *ngIf="newsData.deny_by_id == '' || newsData.deny_by_id == null">
+                        <button *ngIf="userDetails.isAdmin" (click)="approveUpdteNews(newsData.id)" type="button">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="18" viewBox="0 0 20 18" fill="none">
+                            <path
+                              [ngStyle]="{ fill: setTheme.button_ic_color }"
+                              d="M20 5.58888C20 8.86343 20 12.1385 20 15.413C19.9208 15.5063 19.9312 15.6272 19.9015 15.7355C19.5321 17.086 18.3687 17.9592 16.9214 17.9597C12.3073 17.9613 7.69271 17.9603 3.07865 17.9603C3.00727 17.9603 2.93537 17.9592 2.86399 17.9561C1.56928 17.9019 0.461615 17.0214 0.108891 15.7731C0.0750254 15.6527 0.0854456 15.5178 0 15.413C0 11.1246 0 6.83618 0 2.54775C0.0729414 2.51023 0.0494959 2.43312 0.0625212 2.37633C0.384505 0.958666 1.5573 0.00573894 3.01925 0.00313389C6.3386 -0.00259722 9.65744 0.00157086 12.9768 0.000528842C13.3847 0.000528842 13.7823 0.060966 14.1543 0.229252C15.2375 0.720043 15.8653 1.55157 15.9788 2.74052C15.9992 2.95101 16.058 3.01249 16.2644 2.99477C16.5035 2.97445 16.7458 2.98748 16.9865 2.9906C18.3843 3.0078 19.5436 3.8982 19.9036 5.22574C19.937 5.34661 19.925 5.47947 20 5.58888ZM14.1564 15.9637C13.8938 15.0577 14.0058 14.1439 14.0021 13.2394C13.9902 9.86845 13.9881 6.497 14.0047 3.12607C14.0084 2.4102 13.503 1.98558 12.8705 1.98922C9.62305 2.00694 6.37507 2.00694 3.12762 1.98974C2.45291 1.9861 1.98869 2.45657 1.99078 3.12763C2.0038 7.03156 2.0038 10.9355 1.99078 14.8389C1.98869 15.4933 2.44093 15.9752 3.13283 15.9716C6.73197 15.9544 10.3311 15.9637 13.9302 15.9637C14.0011 15.9637 14.072 15.9637 14.1564 15.9637ZM16.0028 10.0753C16.0028 11.6607 16.0028 13.2462 16.0033 14.8316C16.0033 14.9676 15.9997 15.1041 16.0382 15.2375C16.1794 15.7246 16.6374 16.0231 17.1459 15.957C17.6367 15.8929 18.0014 15.4646 18.0019 14.9311C18.004 11.9619 18.0045 8.99264 18.0019 6.02288C18.0014 5.41643 17.5789 5.0017 16.9682 4.99232C16.7077 4.98816 16.4467 5.00274 16.1873 4.98763C16.0257 4.97826 15.9997 5.03765 15.9997 5.18301C16.0044 6.81325 16.0028 8.44453 16.0028 10.0753ZM7.99854 3.99042C8.96866 3.99042 9.93878 3.9899 10.9089 3.99042C11.5919 3.99094 11.9968 4.39629 11.9973 5.08194C11.9983 6.34903 11.9983 7.61613 11.9973 8.88322C11.9968 9.57721 11.5919 9.98047 10.8922 9.98099C8.96501 9.98203 7.03832 9.98203 5.11111 9.98099C4.40514 9.98047 3.99875 9.57304 3.99771 8.86707C3.99667 7.613 3.99667 6.35893 3.99771 5.10486C3.99823 4.39525 4.40253 3.99094 5.10798 3.99042C6.07133 3.99042 7.03467 3.99042 7.99854 3.99042ZM8.00323 7.97979C8.61437 7.97979 9.22604 7.97719 9.83718 7.98188C9.95389 7.98292 10.006 7.96781 10.0039 7.8287C9.99453 7.26445 9.99713 6.69967 10.0023 6.1349C10.0034 6.02184 9.98359 5.97964 9.85594 5.98016C8.62063 5.98537 7.38479 5.98537 6.14948 5.98068C6.02391 5.98016 5.99943 6.02184 6.00047 6.13646C6.00568 6.69446 6.00724 7.25298 5.99943 7.81099C5.99734 7.94593 6.03017 7.98552 6.16928 7.98344C6.78094 7.97562 7.39209 7.97979 8.00323 7.97979ZM10.9464 13.9719C11.1392 13.9724 11.3215 13.937 11.4893 13.8427C11.878 13.6239 12.078 13.1685 11.9728 12.747C11.8571 12.2839 11.4815 11.9801 10.9964 11.9796C8.99888 11.9765 7.00185 11.978 5.0043 11.9791C4.92667 11.9791 4.84747 11.9848 4.77245 12.0025C4.28531 12.1197 3.95342 12.5767 4.00448 13.0544C4.06023 13.5822 4.46662 13.9657 4.99336 13.9688C5.99526 13.9745 6.99716 13.9704 7.99906 13.9704C8.98169 13.9709 9.96431 13.9698 10.9464 13.9719Z"
+                              fill="white"
+                            />
+                          </svg>
+                          &nbsp;
+                          <span [ngStyle]="{ color: '#ffffff' }">{{ language.club_news.PublishNews }}</span>
+                        </button>
+
+                        <button *ngIf="userDetails.isAdmin" (click)="denyNews(newsData.id)" type="button">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="18" viewBox="0 0 20 18" fill="none">
+                            <path
+                              [ngStyle]="{ fill: setTheme.button_ic_color }"
+                              d="M20 5.58888C20 8.86343 20 12.1385 20 15.413C19.9208 15.5063 19.9312 15.6272 19.9015 15.7355C19.5321 17.086 18.3687 17.9592 16.9214 17.9597C12.3073 17.9613 7.69271 17.9603 3.07865 17.9603C3.00727 17.9603 2.93537 17.9592 2.86399 17.9561C1.56928 17.9019 0.461615 17.0214 0.108891 15.7731C0.0750254 15.6527 0.0854456 15.5178 0 15.413C0 11.1246 0 6.83618 0 2.54775C0.0729414 2.51023 0.0494959 2.43312 0.0625212 2.37633C0.384505 0.958666 1.5573 0.00573894 3.01925 0.00313389C6.3386 -0.00259722 9.65744 0.00157086 12.9768 0.000528842C13.3847 0.000528842 13.7823 0.060966 14.1543 0.229252C15.2375 0.720043 15.8653 1.55157 15.9788 2.74052C15.9992 2.95101 16.058 3.01249 16.2644 2.99477C16.5035 2.97445 16.7458 2.98748 16.9865 2.9906C18.3843 3.0078 19.5436 3.8982 19.9036 5.22574C19.937 5.34661 19.925 5.47947 20 5.58888ZM14.1564 15.9637C13.8938 15.0577 14.0058 14.1439 14.0021 13.2394C13.9902 9.86845 13.9881 6.497 14.0047 3.12607C14.0084 2.4102 13.503 1.98558 12.8705 1.98922C9.62305 2.00694 6.37507 2.00694 3.12762 1.98974C2.45291 1.9861 1.98869 2.45657 1.99078 3.12763C2.0038 7.03156 2.0038 10.9355 1.99078 14.8389C1.98869 15.4933 2.44093 15.9752 3.13283 15.9716C6.73197 15.9544 10.3311 15.9637 13.9302 15.9637C14.0011 15.9637 14.072 15.9637 14.1564 15.9637ZM16.0028 10.0753C16.0028 11.6607 16.0028 13.2462 16.0033 14.8316C16.0033 14.9676 15.9997 15.1041 16.0382 15.2375C16.1794 15.7246 16.6374 16.0231 17.1459 15.957C17.6367 15.8929 18.0014 15.4646 18.0019 14.9311C18.004 11.9619 18.0045 8.99264 18.0019 6.02288C18.0014 5.41643 17.5789 5.0017 16.9682 4.99232C16.7077 4.98816 16.4467 5.00274 16.1873 4.98763C16.0257 4.97826 15.9997 5.03765 15.9997 5.18301C16.0044 6.81325 16.0028 8.44453 16.0028 10.0753ZM7.99854 3.99042C8.96866 3.99042 9.93878 3.9899 10.9089 3.99042C11.5919 3.99094 11.9968 4.39629 11.9973 5.08194C11.9983 6.34903 11.9983 7.61613 11.9973 8.88322C11.9968 9.57721 11.5919 9.98047 10.8922 9.98099C8.96501 9.98203 7.03832 9.98203 5.11111 9.98099C4.40514 9.98047 3.99875 9.57304 3.99771 8.86707C3.99667 7.613 3.99667 6.35893 3.99771 5.10486C3.99823 4.39525 4.40253 3.99094 5.10798 3.99042C6.07133 3.99042 7.03467 3.99042 7.99854 3.99042ZM8.00323 7.97979C8.61437 7.97979 9.22604 7.97719 9.83718 7.98188C9.95389 7.98292 10.006 7.96781 10.0039 7.8287C9.99453 7.26445 9.99713 6.69967 10.0023 6.1349C10.0034 6.02184 9.98359 5.97964 9.85594 5.98016C8.62063 5.98537 7.38479 5.98537 6.14948 5.98068C6.02391 5.98016 5.99943 6.02184 6.00047 6.13646C6.00568 6.69446 6.00724 7.25298 5.99943 7.81099C5.99734 7.94593 6.03017 7.98552 6.16928 7.98344C6.78094 7.97562 7.39209 7.97979 8.00323 7.97979ZM10.9464 13.9719C11.1392 13.9724 11.3215 13.937 11.4893 13.8427C11.878 13.6239 12.078 13.1685 11.9728 12.747C11.8571 12.2839 11.4815 11.9801 10.9964 11.9796C8.99888 11.9765 7.00185 11.978 5.0043 11.9791C4.92667 11.9791 4.84747 11.9848 4.77245 12.0025C4.28531 12.1197 3.95342 12.5767 4.00448 13.0544C4.06023 13.5822 4.46662 13.9657 4.99336 13.9688C5.99526 13.9745 6.99716 13.9704 7.99906 13.9704C8.98169 13.9709 9.96431 13.9698 10.9464 13.9719Z"
+                              fill="white"
+                            />
+                          </svg>
+                          &nbsp;
+                          <span [ngStyle]="{ color: '#ffffff' }">{{ language.club_news.DenyNews }}</span>
+                        </button>
+
+                        <button class="delete-btn" *ngIf="newsData.author == userDetails.userId" (click)="deleteUpdateNews(newsData.id)" type="button">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="18" viewBox="0 0 20 18" fill="none">
+                            <path
+                              [ngStyle]="{ fill: setTheme.button_ic_color }"
+                              d="M20 5.58888C20 8.86343 20 12.1385 20 15.413C19.9208 15.5063 19.9312 15.6272 19.9015 15.7355C19.5321 17.086 18.3687 17.9592 16.9214 17.9597C12.3073 17.9613 7.69271 17.9603 3.07865 17.9603C3.00727 17.9603 2.93537 17.9592 2.86399 17.9561C1.56928 17.9019 0.461615 17.0214 0.108891 15.7731C0.0750254 15.6527 0.0854456 15.5178 0 15.413C0 11.1246 0 6.83618 0 2.54775C0.0729414 2.51023 0.0494959 2.43312 0.0625212 2.37633C0.384505 0.958666 1.5573 0.00573894 3.01925 0.00313389C6.3386 -0.00259722 9.65744 0.00157086 12.9768 0.000528842C13.3847 0.000528842 13.7823 0.060966 14.1543 0.229252C15.2375 0.720043 15.8653 1.55157 15.9788 2.74052C15.9992 2.95101 16.058 3.01249 16.2644 2.99477C16.5035 2.97445 16.7458 2.98748 16.9865 2.9906C18.3843 3.0078 19.5436 3.8982 19.9036 5.22574C19.937 5.34661 19.925 5.47947 20 5.58888ZM14.1564 15.9637C13.8938 15.0577 14.0058 14.1439 14.0021 13.2394C13.9902 9.86845 13.9881 6.497 14.0047 3.12607C14.0084 2.4102 13.503 1.98558 12.8705 1.98922C9.62305 2.00694 6.37507 2.00694 3.12762 1.98974C2.45291 1.9861 1.98869 2.45657 1.99078 3.12763C2.0038 7.03156 2.0038 10.9355 1.99078 14.8389C1.98869 15.4933 2.44093 15.9752 3.13283 15.9716C6.73197 15.9544 10.3311 15.9637 13.9302 15.9637C14.0011 15.9637 14.072 15.9637 14.1564 15.9637ZM16.0028 10.0753C16.0028 11.6607 16.0028 13.2462 16.0033 14.8316C16.0033 14.9676 15.9997 15.1041 16.0382 15.2375C16.1794 15.7246 16.6374 16.0231 17.1459 15.957C17.6367 15.8929 18.0014 15.4646 18.0019 14.9311C18.004 11.9619 18.0045 8.99264 18.0019 6.02288C18.0014 5.41643 17.5789 5.0017 16.9682 4.99232C16.7077 4.98816 16.4467 5.00274 16.1873 4.98763C16.0257 4.97826 15.9997 5.03765 15.9997 5.18301C16.0044 6.81325 16.0028 8.44453 16.0028 10.0753ZM7.99854 3.99042C8.96866 3.99042 9.93878 3.9899 10.9089 3.99042C11.5919 3.99094 11.9968 4.39629 11.9973 5.08194C11.9983 6.34903 11.9983 7.61613 11.9973 8.88322C11.9968 9.57721 11.5919 9.98047 10.8922 9.98099C8.96501 9.98203 7.03832 9.98203 5.11111 9.98099C4.40514 9.98047 3.99875 9.57304 3.99771 8.86707C3.99667 7.613 3.99667 6.35893 3.99771 5.10486C3.99823 4.39525 4.40253 3.99094 5.10798 3.99042C6.07133 3.99042 7.03467 3.99042 7.99854 3.99042ZM8.00323 7.97979C8.61437 7.97979 9.22604 7.97719 9.83718 7.98188C9.95389 7.98292 10.006 7.96781 10.0039 7.8287C9.99453 7.26445 9.99713 6.69967 10.0023 6.1349C10.0034 6.02184 9.98359 5.97964 9.85594 5.98016C8.62063 5.98537 7.38479 5.98537 6.14948 5.98068C6.02391 5.98016 5.99943 6.02184 6.00047 6.13646C6.00568 6.69446 6.00724 7.25298 5.99943 7.81099C5.99734 7.94593 6.03017 7.98552 6.16928 7.98344C6.78094 7.97562 7.39209 7.97979 8.00323 7.97979ZM10.9464 13.9719C11.1392 13.9724 11.3215 13.937 11.4893 13.8427C11.878 13.6239 12.078 13.1685 11.9728 12.747C11.8571 12.2839 11.4815 11.9801 10.9964 11.9796C8.99888 11.9765 7.00185 11.978 5.0043 11.9791C4.92667 11.9791 4.84747 11.9848 4.77245 12.0025C4.28531 12.1197 3.95342 12.5767 4.00448 13.0544C4.06023 13.5822 4.46662 13.9657 4.99336 13.9688C5.99526 13.9745 6.99716 13.9704 7.99906 13.9704C8.98169 13.9709 9.96431 13.9698 10.9464 13.9719Z"
+                              fill="white"
+                            />
+                          </svg>
+                          &nbsp;
+                          <span [ngStyle]="{ color: '#ffffff' }">{{ language.club_news.RestUpdateNews }}</span>
+                        </button>
+                      </div>
+                      <div class="news_heading">
+                        <h2>{{ updateNewsData.title }}</h2>
+                      </div>
+                      <div class="news_content_text" [innerHTML]="updateNewsData.text">
+                        ...<a href="#">{{ language.dashboard.dashboardNewsContent }}</a>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-12">
+                          <div class="author-info">
+                            <div class="author-img">
+                              <img onContextMenu="return false;" [src]="newsData?.user?.member_id | memberPhoto | async" alt="User Photo" loading="lazy" style="width: 100px" />
+                              <!-- <img onContextMenu="return false;" [src]="thumbnail != null && thumbnail != '' ? thumbnail : 'assets/img/defaultProfile.jpeg'" alt="" loading="lazy" style="width: 100px" /> -->
+                            </div>
+                            <div class="author-des">
+                              <span class="author-id"> {{ language.dashboard.dashboardNewsAuthor }} {{ newsData.user.firstname }} {{ newsData.user.lastname }} </span>
+                              <span class="author-date">{{ newsData.created_at | date: 'dd.MM.YYYY' }}</span
+                              ><br />
+                              <span class="author-status" *ngIf="newsData.approved_status == 0">{{ language.theme.status }}:- {{ language.community_groups.waitingApproval }}</span>
+                              <span class="author-status" *ngIf="newsData.approved_status == 0 && !newsData.deny_by_id">{{ language.theme.status }}:-{{ language.community_groups.waitingApproval }}</span>
+                              <span class="deny-reason" *ngIf="newsData.approved_status == 0 && newsData.deny_by_id">{{ language.theme.status }}:-{{ language.community_groups.admin_deny }}</span>
+                              <span class="author-status" *ngIf="newsData.approved_status == 1 && !newsData.deny_by_id">{{ language.theme.status }}:-{{ language.community_groups.waitingApproval }}</span>
+                              <span class="deny-reason" *ngIf="newsData.approved_status == 1 && newsData.deny_by_id">{{ language.theme.status }}:-{{ language.community_groups.admin_deny }}</span>
+                              <span class="author-id" *ngIf="newsData.deny_by_id >= 1"> {{ language.dashboard.denyBy }}:- {{ newsData.denybyuser.firstname }} {{ newsData.denybyuser.lastname }} </span>
+                              <span class="deny-reason" *ngIf="newsData.deny_by_id >= 1"> {{ language.dashboard.denyReason }}:- {{ newsData.deny_reason }} </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </mat-tab>
+        </mat-tab-group>
+        <div class="card-body" *ngIf="!updateNewsData">
+          <div class="news_details" *ngIf="newsData">
+            <div class="row">
+              <div class="news_image col-md-6 second-main-div">
+                <div class="group_detail_main 1">
+                  <div class="detail-big-img" (click)="viewImage = true">
+                    <ng-container *ngIf="newsData.token">
+                      <ng-container *ngIf="!newsData.token.isLoading && newsData.token.imageLoaded">
+                        <img [src]="newsData.token.url" alt="{{ language.group_news.title }}" loading="lazy" />
+                      </ng-container>
+                      <ng-container *ngIf="newsData.token.isLoading">
+                        <img [src]="'../../../../assets/img/loading.gif'" alt="Image" />
+                      </ng-container>
+                    </ng-container>
+                  </div>
+                  <div class="dropdown action_group">
+                    <button class="dropdown-toggle" type="button" (click)="onShow()">
+                      <i class="fa fa-pencil"></i>
+                    </button>
+                    <ul class="dropdown-menu bunch_drop" aria-labelledby="dropdownMenuLink">
+                      <li *ngIf="userDetails.userId == newsData.author || userDetails.isAdmin">
+                        <a class="dropdown-item" (click)="updateNews(newsData.id)">{{ language.club_news.Edit }}</a>
+                      </li>
+                      <li *ngIf="newsData.approved_status == 0 && userDetails.isAdmin && (newsData.deny_by_id == '' || newsData.deny_by_id == null)">
+                        <a class="dropdown-item" (click)="approveNews(newsData.id)">{{ language.club_news.PublishNews }}</a>
+                      </li>
+                      <li *ngIf="newsData.approved_status == 0 && userDetails.isAdmin && (newsData.deny_by_id == '' || newsData.deny_by_id == null)">
+                        <a class="dropdown-item" (click)="denyNews(newsData.id)">{{ language.club_news.DenyNews }}</a>
+                      </li>
+                      <li *ngIf="userDetails.userId == newsData.author || userDetails.isAdmin">
+                        <a class="dropdown-item" (click)="deleteNews(newsData.id)">{{ language.club_news.Delete }}</a>
+                      </li>
+                      <li (click)="goBack()">
+                        <a class="dropdown-item">{{ language.club_news.Back }}</a>
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="news_heading">
+                    <h2>{{ newsData.title }}</h2>
+                  </div>
+                  <div class="news_content_text" [innerHTML]="newsData.text">
+                    ...<a href="#">{{ language.dashboard.dashboardNewsContent }}</a>
+                  </div>
+                  <div class="author-info">
+                    <div class="author-img">
+                      <img onContextMenu="return false;" [src]="newsData?.user?.member_id | memberPhoto | async" alt="User Photo" loading="lazy" style="width: 100px" />
+                      <!-- <img onContextMenu="return false;" [src]="thumbnail != null && thumbnail != '' ? thumbnail : 'assets/img/defaultProfile.jpeg'" alt="" loading="lazy" style="width: 100px" /> -->
+                    </div>
+                    <div class="author-des">
+                      <span class="author-id"> {{ language.dashboard.dashboardNewsAuthor }} {{ newsData.user.firstname }} {{ newsData.user.lastname }}</span>
+                      <span class="author-date">{{ newsData.created_at | date: 'dd.MM.YYYY' }}</span
+                      ><br />
+                      <span class="author-status" *ngIf="newsData.approved_status == 0 && !newsData.deny_by_id">{{ language.theme.status }}:-{{ language.community_groups.waitingApproval }}</span>
+                      <span class="deny-reason" *ngIf="newsData.approved_status == 0 && newsData.deny_by_id">{{ language.theme.status }}:-{{ language.community_groups.admin_deny }}</span>
+                      <span class="author-id" *ngIf="newsData.deny_by_id >= 1"> {{ language.dashboard.denyBy }}:- {{ newsData.denybyuser.firstname }} {{ newsData.denybyuser.lastname }} </span>
+                      <span class="deny-reason" *ngIf="newsData.deny_by_id >= 1"> {{ language.dashboard.denyReason }}:- {{ newsData.deny_reason }} </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="news_content col-md-6 second-main-div-bottom">
+                <div class="group_detail_main-second">
+                  <div class="page-action-right" *ngIf="newsData.approved_status == 0 && userDetails.isAdmin && (newsData.deny_by_id == '' || newsData.deny_by_id == null)">
+                    <button *ngIf="userDetails.isAdmin" (click)="approveNews(newsData.id)" type="button">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="18" viewBox="0 0 20 18" fill="none">
+                        <path
+                          [ngStyle]="{ fill: setTheme.button_ic_color }"
+                          d="M20 5.58888C20 8.86343 20 12.1385 20 15.413C19.9208 15.5063 19.9312 15.6272 19.9015 15.7355C19.5321 17.086 18.3687 17.9592 16.9214 17.9597C12.3073 17.9613 7.69271 17.9603 3.07865 17.9603C3.00727 17.9603 2.93537 17.9592 2.86399 17.9561C1.56928 17.9019 0.461615 17.0214 0.108891 15.7731C0.0750254 15.6527 0.0854456 15.5178 0 15.413C0 11.1246 0 6.83618 0 2.54775C0.0729414 2.51023 0.0494959 2.43312 0.0625212 2.37633C0.384505 0.958666 1.5573 0.00573894 3.01925 0.00313389C6.3386 -0.00259722 9.65744 0.00157086 12.9768 0.000528842C13.3847 0.000528842 13.7823 0.060966 14.1543 0.229252C15.2375 0.720043 15.8653 1.55157 15.9788 2.74052C15.9992 2.95101 16.058 3.01249 16.2644 2.99477C16.5035 2.97445 16.7458 2.98748 16.9865 2.9906C18.3843 3.0078 19.5436 3.8982 19.9036 5.22574C19.937 5.34661 19.925 5.47947 20 5.58888ZM14.1564 15.9637C13.8938 15.0577 14.0058 14.1439 14.0021 13.2394C13.9902 9.86845 13.9881 6.497 14.0047 3.12607C14.0084 2.4102 13.503 1.98558 12.8705 1.98922C9.62305 2.00694 6.37507 2.00694 3.12762 1.98974C2.45291 1.9861 1.98869 2.45657 1.99078 3.12763C2.0038 7.03156 2.0038 10.9355 1.99078 14.8389C1.98869 15.4933 2.44093 15.9752 3.13283 15.9716C6.73197 15.9544 10.3311 15.9637 13.9302 15.9637C14.0011 15.9637 14.072 15.9637 14.1564 15.9637ZM16.0028 10.0753C16.0028 11.6607 16.0028 13.2462 16.0033 14.8316C16.0033 14.9676 15.9997 15.1041 16.0382 15.2375C16.1794 15.7246 16.6374 16.0231 17.1459 15.957C17.6367 15.8929 18.0014 15.4646 18.0019 14.9311C18.004 11.9619 18.0045 8.99264 18.0019 6.02288C18.0014 5.41643 17.5789 5.0017 16.9682 4.99232C16.7077 4.98816 16.4467 5.00274 16.1873 4.98763C16.0257 4.97826 15.9997 5.03765 15.9997 5.18301C16.0044 6.81325 16.0028 8.44453 16.0028 10.0753ZM7.99854 3.99042C8.96866 3.99042 9.93878 3.9899 10.9089 3.99042C11.5919 3.99094 11.9968 4.39629 11.9973 5.08194C11.9983 6.34903 11.9983 7.61613 11.9973 8.88322C11.9968 9.57721 11.5919 9.98047 10.8922 9.98099C8.96501 9.98203 7.03832 9.98203 5.11111 9.98099C4.40514 9.98047 3.99875 9.57304 3.99771 8.86707C3.99667 7.613 3.99667 6.35893 3.99771 5.10486C3.99823 4.39525 4.40253 3.99094 5.10798 3.99042C6.07133 3.99042 7.03467 3.99042 7.99854 3.99042ZM8.00323 7.97979C8.61437 7.97979 9.22604 7.97719 9.83718 7.98188C9.95389 7.98292 10.006 7.96781 10.0039 7.8287C9.99453 7.26445 9.99713 6.69967 10.0023 6.1349C10.0034 6.02184 9.98359 5.97964 9.85594 5.98016C8.62063 5.98537 7.38479 5.98537 6.14948 5.98068C6.02391 5.98016 5.99943 6.02184 6.00047 6.13646C6.00568 6.69446 6.00724 7.25298 5.99943 7.81099C5.99734 7.94593 6.03017 7.98552 6.16928 7.98344C6.78094 7.97562 7.39209 7.97979 8.00323 7.97979ZM10.9464 13.9719C11.1392 13.9724 11.3215 13.937 11.4893 13.8427C11.878 13.6239 12.078 13.1685 11.9728 12.747C11.8571 12.2839 11.4815 11.9801 10.9964 11.9796C8.99888 11.9765 7.00185 11.978 5.0043 11.9791C4.92667 11.9791 4.84747 11.9848 4.77245 12.0025C4.28531 12.1197 3.95342 12.5767 4.00448 13.0544C4.06023 13.5822 4.46662 13.9657 4.99336 13.9688C5.99526 13.9745 6.99716 13.9704 7.99906 13.9704C8.98169 13.9709 9.96431 13.9698 10.9464 13.9719Z"
+                          fill="white"
+                        />
+                      </svg>
+                      &nbsp;
+                      <span [ngStyle]="{ color: '#ffffff' }">{{ language.club_news.PublishNews }}</span>
+                    </button>
+
+                    <button *ngIf="userDetails.isAdmin" (click)="denyNews(newsData.id)" type="button">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="18" viewBox="0 0 20 18" fill="none">
+                        <path
+                          [ngStyle]="{ fill: setTheme.button_ic_color }"
+                          d="M20 5.58888C20 8.86343 20 12.1385 20 15.413C19.9208 15.5063 19.9312 15.6272 19.9015 15.7355C19.5321 17.086 18.3687 17.9592 16.9214 17.9597C12.3073 17.9613 7.69271 17.9603 3.07865 17.9603C3.00727 17.9603 2.93537 17.9592 2.86399 17.9561C1.56928 17.9019 0.461615 17.0214 0.108891 15.7731C0.0750254 15.6527 0.0854456 15.5178 0 15.413C0 11.1246 0 6.83618 0 2.54775C0.0729414 2.51023 0.0494959 2.43312 0.0625212 2.37633C0.384505 0.958666 1.5573 0.00573894 3.01925 0.00313389C6.3386 -0.00259722 9.65744 0.00157086 12.9768 0.000528842C13.3847 0.000528842 13.7823 0.060966 14.1543 0.229252C15.2375 0.720043 15.8653 1.55157 15.9788 2.74052C15.9992 2.95101 16.058 3.01249 16.2644 2.99477C16.5035 2.97445 16.7458 2.98748 16.9865 2.9906C18.3843 3.0078 19.5436 3.8982 19.9036 5.22574C19.937 5.34661 19.925 5.47947 20 5.58888ZM14.1564 15.9637C13.8938 15.0577 14.0058 14.1439 14.0021 13.2394C13.9902 9.86845 13.9881 6.497 14.0047 3.12607C14.0084 2.4102 13.503 1.98558 12.8705 1.98922C9.62305 2.00694 6.37507 2.00694 3.12762 1.98974C2.45291 1.9861 1.98869 2.45657 1.99078 3.12763C2.0038 7.03156 2.0038 10.9355 1.99078 14.8389C1.98869 15.4933 2.44093 15.9752 3.13283 15.9716C6.73197 15.9544 10.3311 15.9637 13.9302 15.9637C14.0011 15.9637 14.072 15.9637 14.1564 15.9637ZM16.0028 10.0753C16.0028 11.6607 16.0028 13.2462 16.0033 14.8316C16.0033 14.9676 15.9997 15.1041 16.0382 15.2375C16.1794 15.7246 16.6374 16.0231 17.1459 15.957C17.6367 15.8929 18.0014 15.4646 18.0019 14.9311C18.004 11.9619 18.0045 8.99264 18.0019 6.02288C18.0014 5.41643 17.5789 5.0017 16.9682 4.99232C16.7077 4.98816 16.4467 5.00274 16.1873 4.98763C16.0257 4.97826 15.9997 5.03765 15.9997 5.18301C16.0044 6.81325 16.0028 8.44453 16.0028 10.0753ZM7.99854 3.99042C8.96866 3.99042 9.93878 3.9899 10.9089 3.99042C11.5919 3.99094 11.9968 4.39629 11.9973 5.08194C11.9983 6.34903 11.9983 7.61613 11.9973 8.88322C11.9968 9.57721 11.5919 9.98047 10.8922 9.98099C8.96501 9.98203 7.03832 9.98203 5.11111 9.98099C4.40514 9.98047 3.99875 9.57304 3.99771 8.86707C3.99667 7.613 3.99667 6.35893 3.99771 5.10486C3.99823 4.39525 4.40253 3.99094 5.10798 3.99042C6.07133 3.99042 7.03467 3.99042 7.99854 3.99042ZM8.00323 7.97979C8.61437 7.97979 9.22604 7.97719 9.83718 7.98188C9.95389 7.98292 10.006 7.96781 10.0039 7.8287C9.99453 7.26445 9.99713 6.69967 10.0023 6.1349C10.0034 6.02184 9.98359 5.97964 9.85594 5.98016C8.62063 5.98537 7.38479 5.98537 6.14948 5.98068C6.02391 5.98016 5.99943 6.02184 6.00047 6.13646C6.00568 6.69446 6.00724 7.25298 5.99943 7.81099C5.99734 7.94593 6.03017 7.98552 6.16928 7.98344C6.78094 7.97562 7.39209 7.97979 8.00323 7.97979ZM10.9464 13.9719C11.1392 13.9724 11.3215 13.937 11.4893 13.8427C11.878 13.6239 12.078 13.1685 11.9728 12.747C11.8571 12.2839 11.4815 11.9801 10.9964 11.9796C8.99888 11.9765 7.00185 11.978 5.0043 11.9791C4.92667 11.9791 4.84747 11.9848 4.77245 12.0025C4.28531 12.1197 3.95342 12.5767 4.00448 13.0544C4.06023 13.5822 4.46662 13.9657 4.99336 13.9688C5.99526 13.9745 6.99716 13.9704 7.99906 13.9704C8.98169 13.9709 9.96431 13.9698 10.9464 13.9719Z"
+                          fill="white"
+                        />
+                      </svg>
+                      &nbsp;<span [ngStyle]="{ color: '#ffffff' }">{{ language.club_news.DenyNews }}</span>
+                    </button>
+                  </div>
+                  <div class="all-news-column" *ngIf="bannerData?.length > 0 && allowAdvertisment == 0">
+                    <!-- <div class="news-widget"> -->
+                    <owl-carousel-o [options]="sliderOptions">
+                      <ng-template carouselSlide *ngFor="let item of bannerData; let i = index">
+                        <div class="news-widget com-g-widget">
+                          <a [href]="item.redirectLink" target="_blank" (click)="onClickBanner(item.id)">
+                            <div class="news-image" [ngClass]="!item.token ? 'no_image' : ''">
+                              <ng-container *ngIf="item.token">
+                                <ng-container *ngIf="!item.token.isLoading && item.token.imageLoaded">
+                                  <img [src]="item.token.url" alt="Image" />
+                                </ng-container>
+                                <ng-container *ngIf="item.token.isLoading">
+                                  <img [src]="'../../../../assets/img/loading.gif'" alt="Image" />
+                                </ng-container>
+                              </ng-container>
+                            </div>
+                            <div class="news-content">
+                              <div class="car-badge">
+                                <span class="carousel-badge-2 two">{{ language.banner.advertisment }}</span>
+                              </div>
+                              <h5 [innerHTML]="item.bannerName.length > 0 ? (item.bannerName | slice: 0:30) + '...' : item.bannerName"></h5>
+                              <p [innerHTML]="item.description.length > 0 ? (item.description | slice: 0:200) + '...' : item.description"></p>
+                            </div>
+                          </a>
+                        </div>
+                      </ng-template>
+                    </owl-carousel-o>
+                    <!-- </div> -->
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="empty-data-image" *ngIf="!newsData || newsData?.length == 0">
+              <span>{{ language.community_groups.no_news }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="application-ad" [hidden]="isShow" *ngIf="adsTineon && allowAdvertisment == 0">
+    <a href="{{ adsTineon.redirectLink }}" target="_blank" (click)="onClickBanner(adsTineon.id)">
+      <div class="add-inner">
+        <div class="ad-right">
+          <span>
+            <ng-container *ngIf="adsTineon.token">
+              <ng-container *ngIf="!adsTineon.token.isLoading && adsTineon.token.imageLoaded">
+                <img [src]="adsTineon.token.url" alt="Image" />
+              </ng-container>
+            </ng-container>
+          </span>
+        </div>
+        <div class="ad-left">
+          <Span>{{ adsTineon.bannerName }}<br /> </Span>
+          <span class="get-btn"
+            ><a>{{ language.navigation.get_app }}</a></span
+          >
+        </div>
+      </div>
+    </a>
+    <div class="close-icon">
+      <button type="button" (click)="toggleDisplay()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <circle cx="8" cy="8" r="8" fill="#7AB4EA" />
+          <path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M10.1498 7.22425C10.3884 6.98567 10.6269 6.7449 10.8666 6.50741C10.9385 6.43551 11.0006 6.3538 11.0475 6.26338C11.2719 5.82763 11.0998 5.29167 10.6641 5.06729C10.3264 4.89301 9.91569 4.95295 9.64224 5.21768C9.13675 5.71446 8.6378 6.21559 8.13993 6.71999C8.07021 6.79189 8.03644 6.78645 7.96999 6.71782C7.48852 6.22982 7.00161 5.74726 6.51905 5.26252C6.42646 5.16557 6.31426 5.08823 6.19116 5.03486C5.738 4.8497 5.21945 5.0676 5.03424 5.52078C4.90023 5.84869 4.97428 6.22342 5.22046 6.47614C5.715 6.97722 6.21281 7.47503 6.71389 7.96739C6.79014 8.04146 6.78469 8.07741 6.7117 8.14822C6.21819 8.63519 5.72904 9.1287 5.23771 9.62003C4.88583 9.9632 4.88035 10.5264 5.22457 10.8772C5.31171 10.9665 5.41738 11.0373 5.53394 11.0819C5.8542 11.2235 6.22785 11.1483 6.4708 10.8967C6.97955 10.4032 7.47633 9.89987 7.9742 9.39547C8.04283 9.32466 8.07769 9.32901 8.14523 9.39655C8.63323 9.89109 9.12668 10.3802 9.61687 10.8725C9.79987 11.0686 10.0635 11.1688 10.3304 11.1416C10.8184 11.1023 11.1823 10.6731 11.1409 10.1851C11.1235 9.98028 11.0364 9.78855 10.8948 9.64041C10.4035 9.13606 9.9035 8.64043 9.40133 8.14698C9.32508 8.07291 9.33053 8.03696 9.40352 7.96615C9.65517 7.7232 9.90138 7.47264 10.1498 7.22425Z"
+            fill="white"
+          />
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>

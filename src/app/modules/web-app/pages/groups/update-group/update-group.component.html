@@ -1,0 +1,248 @@
+<div class="content create-component">
+  <div class="mobile-back-main">
+    <div class="back-button">
+      <button type="button" (click)="navigation.back()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none">
+          <path
+            d="M13.5 15L18.375 19.875C18.6042 20.1042 18.7188 20.3958 18.7188 20.75C18.7188 21.1042 18.6042 21.3958 18.375 21.625C18.1458 21.8542 17.8542 21.9687 17.5 21.9687C17.1458 21.9687 16.8542 21.8542 16.625 21.625L10.875 15.875C10.75 15.75 10.6617 15.6146 10.61 15.4687C10.5583 15.3229 10.5321 15.1667 10.5312 15C10.5312 14.8333 10.5575 14.6771 10.61 14.5312C10.6625 14.3854 10.7508 14.25 10.875 14.125L16.625 8.375C16.8542 8.14583 17.1458 8.03125 17.5 8.03125C17.8542 8.03125 18.1458 8.14583 18.375 8.375C18.6042 8.60417 18.7188 8.89583 18.7188 9.25C18.7188 9.60417 18.6042 9.89583 18.375 10.125L13.5 15Z"
+            fill="#E93608"
+          />
+        </svg>
+      </button>
+    </div>
+    <div class="mb-title">{{ language.create_group.title_update }}</div>
+    <div class="empty-area">&nbsp;</div>
+  </div>
+  <div class="add_event_main event_main create-news-main">
+    <form [formGroup]="updateGroupForm" (ngSubmit)="updateGroup()">
+      <div class="page-heading page-heading-event">
+        <!-- <h1>{{ language.create_group.title_update }}</h1> -->
+        <vc-page-header [breadcrumbs]="breadcrumbs" [headerTitle]="language.create_group.title_update">
+          <div class="profile_sub_btn event_sub_btn">
+            <button
+              type="submit"
+              class="save_btn"
+              [ngStyle]="{
+                'border-color': setTheme.default_status == true ? setTheme.create_button_bgcolor : setTheme.create_button_bgcolor,
+                'background-color': setTheme.default_status == true ? setTheme.create_button_bgcolor : setTheme.create_button_bgcolor,
+                color: setTheme.default_status == true ? setTheme.create_button_text : setTheme.create_button_text
+              }"
+            >
+              <span
+                ><span [ngStyle]="{ color: setTheme.default_status == true ? setTheme.create_button_text : setTheme.create_button_text }">{{ language.profile.save }}</span>
+              </span>
+            </button>
+            <button
+              type="button"
+              (click)="onCancel()"
+              class="Cancel_btn"
+              [ngStyle]="{
+                'border-color': setTheme.default_status == true ? setTheme.cancel_button_bgcolor : setTheme.cancel_button_bgcolor,
+                'background-color': setTheme.default_status == true ? setTheme.cancel_button_bgcolor : setTheme.cancel_button_bgcolor,
+                color: setTheme.default_status == true ? setTheme.cancel_button_text : setTheme.cancel_button_text
+              }"
+            >
+              <span
+                ><span [ngStyle]="{ color: setTheme.default_status == true ? setTheme.cancel_button_text : setTheme.cancel_button_text }">{{ language.create_group.cancel }}</span>
+              </span>
+            </button>
+          </div>
+        </vc-page-header>
+      </div>
+      <div class="row">
+        <div class="col-md-12 add_event_content create_group_section">
+          <div class="card">
+            <div class="card-body" *ngIf="groupData">
+              <!-- profile details data start -->
+              <div class="profile_details">
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="event_field">
+                      <!-- <label>{{ language.create_group.group_name }}</label> -->
+                      <input type="text" placeholder="{{ language.create_group.group_name }}" formControlName="name" class="trigger_class" [ngClass]="{ 'is-invalid': submitted && updateGroupForm.controls.name.errors }" />
+                      <div *ngIf="(updateGroupForm.controls.name.touched || submitted) && updateGroupForm.controls.name.errors?.required" class="text-danger">
+                        <div *ngIf="createGroupForm.controls.name.errors.required">
+                          {{ language.error_message.common_required }}
+                        </div>
+                      </div>
+                    </div>
+                    <div class="event_field" [ngClass]="{ imageUpload: imageFile }">
+                      <!-- <label>{{ language.create_news.add_picture }}</label> -->
+                      <div class="event_upload news_pic_upload">
+                        <label class="preview_txt" style="display: none"></label>
+                        <input type="file" (change)="uploadFile($event)" id="add_image" accept="image/*" />
+                        <span class="event_uplod_overlay">
+                          <label *ngIf="errorImage.isError" class="text-danger"> {{ errorImage.errorMessage }} </label>
+                          <div class="loader_image" *ngIf="isImage"></div>
+                          <img onContextMenu="return false;" class="preview_img" *ngIf="croppedImage" [src]="croppedImage" />
+
+                          <img onContextMenu="return false;" class="preview_img" *ngIf="(showImage == null || showImage == '') && (croppedImage == null || croppedImage == '') && !isImage" src="assets/img/event_upload.png" />
+
+                          <img onContextMenu="return false;" id="preview_img" *ngIf="showImage && (croppedImage == null || croppedImage == '') && !isImage" [src]="showImage" />
+                        </span>
+
+                        <div *ngIf="(updateGroupForm.controls.add_image.touched || submitted) && updateGroupForm.controls.add_image.errors?.required" class="text-danger">
+                          <div *ngIf="updateGroupForm.controls.add_image.errors.required">
+                            {{ language.error_message.common_required }}
+                          </div>
+                        </div>
+                      </div>
+                      <div class="card-body" *ngIf="imageFile">
+                        <div class="row" style="margin-top: 1px">
+                          <div class="text-center col-md-6">
+                            <image-cropper
+                              [imageChangedEvent]="imageChangedEvent"
+                              [maintainAspectRatio]="true"
+                              [aspectRatio]="4 / 3"
+                              autoCrop="false"
+                              hideResizeSquares="true"
+                              [resizeToHeight]="500"
+                              [onlyScaleDown]="true"
+                              [roundCropper]="false"
+                              format="webp"
+                              (imageCropped)="imageCropped($event)"
+                              (imageLoaded)="imageLoaded()"
+                              (cropperReady)="cropperReady()"
+                              (loadImageFailed)="loadImageFailed()"
+                            >
+                            </image-cropper>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="event_field paragr task_area_field">
+                      <!-- <label>{{ language.create_group.description }}</label> -->
+                      <angular-editor placeholder="{{ language.create_group.description }}" formControlName="description" [config]="editorConfig" [ngClass]="{ 'is-invalid': submitted && updateGroupForm.controls.description.errors }">
+                      </angular-editor>
+                      <div *ngIf="(updateGroupForm.controls.description.touched || submitted) && updateGroupForm.controls.description.errors?.required" class="text-danger">
+                        <div *ngIf="updateGroupForm.controls.description.errors.required">
+                          {{ language.error_message.common_required }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6 all_participants">
+                    <div class="news-dropdown" *ngIf="participant">
+                      <!-- <label>{{ language.create_group.participants }}</label> -->
+                      <ng-multiselect-dropdown
+                        id="triggerr_class"
+                        *ngIf="participant && participant.length > 0"
+                        formControlName="participants"
+                        [placeholder]="language.create_group.participants"
+                        [settings]="participantDropdownSettings"
+                        [data]="user_dropdown"
+                        (onSelect)="onParticipantSelect($event)"
+                        (onDeSelect)="onParticipantDeSelect($event)"
+                        [ngClass]="{ 'is-invalid': submitted && updateGroupForm.controls.participants.errors }"
+                      >
+                      </ng-multiselect-dropdown>
+                      <div *ngIf="(updateGroupForm.controls.participants.touched || submitted) && updateGroupForm.controls.participants.errors?.required" class="text-danger">
+                        <div *ngIf="updateGroupForm.controls.participants.errors.required">
+                          {{ language.error_message.common_required }}
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card organizer_card">
+                      <div class="card-header">
+                        <h5 class="card-title">{{ language.organizer.organizer }}</h5>
+                      </div>
+                      <div class="card-body" *ngIf="organizerDetails">
+                        <div class="widget-appointment widget" *ngFor="let organizer of organizerDetails; let i = index">
+                          <div class="widget-app-content">
+                            <div class="app-left-content" *ngIf="organizer && organizer.groupusers && organizer.groupusers.length > 0">
+                              <div class="author-img" *ngIf="organizer.image == null || organizer.image == ''">
+                                <img onContextMenu="return false;" [src]="'assets/img/defaultProfile.jpeg'" style="width: 100px" alt="" loading="lazy" />
+                              </div>
+                              <div class="author-img" *ngIf="organizer.image != null">
+                                <img onContextMenu="return false;" [src]="organizer?.image | memberPhoto | async" style="width: 100px" alt="User Photo" loading="lazy" />
+                              </div>
+                              <div class="user-content">
+                                <span class="user-name">{{ organizer.groupusers[0].firstname }} {{ organizer.groupusers[0].lastname }}</span>
+                                <span class="participant_email">{{ organizer.groupusers[0].email }}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card" *ngIf="showParticipants">
+                      <div class="card-body">
+                        <!-- appointment inner -->
+                        <div class="appointement-main">
+                          <div class="card-header">
+                            <h5 class="card-title">{{ language.create_group.all_participants }}</h5>
+                          </div>
+                          <div class="widget-appointment widget" *ngIf="participantSelectedToShow">
+                            <div class="widget-app-content" *ngFor="let participant of participantSelectedToShow">
+                              <div class="app-left-content">
+                                <div class="author-img" *ngIf="participant.image == null || participant.image == ''">
+                                  <img onContextMenu="return false;" [src]="'assets/img/defaultProfile.jpeg'" style="width: 100px" alt="" loading="lazy" />
+                                </div>
+                                <div class="author-img" *ngIf="participant.image != null">
+                                  <img onContextMenu="return false;" [src]="participant?.image | memberPhoto | async" style="width: 100px" alt="User Photo" loading="lazy" />
+                                </div>
+                                <div class="user-content">
+                                  <span class="user-name">{{ participant.user_name.split('(')[0] }}</span>
+                                  <span class="participant_email">({{ participant.user_name.split(' (')[1] }})</span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="check_field">
+                      <div class="unstyled centered">
+                        <div class="switch_toggle">
+                          <input class="check-style" id="styled-checkbox-9" type="checkbox" formControlName="isPrivate" />
+                          <label for="styled-checkbox-9"></label>
+                        </div>
+                        <span>{{ language.create_group.private_group }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- profile details data End -->
+              <div class="profile_sub_btn event_sub_btn mobile">
+                <button
+                  type="submit"
+                  class="save_btn"
+                  [ngStyle]="{
+                    'border-color': setTheme.default_status == true ? setTheme.create_button_bgcolor : setTheme.create_button_bgcolor,
+                    'background-color': setTheme.default_status == true ? setTheme.create_button_bgcolor : setTheme.create_button_bgcolor,
+                    color: setTheme.default_status == true ? setTheme.create_button_text : setTheme.create_button_text
+                  }"
+                >
+                  <span
+                    ><span [ngStyle]="{ color: setTheme.default_status == true ? setTheme.create_button_text : setTheme.create_button_text }">{{ language.profile.save }}</span>
+                  </span>
+                </button>
+                <button
+                  type="button"
+                  (click)="onCancel()"
+                  class="Cancel_btn"
+                  [ngStyle]="{
+                    'border-color': setTheme.default_status == true ? setTheme.cancel_button_bgcolor : setTheme.cancel_button_bgcolor,
+                    'background-color': setTheme.default_status == true ? setTheme.cancel_button_bgcolor : setTheme.cancel_button_bgcolor,
+                    color: setTheme.default_status == true ? setTheme.cancel_button_text : setTheme.cancel_button_text
+                  }"
+                >
+                  <span
+                    ><span [ngStyle]="{ color: setTheme.default_status == true ? setTheme.cancel_button_text : setTheme.cancel_button_text }">{{ language.create_group.cancel }}</span>
+                  </span>
+                </button>
+              </div>
+            </div>
+            <div class="empty-data-image" *ngIf="!groupData || groupData?.length == 0">
+              <!-- <img onContextMenu="return false;"  src="assets/img/no_record_img.png" alt="{{language.community_groups.no_groups}}" loading="lazy"><br> -->
+              <span>{{ language.community_groups.no_groups }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

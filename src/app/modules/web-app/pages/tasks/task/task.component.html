@@ -1,0 +1,21 @@
+<div class="content organizer-top-div" *ngIf="participateAccess.task == 'Yes'">
+  <vc-page-header [breadcrumbs]="breadCrumbItems" [headerTitle]="displayTasks ? language.organizer.task_list : ''">
+    <ng-container class="top-button">
+      <button type="button" *ngIf="createAccess.task == 'Yes'" class="vc-button-with-icon disabled vc-button-create mr-2" routerLink="/web/create-task">
+        <vc-icon color="#ffffff" iconName="task" size="20px"></vc-icon>
+        &nbsp;&nbsp;<span>{{ language.organizer.create_task }}</span>
+      </button>
+    </ng-container>
+  </vc-page-header>
+  <app-organizer-task *ngIf="displayTasks == true && participateAccess.task == 'Yes'"></app-organizer-task>
+</div>
+
+<div class="not-f-main" *ngIf="participateAccess.task == 'No'">
+  <div class="page-not-available">
+    <div class="not-available-user">
+      <vc-icon color="blue" iconName="feature-locked" size="50px"></vc-icon>
+      <h1>{{ language.genral_message.feature_locked }}</h1>
+      <span>{{ language.genral_message.not_available_msg }}</span>
+    </div>
+  </div>
+</div>

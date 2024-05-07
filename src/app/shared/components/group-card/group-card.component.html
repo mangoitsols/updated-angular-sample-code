@@ -1,0 +1,112 @@
+<ng-container *ngIf="!isLoading; else loadingCard">
+  <div [ngClass]="isMobileView ? 'mobile-group-card-wrapper' : 'group-card-wrapper'">
+    <div class="group-card vc-card-shadow">
+      <div (click)="clickGroupEvent.emit(group)" class="group-card__image">
+        <!-- <img [src]="group?.groupImages[0]?.groupImage || '../../../../assets/img/no-image.png'" alt="{{ group?.name }}" /> -->
+        <ng-container *ngIf="group.token">
+          <img [src]="group.token" alt="Image" alt="" loading="lazy" />
+
+          <!-- <ng-container *ngIf="!group.token.isLoading && group.token.imageLoaded">
+            <img [src]="group.token.url" alt="Image" alt="" loading="lazy" />
+          </ng-container> -->
+        </ng-container>
+        <ng-conatiner *ngIf="!group.token">
+          <img src="../../../../assets/img/no-image.png" />
+        </ng-conatiner>
+      </div>
+      <div class="group-card__content">
+        <h3 (click)="clickGroupEvent.emit(group)" class="group-card__title">
+          {{ group.name | limitText: (isMobileView ? '30' : '35'):'' }}
+        </h3>
+        <div class="group-card__description">
+          <p class="vc-text-icon-prefix">
+            <vc-icon [planIcon]="isMobileView" [size]="isMobileView ? '12px' : '16px'" iconName="users"></vc-icon>
+            {{ groupMembers?.length | shortNumber }} {{ language.community_groups.members }}
+          </p>
+          <p class="vc-text-icon-prefix">
+            <vc-icon [planIcon]="isMobileView" [size]="isMobileView ? '9px' : '16px'" iconName="message"></vc-icon>
+            {{ group?.postsCount | shortNumber }} {{ language.community_groups.new_posts }}
+          </p>
+        </div>
+        <!--   card footer   -->
+        <ng-container *ngIf="!isMobileView; else mobileFooter">
+          <div class="group-card__footer d-flex justify-content-center mt-2">
+            <vc-icon
+              (click)="leaveGroupEvent.emit(group)"
+              *ngIf="isMember && !isAdmin"
+              [showBorder]="true"
+              boxSize="30px"
+              cssClass="mr-1 cursor-pointer"
+              iconName="team-remove"
+              size="25px"
+              tippy="{{ language.community_groups.tippy_leave_group }}"
+            ></vc-icon>
+            <vc-icon (click)="joinGroupEvent.emit(group)" *ngIf="!isMember && !isAdmin" [showBorder]="true" boxSize="30px" cssClass="mr-1 cursor-pointer" iconName="team" size="25px" tippy="{{ language.community_groups.tippy_join_group }}"></vc-icon>
+            <vc-icon (click)="editGroupEvent.emit(group)" *ngIf="isAdmin" [showBorder]="true" cssClass="mr-1 cursor-pointer" iconName="edit" size="20px" tippy="{{ language.community_groups.tippy_edit_group }}"></vc-icon>
+            <vc-icon
+              (click)="deleteGroupEvent.emit(group)"
+              *ngIf="isAdmin"
+              [showBorder]="true"
+              color="var(--vc-color-soft-red)"
+              cssClass="cursor-pointer"
+              iconName="delete"
+              size="20px"
+              tippy="{{ language.community_groups.tippy_delete_group }}"
+            ></vc-icon>
+          </div>
+        </ng-container>
+        <ng-template #mobileFooter>
+          <div class="group-card__footer d-flex justify-content-center mt-2">
+            <vc-icon
+              (click)="editGroupEvent.emit(group)"
+              *ngIf="isAdmin"
+              [showBorder]="true"
+              backgroundColor="#FBC52D"
+              color="#ffffff"
+              cssClass="mr-1 cursor-pointer"
+              iconName="m-edit"
+              size="15px"
+              tippy="{{ language.community_groups.tippy_edit_group }}"
+            ></vc-icon>
+            <vc-icon (click)="deleteGroupEvent.emit(group)" *ngIf="isAdmin" backgroundColor="#E93608" color="#ffffff" cssClass="mr-1 cursor-pointer" iconName="m-delete" size="15px" tippy="{{ language.community_groups.tippy_delete_group }}"></vc-icon>
+            <vc-icon
+              (click)="leaveGroupEvent.emit(group)"
+              *ngIf="isMember && !isAdmin"
+              [showBorder]="true"
+              backgroundColor="#bdbdbd"
+              color="#ffffff"
+              cssClass="mr-1 cursor-pointer"
+              iconName="team-remove"
+              size="15px"
+              tippy="{{ language.community_groups.tippy_leave_group }}"
+            ></vc-icon>
+            <vc-icon
+              (click)="joinGroupEvent.emit(group)"
+              *ngIf="!isMember && !isAdmin"
+              [showBorder]="true"
+              backgroundColor="#bdbdbd"
+              color="#ffffff"
+              cssClass="mr-1 cursor-pointer"
+              iconName="team"
+              size="15px"
+              tippy="{{ language.community_groups.tippy_join_group }}"
+            ></vc-icon>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<ng-template #loadingCard>
+  <ngx-skeleton-loader
+    [theme]="{
+      'border-radius': '15px',
+      height: '200px',
+      width: '100%',
+      background: 'var(--vc-skeleton-loader-background)'
+    }"
+    appearance="circle"
+    count="1"
+  ></ngx-skeleton-loader>
+</ng-template>

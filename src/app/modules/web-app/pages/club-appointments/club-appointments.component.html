@@ -1,0 +1,355 @@
+<div class="card club-widget-appointment banner-area" id="bannerArea" *ngIf="allowAdvertisment == 0 && bannerData?.length > 0">
+  <div class="all-news-column">
+    <!-- <div class="news-widget"> -->
+    <owl-carousel-o [options]="sliderOptions">
+      <ng-template carouselSlide *ngFor="let item of bannerData; let i = index">
+        <div class="news-widget com-g-widget">
+          <a [href]="item.redirectLink" target="_blank" (click)="onClickBanner(item.id)">
+            <div class="news-image" [ngClass]="!item.token ? 'no_image' : ''">
+              <ng-container *ngIf="item.token">
+                <ng-container *ngIf="!item.token.isLoading && item.token.imageLoaded">
+                  <img appDefaultImage [src]="item.token.url" alt="Image" />
+                </ng-container>
+                <ng-container *ngIf="item.token.isLoading">
+                  <img [src]="'../../../../assets/img/loading.gif'" alt="Image" />
+                </ng-container>
+              </ng-container>
+            </div>
+            <div class="news-content">
+              <div class="car-badge"></div>
+              <h5 *ngIf="bannerData" [innerHTML]="item?.bannerName?.length > 0 ? (removeHtmlTags(item?.bannerName) | slice: 0:70) : removeHtmlTags(item?.bannerName)"></h5>
+              <p *ngIf="bannerData" [innerHTML]="item?.description?.length > 0 ? (removeHtmlTags(item?.description) | slice: 0:70) : removeHtmlTags(item?.description)"></p>
+            </div>
+          </a>
+        </div>
+      </ng-template>
+    </owl-carousel-o>
+    <!-- </div> -->
+  </div>
+</div>
+
+<div class="card club-widget-appointment main-club" id="dashboard-sidebar" [ngClass]="checkBanner == true ? 'active-club-appointment' : 'not-active-club-appointment'">
+  <div class="card-header" [ngClass]="{ isBanner: isBanner }">
+    <h5 class="card-title" *ngIf="headline_word_option == 0">{{ language.club.club_Appointments_stand }}</h5>
+    <h5 class="card-title" *ngIf="headline_word_option == 1">{{ language.club.club_Appointments_untern }}</h5>
+  </div>
+  <div *ngIf="participateAccess?.appointments == 'Yes'">
+    <div class="card-body">
+      <div class="club-widget-main scrollbox">
+        <div class="club-widget-inner" *ngFor="let item of allClubEvents; let i = index">
+          <!-- item start -->
+          <div class="club-widget-item" *ngIf="item.type == '1' && i < 10">
+            <div class="club-widget-item-inner event-simple">
+              <div class="club-time-line">
+                <span class="club-badge"></span>
+              </div>
+              <div class="club-widget-description">
+                <div class="club-widget-des-inner">
+                  <div class="club-left-area">
+                    <div *ngIf="item && item.isCourse == false" class="club-w-image" (click)="eventDetails(item.id, item.date_from)">
+                      <ng-container *ngIf="item.event_image">
+                        <img *ngIf="!item.event_image.isLoading && item.event_image.imageLoaded" appDefaultImage [src]="item.event_image.url" alt="Image" />
+                        <img *ngIf="item.event_image.isLoading" [src]="'../../../../assets/img/loading.gif'" alt="Image" />
+                      </ng-container>
+                    </div>
+                  </div>
+                  <div class="club-right-area">
+                    <h5 *ngIf="item && item.isCourse == false" (click)="eventDetails(item.id, item.date_from)">{{ item.name }}</h5>
+                    <div class="card-body top-box" *ngIf="item?.users">
+                      <div class="widget-appointment widget">
+                        <div class="widget-app-content">
+                          <div class="widget-appointment widget" *ngFor="let participant of item?.users">
+                            <div class="widget-app-content">
+                              <div class="app-left-content">
+                                <div class="author-img" *ngIf="participant?.users?.member_id">
+                                  <img onContextMenu="return false;" [src]="participant?.users?.member_id | memberPhoto | async" alt="User Photo" style="width: 100px" loading="lazy" />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <span *ngIf="item?.users?.length > 3">
+                            + {{ item?.users?.length - 3 }}
+                            {{ language.community_groups.participants }}
+                          </span>
+                          <span *ngIf="item?.users?.length <= 3">
+                            {{ language.community_groups.participants }}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="ticket-time">
+                      <span>
+                        <p>{{ item?.date_from | date: 'dd.MM.YYYY' }}</p>
+                      </span>
+                      <span>
+                        <p>{{ item?.date_from | date: 'HH.mm' }} - {{ item?.date_to | date: 'HH.mm' }} {{ language.login.o_clock }}</p>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- item end -->
+        </div>
+
+        <div class="club-widget-inner" *ngFor="let item of currentEvent; let i = index">
+          <!-- item start -->
+          <div class="club-widget-item" *ngIf="item.type == '1' || item.type == '3' || item.type == '5'">
+            <div class="club-widget-item-inner event-simple">
+              <div class="club-time-line">
+                <span class="club-badge"></span>
+              </div>
+              <div class="club-widget-description">
+                <div class="club-widget-des-inner">
+                  <div class="club-left-area">
+                    <div class="club-category">{{ language.header.event }}</div>
+                    <div *ngIf="item && item.isCourse == false" class="club-w-image" (click)="eventDetails(item.id, item.date_from)">
+                      <ng-container *ngIf="item.event_image">
+                        <img *ngIf="!item.event_image.isLoading && item.event_image.imageLoaded" appDefaultImage [src]="item.event_image.url" alt="Image" />
+                        <img *ngIf="item.event_image.isLoading" [src]="'../../../../assets/img/loading.gif'" alt="Image" />
+                      </ng-container>
+                    </div>
+                  </div>
+                  <div class="club-right-area">
+                    <span class="club-schedule">{{ item.date_from | date: 'dd.MM.YYYY' }}</span>
+                    <h5 *ngIf="item && item.isCourse == true" (click)="courseDetails(item.id, item.date_from)">{{ item.name }}</h5>
+                    <h5 *ngIf="item && item.isCourse == false" (click)="eventDetails(item.id, item.date_from)">{{ item.name }}</h5>
+                    <div class="ticket-time">
+                      <span>
+                        <strong>{{ language.room.from }}:</strong> {{ item.date_from | date: 'dd.MM.YYYY HH:mm' }} {{ language.login.o_clock }}</span
+                      >
+                      <span>
+                        <Strong>{{ language.room.to }}:</Strong>
+                        {{ item.date_from | date: 'dd.MM.YYYY' }} / {{ item.date_to | date: 'HH:mm' }} {{ language.login.o_clock }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- item end -->
+          <!-- item start -->
+          <div class="club-widget-item" *ngIf="item.type == '2'">
+            <div class="club-widget-item-inner event-groups">
+              <div class="club-time-line">
+                <span class="club-badge"></span>
+              </div>
+              <div class="club-widget-description">
+                <div class="club-widget-des-inner">
+                  <div class="club-left-area">
+                    <div class="club-category">
+                      {{ language.header.group }}
+                    </div>
+                    <div *ngIf="item && item.isCourse == true" class="club-w-image" (click)="courseDetails(item.id, item.date_from)">
+                      <img onContextMenu="return false;" [src]="item.course_image ? item.course_image : '../../../../assets/img/new-design/dashboard/event-img.png'" alt="{{ item.name }}" loading="lazy" />
+                    </div>
+                    <div *ngIf="item && item.isCourse == false" class="club-w-image" (click)="eventDetails(item.id, item.date_from)">
+                      <ng-container *ngIf="item.event_image">
+                        <img *ngIf="!item.event_image.isLoading && item.event_image.imageLoaded" appDefaultImage [src]="item.event_image.url" alt="Image" />
+                        <img *ngIf="item.event_image.isLoading" [src]="'../../../../assets/img/loading.gif'" alt="Image" />
+                      </ng-container>
+                    </div>
+                  </div>
+                  <div class="club-right-area">
+                    <span class="club-schedule">{{ item.date_from | date: ' dd.MM.YYYY' }}</span>
+                    <h5 *ngIf="item && item.isCourse == true" (click)="courseDetails(item.id, item.date_from)">{{ item.name }}</h5>
+                    <h5 *ngIf="item && item.isCourse == false" (click)="eventDetails(item.id, item.date_from)">{{ item.name }}</h5>
+                    <div class="ticket-time">
+                      <span
+                        ><strong>{{ language.room.from }}:</strong> {{ item.date_from | date: 'dd.MM.YYYY HH:mm' }} {{ language.login.o_clock }}</span
+                      >
+                      <span
+                        ><Strong>{{ language.room.to }}:</Strong> {{ item.date_from | date: 'dd.MM.YYYY' }} / {{ item.date_to | date: 'HH:mm' }} {{ language.login.o_clock }}</span
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- item end -->
+          <!-- item start -->
+          <div class="club-widget-item" *ngIf="item.type == '4'">
+            <div class="club-widget-item-inner event-tickets">
+              <div class="club-time-line">
+                <span class="club-badge"></span>
+              </div>
+              <div class="club-widget-description">
+                <div class="club-box-outer">
+                  <div class="club-left-area">
+                    <div class="club-category">{{ language.club.ticket }}</div>
+
+                    <div *ngIf="item && item.isCourse == true" class="club-w-image" (click)="courseDetails(item.id, item.date_from)">
+                      <img onContextMenu="return false;" [src]="item.course_image ? item.course_image : '../../../../assets/img/new-design/dashboard/event-img.png'" alt="{{ item.name }}" loading="lazy" />
+                    </div>
+                  </div>
+                  <div class="club-right-area">
+                    <span class="club-schedule">{{ item.date_from | date: 'dd.MM.YYYY' }}</span>
+                    <h5 *ngIf="item && item.isCourse == true" (click)="courseDetails(item.id, item.date_from)">{{ item.name }}</h5>
+                    <h5 *ngIf="item && item.isCourse == false" (click)="eventDetails(item.id, item.date_from)">{{ item.name }}</h5>
+                    <div class="ticket-time">
+                      <span
+                        ><strong>{{ language.room.from }}:</strong> {{ item.date_from | date: 'dd.MM.YYYY HH:mm' }} {{ language.login.o_clock }}</span
+                      >
+                      <span
+                        ><Strong>{{ language.room.to }}:</Strong> {{ item.date_from | date: 'dd.MM.YYYY' }} / {{ item.date_to | date: 'HH:mm' }} {{ language.login.o_clock }}</span
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- item end -->
+        </div>
+        <div class="club-widget-inner" *ngFor="let item of upcomingEvent; let i = index">
+          <!-- item start -->
+          <div class="club-widget-item" *ngIf="item.type == '1' || item.type == '3' || item.type == '5'">
+            <div class="club-widget-item-inner event-simple">
+              <div class="club-time-line">
+                <span class="club-badge"></span>
+              </div>
+              <div class="club-widget-description">
+                <div class="club-widget-des-inner">
+                  <div class="club-left-area">
+                    <div class="club-category">
+                      {{ language.header.event }}
+                    </div>
+                    <div *ngIf="item && item.isCourse == true" class="club-w-image" (click)="courseDetails(item.id, item.date_from)">
+                      <img onContextMenu="return false;" [src]="item.course_image ? item.course_image : '../../../../assets/img/new-design/dashboard/event-img.png'" alt="{{ item.name }}" loading="lazy" />
+                    </div>
+                    <div *ngIf="item && item.isCourse == false" class="club-w-image" (click)="eventDetails(item.id, item.date_from)">
+                      <ng-container *ngIf="item.event_image">
+                        <img *ngIf="!item.event_image.isLoading && item.event_image.imageLoaded" appDefaultImage [src]="item.event_image.url" alt="Image" />
+                        <img *ngIf="item.event_image.isLoading" [src]="'../../../../assets/img/loading.gif'" alt="Image" />
+                      </ng-container>
+                    </div>
+                  </div>
+                  <div class="club-right-area">
+                    <span class="club-schedule">{{ item.date_from | date: 'dd.MM.YYYY' }}</span>
+                    <h5 *ngIf="item && item.isCourse == true" (click)="courseDetails(item.id, item.date_from)">{{ item.name }}</h5>
+                    <h5 *ngIf="item && item.isCourse == false" (click)="eventDetails(item.id, item.date_from)">{{ item.name }}</h5>
+                    <div class="ticket-time">
+                      <span
+                        ><strong>{{ language.room.from }}:</strong> {{ item.date_from | date: 'dd.MM.YYYY HH:mm' }} {{ language.login.o_clock }}</span
+                      >
+                      <span
+                        ><Strong>{{ language.room.to }}:</Strong> {{ item.date_from | date: 'dd.MM.YYYY' }} / {{ item.date_to | date: 'HH:mm' }} {{ language.login.o_clock }}</span
+                      >
+                      <span
+                        ><Strong>{{ language.room.to }}:</Strong> {{ item.date_to | date: 'dd.MM.YYYY HH:mm' }} {{ language.login.o_clock }}</span
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- item end -->
+          <!-- item start -->
+          <div class="club-widget-item" *ngIf="item.type == '2'">
+            <div class="club-widget-item-inner event-groups">
+              <div class="club-time-line">
+                <span class="club-badge"></span>
+              </div>
+              <div class="club-widget-description">
+                <div class="club-widget-des-inner">
+                  <div class="club-left-area">
+                    <div class="club-category">
+                      {{ language.header.group }}
+                    </div>
+                    <div *ngIf="item && item.isCourse == true" class="club-w-image" (click)="courseDetails(item.id, item.date_from)">
+                      <img onContextMenu="return false;" [src]="item.course_image ? item.course_image : '../../../../assets/img/new-design/dashboard/event-img.png'" alt="{{ item.name }}" loading="lazy" />
+                    </div>
+                    <div *ngIf="item && item.isCourse == false" class="club-w-image" (click)="eventDetails(item.id, item.date_from)">
+                      <ng-container *ngIf="item.event_image">
+                        <img *ngIf="!item.event_image.isLoading && item.event_image.imageLoaded" appDefaultImage [src]="item.event_image.url" alt="Image" />
+                        <img *ngIf="item.event_image.isLoading" [src]="'../../../../assets/img/loading.gif'" alt="Image" />
+                      </ng-container>
+                    </div>
+                  </div>
+                  <div class="club-right-area">
+                    <span class="club-schedule">{{ item.date_from | date: 'dd.MM.YYYY' }}</span>
+                    <h5 *ngIf="item && item.isCourse == true" (click)="courseDetails(item.id, item.date_from)">
+                      {{ item.name }}
+                    </h5>
+                    <h5 *ngIf="item && item.isCourse == false" (click)="eventDetails(item.id, item.date_from)">
+                      {{ item.name }}
+                    </h5>
+                    <div class="ticket-time">
+                      <span
+                        ><strong>{{ language.room.from }}:</strong> {{ item.date_from | date: 'dd.MM.YYYY HH:mm' }} {{ language.login.o_clock }}</span
+                      >
+                      <span
+                        ><Strong>{{ language.room.to }}:</Strong> {{ item.date_from | date: 'dd.MM.YYYY' }} / {{ item.date_to | date: 'HH:mm' }} {{ language.login.o_clock }}</span
+                      >
+                      <span
+                        ><Strong>{{ language.room.to }}:</Strong> {{ item.date_to | date: 'dd.MM.YYYY HH:mm' }} {{ language.login.o_clock }}</span
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- item end -->
+          <!-- item start -->
+          <div class="club-widget-item" *ngIf="item.type == '4'">
+            <div class="club-widget-item-inner event-tickets">
+              <div class="club-time-line">
+                <span class="club-badge"></span>
+              </div>
+              <div class="club-widget-description">
+                <div class="club-widget-des-inner">
+                  <div class="club-left-area">
+                    <div class="club-category">
+                      {{ language.club.ticket }}
+                    </div>
+                    <div *ngIf="item && item.isCourse == true" class="club-w-image" (click)="courseDetails(item.id, item.date_from)">
+                      <img onContextMenu="return false;" [src]="item.course_image ? item.course_image : '../../../../assets/img/new-design/dashboard/event-img.png'" alt="{{ item.name }}" loading="lazy" />
+                    </div>
+                    <div *ngIf="item && item.isCourse == false" class="club-w-image" (click)="eventDetails(item.id, item.date_from)">
+                      <ng-container *ngIf="item.event_image">
+                        <img *ngIf="!item.event_image.isLoading && item.event_image.imageLoaded" appDefaultImage [src]="item.event_image.url" alt="Image" />
+                        <img *ngIf="item.event_image.isLoading" [src]="'../../../../assets/img/loading.gif'" alt="Image" />
+                      </ng-container>
+                    </div>
+                  </div>
+                  <div class="club-right-area">
+                    <span class="club-schedule">{{ item.date_from | date: 'dd.MM.YYYY' }}</span>
+                    <h5 *ngIf="item && item.isCourse == true" (click)="courseDetails(item.id, item.date_from)">{{ item.name }}</h5>
+                    <h5 *ngIf="item && item.isCourse == false" (click)="eventDetails(item.id, item.date_from)">{{ item.name }}</h5>
+                    <div class="ticket-time">
+                      <span
+                        ><strong>{{ language.room.from }}:</strong> {{ item.date_from | date: 'dd.MM.YYYY HH:mm' }} {{ language.login.o_clock }}</span
+                      >
+                      <span
+                        ><Strong>{{ language.room.to }}:</Strong> {{ item.date_from | date: 'dd.MM.YYYY' }} / {{ item.date_to | date: 'HH:mm' }} {{ language.login.o_clock }}</span
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- item end -->
+        </div>
+      </div>
+      <div class="empty-data-image" *ngIf="events && events.length == 0 && allCourses && allCourses.length == 0">
+        <span>{{ language.club_events.no_events }}</span>
+      </div>
+    </div>
+  </div>
+  <div class="card-body" *ngIf="participateAccess?.appointments == 'No'">
+    <div class="event-content-area">
+      <div class="not-available-user">
+        <vc-icon color="blue" iconName="feature-locked" size="50px"></vc-icon>
+        <h1>{{ language.genral_message.feature_locked }}</h1>
+        <span>{{ language.genral_message.not_available_msg }}</span>
+      </div>
+    </div>
+  </div>
+</div>

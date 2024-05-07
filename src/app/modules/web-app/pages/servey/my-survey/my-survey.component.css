@@ -1,0 +1,143 @@
+/* .survey_action {
+    display: inline-block;
+  }
+  .survey_action .btn{
+    background-color: #e12217;
+    color: #fff;
+    padding: 8px 12px;
+    text-transform: capitalize;
+}
+
+  .survey_action .btn:hover{
+    color: #fff;
+  }
+  .survey_action_main {
+    float: right;
+}
+.survey_action_main .btn {
+    margin-right: 5px;
+} */
+
+/* new design css start */
+
+.active-survey-data thead tr th {
+  padding: 20px 35px !important;
+  background: #EAEDF5;
+  color: #98A5C6;
+  text-transform: uppercase;
+  font-family: 'Gellix', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  position: relative;
+}
+.active-survey-data thead tr th:first-child {
+  border-top-left-radius: 20px;
+}
+.active-survey-data thead tr th:last-child {
+  border-top-right-radius: 20px;
+}
+table.table.active-survey-data th:last-child:after{
+  display: none;
+}
+table.table.active-survey-data th:after {
+  content: '';
+  position: absolute;
+  right: 0;
+  width: 1px;
+  height: 25px;
+  background: #fff;
+  display: inline-block;
+  top: 20px;
+}
+table.table.active-survey-data td {
+  font-weight: 600;
+  font-size: 14px;
+  padding: 20px 35px;
+  font-family: 'Gellix', sans-serif;
+}
+td.survey-title {
+  color: #414141;
+  font-weight: 700 !important;
+}
+td.crm-author {
+  color: #9EACC1;
+}
+td.active-from {
+  color: #647895;
+}
+table.table.active-survey-data tr th span {
+  display: flex;
+  align-items: center;
+}
+.mat-progress-bar {
+  height: 13px;
+  border-radius: 25px;
+}
+::ng-deep .mat-progress-bar-buffer {
+  background-color: #E8E5FF;
+}
+::ng-deep .mat-progress-bar-fill::after {
+  background-color: #FBC52D;
+}
+td.remaining-time div span {
+  width: 250px;
+  margin-left: 15px;
+}
+td .span-progress-bar{
+  width: 100% !important;
+}
+
+td.remaining-time div {
+  display: flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 600;
+}
+.event-action button {
+  border: none;
+  background: transparent;
+}
+table.table.active-survey-data.table-responsive thead th {
+  width: 25%;
+}
+@media only screen and (max-width:1024px){
+  .survey-tabs-wrapper .col-md-12 {
+    padding: 0;
+}
+}
+td.crm-author img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+}
+
+
+/* =========== */
+.survey-title-new p{
+    margin-bottom: 0 !important;
+}
+td.crm-author img {
+    width: 29px;
+    height: 29px;
+}
+.table-responsive-new{
+    border: 1px solid #dee2e6;
+    border-radius: 20px;
+  }
+  .chat-navigation-new{
+    border-bottom: none;
+}
+.table-responsive-new td{
+    border-bottom: 1px solid #dee2e6;
+  }
+  td.remaining-time div{
+  font-size: 13px;
+  font-weight: 800;
+  color: #647895;
+}
+.table-responsive-new td div :first-child{
+    margin-left: 0px !important;
+}
+.table-responsive-new td div :last-child{
+  text-align: center;
+}

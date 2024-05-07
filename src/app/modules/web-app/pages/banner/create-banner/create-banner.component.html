@@ -1,0 +1,275 @@
+<div class="content create-component">
+  <div class="mobile-back-main">
+    <div class="back-button">
+      <button type="button" (click)="navigation.back()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none">
+          <path
+            d="M13.5 15L18.375 19.875C18.6042 20.1042 18.7188 20.3958 18.7188 20.75C18.7188 21.1042 18.6042 21.3958 18.375 21.625C18.1458 21.8542 17.8542 21.9687 17.5 21.9687C17.1458 21.9687 16.8542 21.8542 16.625 21.625L10.875 15.875C10.75 15.75 10.6617 15.6146 10.61 15.4687C10.5583 15.3229 10.5321 15.1667 10.5312 15C10.5312 14.8333 10.5575 14.6771 10.61 14.5312C10.6625 14.3854 10.7508 14.25 10.875 14.125L16.625 8.375C16.8542 8.14583 17.1458 8.03125 17.5 8.03125C17.8542 8.03125 18.1458 8.14583 18.375 8.375C18.6042 8.60417 18.7188 8.89583 18.7188 9.25C18.7188 9.60417 18.6042 9.89583 18.375 10.125L13.5 15Z"
+            fill="#E93608"
+          />
+        </svg>
+      </button>
+    </div>
+    <div class="mb-title">{{ language.banner.create_banner }}</div>
+    <div class="empty-area">&nbsp;</div>
+  </div>
+  <div class="create-survey-main create-news-main">
+    <form [formGroup]="createBannerForm" (ngSubmit)="bannerProcess()">
+      <div class="page-main">
+        <div class="page-heading page-heading-event">
+          <vc-page-header [breadcrumbs]="breadCrumbItems" [headerTitle]="language.banner.create_banner">
+            <div class="profile_sub_btn event_sub_btn">
+              <button
+                type="submit"
+                class="save_btn"
+                [ngStyle]="{
+                  'border-color': setTheme.default_status == true ? setTheme.create_button_bgcolor : setTheme.create_button_bgcolor,
+                  'background-color': setTheme.default_status == true ? setTheme.create_button_bgcolor : setTheme.create_button_bgcolor,
+                  color: setTheme.default_status == true ? setTheme.create_button_text : setTheme.create_button_text
+                }"
+              >
+                <span
+                  ><span [ngStyle]="{ color: setTheme.default_status == true ? setTheme.create_button_text : setTheme.create_button_text }">{{ language.create_event.save_and_update }}</span></span
+                >
+              </button>
+              <button
+                type="button"
+                (click)="onCancel()"
+                class="Cancel_btn"
+                [ngStyle]="{
+                  'border-color': setTheme.default_status == true ? setTheme.cancel_button_bgcolor : setTheme.cancel_button_bgcolor,
+                  'background-color': setTheme.default_status == true ? setTheme.cancel_button_bgcolor : setTheme.cancel_button_bgcolor,
+                  color: setTheme.default_status == true ? setTheme.cancel_button_text : setTheme.cancel_button_text
+                }"
+              >
+                <span
+                  ><span [ngStyle]="{ color: setTheme.default_status == true ? setTheme.cancel_button_text : setTheme.cancel_button_text }">{{ language.Survey.cancel }}</span></span
+                >
+              </button>
+            </div>
+          </vc-page-header>
+        </div>
+        <div class="create-survey-wrapper">
+          <div class="card create-event-main-box">
+            <div class="card-body">
+              <div class="profile_details">
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="event_field">
+                      <input type="text" placeholder="{{ language.banner.subline_banner }}" formControlName="bannerName" />
+                      <span class="text-danger" *ngIf="formSubmit || createBannerForm.controls['bannerName'].touched">
+                        <span *ngIf="createBannerForm.controls['bannerName'].errors">{{ language.error_message.common_required }}</span>
+                      </span>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-md-12 event_field anonymous-field" [ngClass]="{ imageUpload: imageFile }">
+                        <div class="event_field">
+                          <div class="event_upload news_pic_upload">
+                            <label class="preview_txt" style="display: none"></label>
+                            <input type="file" (change)="uploadFile($event)" id="image" accept="image/*" />
+                            <span class="event_uplod_overlay">
+                              <label *ngIf="errorImage.isError" class="text-danger">{{ errorImage.errorMessage }}</label>
+                              <div class="loader_image" *ngIf="isImage"></div>
+                              <img onContextMenu="return false;" *ngIf="croppedImage == null || (croppedImage == '' && !isImage)" class="preview_img" src="assets/img/new-design/create-pages/upload-img.svg" />
+                              <img onContextMenu="return false;" *ngIf="croppedImage" class="preview_img" [src]="croppedImage" />
+                            </span>
+                            <div *ngIf="(createBannerForm.controls.image.touched || formSubmit) && createBannerForm.controls.image.errors?.required" class="text-danger">
+                              <div *ngIf="createBannerForm.controls.image.errors.required">
+                                {{ language.error_message.common_required }}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div id="after-open" class="card-body" *ngIf="imageFile">
+                          <div class="row" style="margin-top: 1px">
+                            <div class="text-center col-md-6">
+                              <image-cropper
+                                [imageChangedEvent]="imageChangedEvent"
+                                [maintainAspectRatio]="true"
+                                [aspectRatio]="4 / 3"
+                                autoCrop="false"
+                                hideResizeSquares="true"
+                                [resizeToHeight]="500"
+                                [onlyScaleDown]="true"
+                                [roundCropper]="false"
+                                format="webp"
+                                (imageCropped)="imageCropped($event)"
+                                (imageLoaded)="imageLoaded()"
+                                (cropperReady)="cropperReady()"
+                                (loadImageFailed)="loadImageFailed()"
+                              >
+                              </image-cropper>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="event_field paragr">
+                      <div class="event_upload news_pic_upload">
+                        <angular-editor placeholder="{{ language.banner.banner_headline }}" [config]="editorConfig" formControlName="description"> </angular-editor>
+                        <span class="text-danger" *ngIf="formSubmit || createBannerForm.controls['description'].touched">
+                          <span *ngIf="createBannerForm.controls['description'].errors">{{ language.error_message.common_required }}</span>
+                        </span>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="event_field">
+                          <input matInput [matDatepicker]="picker" [placeholder]="language.banner.active_from_new" [min]="getToday()" formControlName="bannerStartDate" />
+                          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                          <mat-datepicker #picker></mat-datepicker>
+                          <span class="text-danger" *ngIf="formSubmit || createBannerForm.controls['bannerStartDate'].touched">
+                            <span *ngIf="createBannerForm.controls['bannerStartDate'].errors">{{ language.error_message.common_required }}</span>
+                          </span>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="event_field">
+                          <input matInput [matDatepicker]="picker1" [placeholder]="language.banner.active_until_new" [min]="getEndDate()" formControlName="bannerEndDate" />
+                          <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                          <mat-datepicker #picker1></mat-datepicker>
+
+                          <span class="text-danger" *ngIf="formSubmit || createBannerForm.controls['bannerEndDate'].touched">
+                            <span *ngIf="createBannerForm.controls['bannerEndDate'].errors">{{ language.error_message.common_required }}</span>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div class="event_field">
+                          <input type="text" placeholder="{{ language.banner.banner_link }}" formControlName="redirectLink" />
+                          <span class="text-danger" *ngIf="formSubmit || createBannerForm.controls['redirectLink'].touched">
+                            <span *ngIf="createBannerForm.controls['redirectLink'].errors">{{ language.error_message.common_required }}</span>
+                          </span>
+                          <span *ngIf="(formControls['redirectLink'].touched || formControls['redirectLink'].dirty) && formControls['redirectLink'].invalid" class="text-danger">
+                            <span *ngIf="formControls['redirectLink'].errors && formControls['redirectLink'].errors['pattern']" class="text-danger">{{ language.banner.invalid_url }} </span>
+                          </span>
+                        </div>
+                      </div>
+                      <div class="col-md-12 event_field anonymous-field">
+                        <div class="additional_option_setting">
+                          <div class="switch_toggle">
+                            <input type="checkbox" id="switch" formControlName="status" value="1" />
+                            <label for="switch">{{ language.Survey.toggle }}</label>
+                            <span>{{ language.banner.publish_banner }}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="create-survey-right">
+                      <div class="field-col">
+                        <div class="col-md-16 news-dropdown event_type">
+                          <ng-multiselect-dropdown formControlName="invoice" placeholder="{{ language.banner.invoice_for_banner }}" [settings]="invoiceDropdownSettings" [data]="invoiceDropdownList" (onSelect)="onInvoiceSelect($event)">
+                          </ng-multiselect-dropdown>
+                          <span class="text-danger" *ngIf="formSubmit && formControls['invoice'].errors">
+                            {{ language.error_message.common_required }}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div class="field-col">
+                        <div class="col-md-16 news-dropdown event_type">
+                          <ng-multiselect-dropdown
+                            formControlName="category"
+                            placeholder="{{ language.banner.category_for_banner }}"
+                            [settings]="categoryDropdownSettings"
+                            [data]="bannerCategoryOption"
+                            (onSelect)="onCategorySelect($event)"
+                            (onDeSelect)="onCategoryDeSelect($event)"
+                          >
+                          </ng-multiselect-dropdown>
+                          <span class="text-danger" *ngIf="formSubmit && formControls['category'].errors">
+                            {{ language.error_message.common_required }}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div class="field-col">
+                        <div class="col-md-16 news-dropdown event_type">
+                          <ng-multiselect-dropdown
+                            formControlName="placement"
+                            placeholder="{{ language.banner.banner_placement_new }}"
+                            [settings]="placementDropdownSettings"
+                            [data]="bannerPlacementOption"
+                            (onSelect)="onPlacementSelect($event)"
+                            (onDeSelect)="onPlacementDeSelect($event)"
+                          >
+                          </ng-multiselect-dropdown>
+                          <span class="text-danger" *ngIf="formSubmit && formControls['placement'].errors">
+                            {{ language.error_message.common_required }}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div class="row update-btm-field">
+                        <div class="col-md-12 event_field news-dropdown">
+                          <ng-multiselect-dropdown
+                            formControlName="display"
+                            [placeholder]="language.banner.banner_display"
+                            [settings]="displayedDropdownSettings"
+                            [data]="bannerDisplayOption"
+                            (onSelect)="onbannerDispledSelect($event)"
+                            (onDeSelect)="onbannerDispledDeSelect($event)"
+                          >
+                          </ng-multiselect-dropdown>
+                          <span class="text-danger" *ngIf="formSubmit || createBannerForm.controls['display'].touched">
+                            <span *ngIf="createBannerForm.controls['display'].errors">{{ language.error_message.common_required }}</span>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-12">
+                    <div class="row">
+                      <div class="profile_sub_btn event_sub_btn col-md-12 mobile">
+                        <button
+                          type="submit"
+                          class="save_btn"
+                          [ngStyle]="{
+                            'border-color': setTheme.default_status == true ? setTheme.create_button_bgcolor : setTheme.create_button_bgcolor,
+                            'background-color': setTheme.default_status == true ? setTheme.create_button_bgcolor : setTheme.create_button_bgcolor,
+                            color: setTheme.default_status == true ? setTheme.create_button_text : setTheme.create_button_text
+                          }"
+                        >
+                          <span>
+                            <span [ngStyle]="{ color: setTheme.default_status == true ? setTheme.create_button_text : setTheme.create_button_text }">
+                              {{ language.create_event.save_and_update }}
+                            </span>
+                          </span>
+                        </button>
+                        <button
+                          type="button"
+                          (click)="onCancel()"
+                          class="Cancel_btn"
+                          [ngStyle]="{
+                            'border-color': setTheme.default_status == true ? setTheme.cancel_button_bgcolor : setTheme.cancel_button_bgcolor,
+                            'background-color': setTheme.default_status == true ? setTheme.cancel_button_bgcolor : setTheme.cancel_button_bgcolor,
+                            color: setTheme.default_status == true ? setTheme.cancel_button_text : setTheme.cancel_button_text
+                          }"
+                        >
+                          <span>
+                            <span [ngStyle]="{ color: setTheme.default_status == true ? setTheme.cancel_button_text : setTheme.cancel_button_text }">
+                              {{ language.Survey.cancel }}
+                            </span>
+                          </span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

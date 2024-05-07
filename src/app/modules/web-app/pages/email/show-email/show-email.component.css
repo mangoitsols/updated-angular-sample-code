@@ -1,0 +1,286 @@
+.survey-tabs-wrapper {
+  width: 100%;
+}
+
+.table {
+  background-color: #f7f7f9;
+  margin: 25px 0 0;
+}
+
+.table th {
+  text-transform: capitalize;
+}
+
+.table td,
+.table th {
+  border-color: #e5e9f2;
+  color: #424d5c;
+  font-size: 15px;
+  padding: 20px 15px;
+}
+
+.table td .btn {
+  border: 1px solid #e12217;
+  border-radius: 4px;
+  background: #e12217;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 5px 10px;
+  text-transform: capitalize;
+}
+
+.table-responsive {
+  overflow: auto;
+}
+
+/* Media Queries */
+
+.mat-tab-label-content {
+  text-transform: capitalize;
+}
+
+/* new design css start */
+
+.tab-button button {
+  height: 41px;
+  border-radius: 10px;
+  box-shadow: none;
+  font-family: 'Gellix', sans-serif;
+  border: none !important;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 0 35px;
+}
+
+.tab-button {
+  background: #fff;
+  display: inline-block;
+  padding: 3px;
+  border-radius: 10px;
+}
+
+/* .page-action-right button {
+  box-shadow: none;
+  height: 44px;
+  border-radius: 10px;
+  border: none;
+  padding: 0 25px 0 15px;
+  font-weight: 600;
+  font-family: 'Gellix', sans-serif;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #fff !important;
+} */
+
+/* .page-action-right button {
+  background: #FFBE00;
+} */
+
+/* .button-create {
+  background: #41ae4c !important;
+  border-color: #41ae4c !important;
+} */
+
+.page-action-right button svg {
+  margin-right: 5px;
+}
+
+.page-action-right {
+  display: flex;
+  flex-wrap: wrap;
+  width: 70%;
+  justify-content: flex-end;
+  margin-bottom: 0px;
+}
+
+.page-heading h1 {
+  font-size: 24px;
+  font-family: 'Gellix', sans-serif !important;
+  font-weight: 700;
+  color: #68759f;
+  text-transform: uppercase;
+  margin: 0;
+  padding-left: 20px;
+}
+
+.page-heading {
+  display: flex;
+  align-items: center;
+  width: 30%;
+  margin-bottom: 30px;
+}
+
+.page-action {
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+.page-action {
+  margin-top: 0px;
+}
+
+.tag-list {
+  margin-bottom: 15px;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.tab-button button span {
+  position: relative;
+  top: -2px;
+}
+
+/* new design css start */
+
+.active-survey-data thead tr th {
+  padding: 20px 35px !important;
+  background: #eaedf5;
+  color: #98a5c6;
+  text-transform: uppercase;
+  font-family: 'Gellix', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  position: relative;
+}
+
+.active-survey-data thead tr th:first-child {
+  border-top-left-radius: 20px;
+}
+
+.active-survey-data thead tr th:last-child {
+  border-top-right-radius: 20px;
+}
+
+table.table.active-survey-data th:after {
+  content: '';
+  position: absolute;
+  right: 0;
+  width: 1px;
+  height: 25px;
+  background: #fff;
+  display: inline-block;
+  top: 20px;
+}
+
+table.table.active-survey-data td {
+  font-weight: 600;
+  font-size: 14px;
+  padding: 20px 35px;
+  font-family: 'Gellix', sans-serif;
+}
+
+td.survey-title {
+  color: #414141;
+  font-weight: 700 !important;
+}
+
+td.crm-author {
+  color: #9eacc1;
+}
+
+td.active-from {
+  color: #647895;
+}
+
+table.table.active-survey-data tr th span {
+  display: flex;
+  align-items: center;
+}
+
+.mat-progress-bar {
+  height: 13px;
+  border-radius: 25px;
+}
+
+::ng-deep .mat-progress-bar-buffer {
+  background-color: #e8e5ff;
+}
+
+::ng-deep .mat-progress-bar-fill::after {
+  background-color: #6e63ee;
+}
+
+td.remaining-time div span {
+  width: 52px;
+  margin-left: 15px;
+}
+
+td.remaining-time div {
+  display: flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+table.table.active-survey-data.table-responsive thead th {
+  width: 25%;
+}
+
+td.crm-author img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+.email_img {
+  width: 75px;
+  height: 75px;
+  overflow: hidden;
+}
+
+.table-responsive {
+  overflow: auto;
+  padding-bottom: 10px;
+}
+
+@media only screen and (max-width: 1260px) {
+  .page-action {
+    flex-flow: row wrap !important;
+  }
+
+  .page-heading {
+    width: 50% !important;
+  }
+
+  .page-action-right {
+    width: 47%;
+  }
+
+  .tab-button button {
+    padding: 0 25px;
+  }
+
+  .page-action-right button:first-child {
+    margin-right: 0px;
+  }
+}
+
+@media only screen and (max-width: 1024px) {
+  .survey-tabs-wrapper .col-md-12 {
+    padding: 0;
+  }
+}
+
+.survey-tabs-wrapper .card {
+  border-radius: 20px;
+  box-shadow: none;
+  padding: 35px 25px;
+}
+
+@media only screen and (max-width: 1024px) {
+  .survey-tabs-wrapper .col-md-12 {
+    padding: 0;
+  }
+
+  .survey-tabs-wrapper .card {
+    padding: 0;
+  }
+}
+
+@media (max-width: 767px) {
+  .email-contents {
+    padding-top: 25px;
+  }
+}

@@ -1,0 +1,328 @@
+<div class="content create-component">
+  <div class="mobile-back-main">
+    <div class="back-button">
+      <button type="button" (click)="navigation.back()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="47" height="47" viewBox="0 0 47 47" fill="none">
+          <rect x="2" width="43" height="43" rx="9" fill="#F8F8F8" />
+          <g filter="url(#filter0_di_480_1505)">
+            <rect x="4.38892" y="2.38892" width="38.2222" height="38.2222" rx="7" fill="url(#paint0_linear_480_1505)" />
+          </g>
+          <g filter="url(#filter1_i_480_1505)">
+            <path
+              d="M21.3152 21.4208C21.3808 21.4208 21.4464 21.4208 21.5116 21.4208C24.7779 21.4208 28.0448 21.4203 31.3111 21.4213C32.0898 21.4213 32.6997 21.862 32.8883 22.5552C33.1653 23.5719 32.4391 24.5253 31.3695 24.5375C30.5753 24.5462 29.7812 24.5394 28.9875 24.5394C26.497 24.5394 24.0064 24.5394 21.5159 24.5394C21.4498 24.5394 21.3837 24.5394 21.307 24.5394C21.3147 24.6207 21.3798 24.6513 21.4213 24.6931C22.2917 25.5756 23.1684 26.4522 24.0344 27.3385C24.5386 27.8541 24.6351 28.5911 24.2998 29.1992C23.8019 30.102 22.6106 30.2762 21.8676 29.5436C21.2221 28.9068 20.5895 28.2564 19.9517 27.6119C18.8116 26.4604 17.6715 25.309 16.5314 24.1571C15.8237 23.442 15.8227 22.5192 16.5295 21.8051C18.2823 20.0339 20.0337 18.2622 21.788 16.4935C22.5552 15.72 23.7666 15.8781 24.2699 16.8111C24.6023 17.4275 24.4899 18.1625 23.9756 18.684C23.1307 19.5411 22.2835 20.3953 21.4358 21.2491C21.3905 21.2948 21.3335 21.3293 21.2819 21.3692C21.2935 21.3862 21.3041 21.4037 21.3152 21.4208Z"
+              fill="#569AFF"
+            />
+          </g>
+          <defs>
+            <filter id="filter0_di_480_1505" x="0.388916" y="0.388916" width="46.2222" height="46.2222" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+              <feFlood flood-opacity="0" result="BackgroundImageFix" />
+              <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+              <feOffset dy="2" />
+              <feGaussianBlur stdDeviation="2" />
+              <feComposite in2="hardAlpha" operator="out" />
+              <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0" />
+              <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_480_1505" />
+              <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_480_1505" result="shape" />
+              <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+              <feOffset dy="1" />
+              <feGaussianBlur stdDeviation="0.5" />
+              <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1" />
+              <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0" />
+              <feBlend mode="normal" in2="shape" result="effect2_innerShadow_480_1505" />
+            </filter>
+            <filter id="filter1_i_480_1505" x="16" y="16" width="16.9475" height="15" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+              <feFlood flood-opacity="0" result="BackgroundImageFix" />
+              <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+              <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+              <feOffset dy="1" />
+              <feGaussianBlur stdDeviation="0.5" />
+              <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1" />
+              <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
+              <feBlend mode="normal" in2="shape" result="effect1_innerShadow_480_1505" />
+            </filter>
+            <linearGradient id="paint0_linear_480_1505" x1="23.5" y1="2.38892" x2="23.5" y2="40.6111" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#F4F4F4" />
+              <stop offset="1" stop-color="#F8F8F8" />
+            </linearGradient>
+          </defs>
+        </svg>
+      </button>
+    </div>
+    <div class="mb-title">{{ language.room.create_room }}</div>
+    <div class="empty-area">&nbsp;</div>
+  </div>
+  <div class="add_event_main event_main">
+    <form [formGroup]="roomForm" (ngSubmit)="createRoomForm()">
+      <div class="row">
+        <div class="col-md-12 add_event_content Payment_data_main create-news-main">
+          <div class="page-action">
+            <div class="page-heading page-heading-event">
+              <vc-page-header [breadcrumbs]="breadCrumbItems" [headerTitle]="language.room.create_room">
+                <div class="profile_sub_btn event_sub_btn">
+                  <button
+                    type="submit"
+                    class="save_btn"
+                    [ngStyle]="{
+                      'border-color': setTheme.default_status == true ? setTheme.create_button_bgcolor : setTheme.create_button_bgcolor,
+                      'background-color': setTheme.default_status == true ? setTheme.create_button_bgcolor : setTheme.create_button_bgcolor,
+                      color: setTheme.default_status == true ? setTheme.create_button_text : setTheme.create_button_text
+                    }"
+                  >
+                    <span>
+                      <span [ngStyle]="{ color: setTheme.default_status == true ? setTheme.create_button_text : setTheme.create_button_text }">{{ language.create_event.save_and_update }}</span>
+                    </span>
+                  </button>
+                  <button
+                    type="button"
+                    (click)="onCancel()"
+                    class="Cancel_btn"
+                    [ngStyle]="{
+                      'border-color': setTheme.default_status == true ? setTheme.cancel_button_bgcolor : setTheme.cancel_button_bgcolor,
+                      'background-color': setTheme.default_status == true ? setTheme.cancel_button_bgcolor : setTheme.cancel_button_bgcolor,
+                      color: setTheme.default_status == true ? setTheme.cancel_button_text : setTheme.cancel_button_text
+                    }"
+                  >
+                    <span
+                      ><span [ngStyle]="{ color: setTheme.default_status == true ? setTheme.cancel_button_text : setTheme.cancel_button_text }">{{ language.create_event.cancel }}</span>
+                    </span>
+                  </button>
+                </div>
+              </vc-page-header>
+            </div>
+          </div>
+
+          <div class="card create-event-main-box">
+            <div class="card-body">
+              <!-- <div class="error alert alert-danger" id="responseMessage" *ngIf="responseMessage">{{responseMessage}}</div> -->
+              <div class="profile_details">
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="event_field">
+                      <!-- <label>{{ language.room.title_label }}</label> -->
+                      <input type="text" placeholder="{{ language.room.title_placeholder }}" formControlName="name" />
+                      <span class="text-danger" *ngIf="formSubmit || roomForm.controls['name'].touched">
+                        <span *ngIf="roomForm.controls['name'].errors?.required">{{ language.error_message.common_required }}</span>
+                      </span>
+                    </div>
+                    <div class="event_field">
+                      <!-- <label>{{ language.instructor.email }}</label> -->
+                      <input type="email" placeholder="{{ language.instructor.email }}" formControlName="room_email" />
+                      <span class="text-danger" *ngIf="formSubmit || roomForm.controls['room_email'].touched">
+                        <span *ngIf="roomForm.controls['room_email'].errors?.required">{{ language.error_message.common_required }}</span>
+                        <span *ngIf="roomForm.controls['room_email'].errors?.email && roomForm.controls['room_email'].invalid">{{ language.error_message.email_proper }}</span>
+                      </span>
+                    </div>
+                    <div class="event_field">
+                      <!-- <label>{{ language.instructor.phone }}</label> -->
+                      <input type="text" placeholder="{{ language.instructor.phone }}" formControlName="phone_no" />
+                      <span class="text-danger" *ngIf="formSubmit || roomForm.controls['phone_no'].touched">
+                        <span *ngIf="roomForm.controls['phone_no'].errors?.required">{{ language.error_message.common_required }}</span>
+                        <span *ngIf="roomForm.controls['phone_no'].touched && roomForm.controls['phone_no'].errors?.pattern && roomForm.controls['phone_no'].invalid">{{ language.error_message.phone_proper }}</span>
+                      </span>
+                    </div>
+                    <div class="event_field">
+                      <!-- <label>{{ language.instructor.address }}</label> -->
+                      <input type="text" placeholder="{{ language.instructor.address }}" formControlName="room_address" />
+                      <span class="text-danger" *ngIf="formSubmit || roomForm.controls['room_address'].touched">
+                        <span *ngIf="roomForm.controls['room_address'].errors">{{ language.error_message.common_required }}</span>
+                      </span>
+                    </div>
+
+                    <div class="group_input">
+                      <div class="news-dropdown">
+                        <div class="multi_dropdown_main">
+                          <ng-multiselect-dropdown formControlName="type" [placeholder]="language.room.roomType" [settings]="visibilityDropdownSettings" [data]="visibilityDropdownList" [(ngModel)]="selectedType"> </ng-multiselect-dropdown>
+                          <span class="text-danger" *ngIf="formSubmit || roomForm.controls['type'].touched">
+                            <span *ngIf="roomForm.controls['type'].errors">{{ language.error_message.common_required }}</span>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="event_field">
+                      <!-- <label>{{ language.instructor.themen }}</label> -->
+                      <mat-chip-list #chipList>
+                        <mat-chip *ngFor="let tag of tagsName" [selectable]="selectable" [removable]="removable" (removed)="remove(tag)">
+                          {{ tag }}
+                          <mat-icon matChipRemove *ngIf="removable"><i class="bx ri-close-circle-fill"></i></mat-icon>
+                        </mat-chip>
+                        <input
+                          class="form-control"
+                          placeholder="{{ language.instructor.themen }}..."
+                          #tagInput
+                          [formControl]="tagCtrl"
+                          [matAutocomplete]="auto"
+                          [matChipInputFor]="chipList"
+                          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                          [matChipInputAddOnBlur]="addOnBlur"
+                          (matChipInputTokenEnd)="addTags($event)"
+                        />
+                        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+                          <mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
+                            {{ tag.name }}
+                          </mat-option>
+                        </mat-autocomplete>
+                      </mat-chip-list>
+                    </div>
+
+                    <div class="event_field">
+                      <!-- <label>{{ language.room.number_of_person }}</label> -->
+                      <input type="text" placeholder="{{ language.room.number_of_person }}" formControlName="no_of_persons" (keyup)="checkNumber()" />
+
+                      <div class="text-danger" *ngIf="checkNum == true">{{ language.room.number_of_person_error }}</div>
+
+                      <div class="text-danger" *ngIf="(roomForm.controls.no_of_persons.touched || formSubmit) && (roomForm.controls.no_of_persons.errors?.required || roomForm.controls.no_of_persons.errors?.pattern)">
+                        <div *ngIf="roomForm.controls.no_of_persons.errors?.required">{{ language.error_message.common_required }}</div>
+
+                        <div *ngIf="roomForm.controls.no_of_persons.errors?.pattern">{{ language.error_message.common_valid }}</div>
+                      </div>
+                    </div>
+                    <div class="weekdays-section" formArrayName="weekdays">
+                      <div class="weekdays-main news-dropdown" *ngFor="let item of roomForm.controls.weekdays['controls']; let i = index" [formGroupName]="i">
+                        <div class="group_input row">
+                          <div class="event_field col-md-4">
+                            <!-- <label>{{ language.create_event.start_date }}</label> -->
+                            <ng-multiselect-dropdown
+                              formControlName="day"
+                              [placeholder]="language.room.weekdays"
+                              [settings]="weekdayDropdownSettings"
+                              [data]="weekdayArray"
+                              (onSelect)="onWeekdayItemSelect($event)"
+                              (onDeSelect)="onWeekdayItemDeSelect($event)"
+                            >
+                            </ng-multiselect-dropdown>
+                            <span class="text-danger" *ngIf="formSubmit || roomForm.controls.weekdays.controls[i].controls.day.touched">
+                              <span *ngIf="roomForm.controls.weekdays.controls[i].controls.day.errors?.required">{{ language.error_message.common_required }}</span>
+                            </span>
+                          </div>
+
+                          <div class="event_field col-md-3 time-box">
+                            <input [ngxTimepicker]="pickerStart" [format]="24" readonly placeholder="{{ language.room.from }}" formControlName="time_from" (change)="compareTwoTimes(i)" />
+                            <ngx-material-timepicker #pickerStart (closed)="compareTwoTimes(i)"></ngx-material-timepicker>
+
+                            <span class="text-danger" *ngIf="formSubmit || roomForm.controls.weekdays.controls[i].controls.time_from.touched">
+                              <span *ngIf="roomForm.controls.weekdays.controls[i].controls.time_from.errors?.required"> {{ language.error_message.common_required }}</span>
+                            </span>
+                          </div>
+
+                          <div class="event_field col-md-3 time-box third">
+                            <input [ngxTimepicker]="pickerEnd" [format]="24" readonly placeholder="{{ language.room.to }}" formControlName="time_to" (change)="compareTwoTimes(i)" />
+                            <ngx-material-timepicker #pickerEnd (closed)="compareTwoTimes(i)"></ngx-material-timepicker>
+                            <span class="text-danger" *ngIf="formSubmit">
+                              <span *ngIf="roomForm.controls.weekdays.controls[i].controls.time_to.errors?.required">{{ language.error_message.common_required }}</span>
+                            </span>
+                            <label *ngIf="errorTime.isError == true && i == indax" class="text-danger">
+                              {{ errorTime.errorMessage }}
+                            </label>
+                          </div>
+
+                          <div class="event_field col-md-12 bottun-form">
+                            <div class="weekdays-item" *ngIf="i > 0">
+                              <div class="inst-add-btn">
+                                <a (click)="removeAvailableTimes(i)">
+                                  <span>-</span>
+                                  {{ language.create_event.remove }}
+                                </a>
+                              </div>
+                            </div>
+
+                            <div class="weekdays-item" *ngIf="i == 0">
+                              <div class="inst-add-btn">
+                                <a (click)="addAvailableTimes()"> <span>+</span> {{ language.create_event.add_date }} </a>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="event_field">
+                      <!-- <label>{{ language.create_news.add_picture }}</label> -->
+                      <div class="event_upload news_pic_upload">
+                        <label class="preview_txt" style="display: none"></label>
+                        <input type="file" (change)="uploadFile($event)" id="image" accept="image/*" />
+
+                        <span class="event_uplod_overlay">
+                          <label *ngIf="errorImage.isError" class="text-danger">
+                            {{ errorImage.errorMessage }}
+                          </label>
+                          <div class="loader_image" *ngIf="isImage"></div>
+                          <img onContextMenu="return false;" class="preview_img" *ngIf="croppedImage == null || (croppedImage == '' && !isImage)" src="assets/img/new-design/create-pages/upload-img.svg" />
+                          <img onContextMenu="return false;" class="preview_img" *ngIf="croppedImage" [src]="croppedImage" />
+                        </span>
+                        <div *ngIf="(roomForm.controls.image.touched || formSubmit) && roomForm.controls.image.errors?.required" class="text-danger">
+                          <div *ngIf="roomForm.controls.image.errors.required">
+                            {{ language.error_message.common_required }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card-body" *ngIf="imageFile">
+                      <div class="row" style="margin-top: 1px">
+                        <div class="text-center col-md-6">
+                          <image-cropper
+                            [imageChangedEvent]="imageChangedEvent"
+                            [maintainAspectRatio]="true"
+                            [aspectRatio]="4 / 3"
+                            autoCrop="false"
+                            hideResizeSquares="true"
+                            [resizeToHeight]="500"
+                            [onlyScaleDown]="true"
+                            [roundCropper]="false"
+                            format="webp"
+                            (imageCropped)="imageCropped($event)"
+                            (imageLoaded)="imageLoaded()"
+                            (cropperReady)="cropperReady()"
+                            (loadImageFailed)="loadImageFailed()"
+                          >
+                          </image-cropper>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="event_field paragr">
+                      <!-- <label>{{ language.room.description }}</label> -->
+                      <div class="event_upload">
+                        <angular-editor placeholder="{{ language.room.angular_editor_text }}" [config]="editorConfig" formControlName="description"></angular-editor>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- profile details data End -->
+              <div class="profile_sub_btn event_sub_btn mobile-show-desktop-hide">
+                <button
+                  type="submit"
+                  class="save_btn"
+                  [ngStyle]="{
+                    'border-color': setTheme.default_status == true ? setTheme.create_button_bgcolor : setTheme.create_button_bgcolor,
+                    'background-color': setTheme.default_status == true ? setTheme.create_button_bgcolor : setTheme.create_button_bgcolor,
+                    color: setTheme.default_status == true ? setTheme.create_button_text : setTheme.create_button_text
+                  }"
+                >
+                  <span>
+                    <span [ngStyle]="{ color: setTheme.default_status == true ? setTheme.create_button_text : setTheme.create_button_text }">{{ language.create_event.save_and_update }}</span>
+                  </span>
+                </button>
+                <button
+                  type="button"
+                  (click)="onCancel()"
+                  class="Cancel_btn"
+                  [ngStyle]="{
+                    'border-color': setTheme.default_status == true ? setTheme.cancel_button_bgcolor : setTheme.cancel_button_bgcolor,
+                    'background-color': setTheme.default_status == true ? setTheme.cancel_button_bgcolor : setTheme.cancel_button_bgcolor,
+                    color: setTheme.default_status == true ? setTheme.cancel_button_text : setTheme.cancel_button_text
+                  }"
+                >
+                  <span
+                    ><span [ngStyle]="{ color: setTheme.default_status == true ? setTheme.cancel_button_text : setTheme.cancel_button_text }">{{ language.create_event.cancel }}</span>
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

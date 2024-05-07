@@ -1,0 +1,266 @@
+<div class="content create-component">
+  <div class="mobile-back-main">
+    <div class="back-button">
+      <button type="button" (click)="navigation.back()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none">
+          <path
+            d="M13.5 15L18.375 19.875C18.6042 20.1042 18.7188 20.3958 18.7188 20.75C18.7188 21.1042 18.6042 21.3958 18.375 21.625C18.1458 21.8542 17.8542 21.9687 17.5 21.9687C17.1458 21.9687 16.8542 21.8542 16.625 21.625L10.875 15.875C10.75 15.75 10.6617 15.6146 10.61 15.4687C10.5583 15.3229 10.5321 15.1667 10.5312 15C10.5312 14.8333 10.5575 14.6771 10.61 14.5312C10.6625 14.3854 10.7508 14.25 10.875 14.125L16.625 8.375C16.8542 8.14583 17.1458 8.03125 17.5 8.03125C17.8542 8.03125 18.1458 8.14583 18.375 8.375C18.6042 8.60417 18.7188 8.89583 18.7188 9.25C18.7188 9.60417 18.6042 9.89583 18.375 10.125L13.5 15Z"
+            fill="#E93608"
+          />
+        </svg>
+      </button>
+    </div>
+    <div class="mb-title">{{ language.club_wall.create_news }}</div>
+    <div class="empty-area">&nbsp;</div>
+  </div>
+  <div class="add_event_main event_main">
+    <form [formGroup]="createNewsForm" (ngSubmit)="createNews()">
+      <div class="create-news-section">
+        <div class="add_event_content Payment_data_main create-news-main">
+          <div class="page-action">
+            <div class="page-heading page-heading-event">
+              <vc-page-header [breadcrumbs]="breadcrumbs" [headerTitle]="language.club_wall.create_news">
+                <div class="profile_sub_btn event_sub_btn">
+                  <button
+                    type="submit"
+                    class="save_btn"
+                    [ngStyle]="{
+                      'border-color': setTheme.default_status == true ? setTheme.create_button_bgcolor : setTheme.create_button_bgcolor,
+                      'background-color': setTheme.default_status == true ? setTheme.create_button_bgcolor : setTheme.create_button_bgcolor,
+                      color: setTheme.default_status == true ? setTheme.create_button_text : setTheme.create_button_text
+                    }"
+                  >
+                    <span
+                      ><span [ngStyle]="{ color: setTheme.default_status == true ? setTheme.create_button_text : setTheme.create_button_text }">{{ language.create_news.save }}</span></span
+                    >
+                  </button>
+                  <button
+                    type="button"
+                    (click)="onCancel()"
+                    class="Cancel_btn"
+                    [ngStyle]="{
+                      'border-color': setTheme.default_status == true ? setTheme.cancel_button_bgcolor : setTheme.cancel_button_bgcolor,
+                      'background-color': setTheme.default_status == true ? setTheme.cancel_button_bgcolor : setTheme.cancel_button_bgcolor,
+                      color: setTheme.default_status == true ? setTheme.cancel_button_text : setTheme.cancel_button_text
+                    }"
+                  >
+                    <span
+                      ><span [ngStyle]="{ color: setTheme.default_status == true ? setTheme.cancel_button_text : setTheme.cancel_button_text }">{{ language.create_news.cancel }}</span></span
+                    >
+                  </button>
+                </div>
+              </vc-page-header>
+              <!-- <h1>{{ language.create_news.title }}</h1> -->
+            </div>
+          </div>
+          <div class="card body-bg create-event-main-box">
+            <div class="card-body">
+              <!-- profile header end -->
+              <!-- profile details data start -->
+              <div class="profile_details">
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="event_field">
+                      <!-- <label>{{ language.create_news.title_label }}</label> -->
+                      <input formControlName="title" type="text" placeholder="{{ language.create_news.title_placeholder }}" [ngClass]="{ 'is-invalid': submitted && createNewsForm.controls.title.errors }" />
+                      <div *ngIf="(createNewsForm.controls.title.touched || submitted) && (createNewsForm.controls.title.errors?.required || createNewsForm.controls.title.errors?.whitespace)" class="text-danger">
+                        <div *ngIf="createNewsForm.controls.title.errors.required">
+                          {{ language.error_message.common_required }}
+                        </div>
+                        <div *ngIf="createNewsForm.controls.title.errors?.whitespace">
+                          {{ language.error_message.common_valid }}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="event_field" [ngClass]="{ imageUpload: imageFile }">
+                      <!-- <label>{{ language.create_news.add_picture }}</label> -->
+                      <div class="event_upload news_pic_upload">
+                        <label class="preview_txt" style="display: none"></label>
+                        <input type="file" (change)="uploadFile($event)" id="add_image" accept="image/*" />
+                        <span class="event_uplod_overlay">
+                          <label *ngIf="errorImage.isError" class="text-danger">
+                            {{ errorImage.errorMessage }}
+                          </label>
+                          <div class="loader_image" *ngIf="isImage"></div>
+                          <img onContextMenu="return false;" class="preview_img" *ngIf="croppedImage == null || (croppedImage == '' && !isImage)" src="assets/img/new-design/create-pages/upload-img.svg" />
+                          <img onContextMenu="return false;" class="preview_img" *ngIf="croppedImage" [src]="croppedImage" />
+                        </span>
+                        <div *ngIf="(createNewsForm.controls.add_image.touched || submitted) && createNewsForm.controls.add_image.errors?.required" class="text-danger">
+                          <div *ngIf="createNewsForm.controls.add_image.errors.required">
+                            {{ language.error_message.common_required }}
+                          </div>
+                        </div>
+                      </div>
+                      <div class="card-body" *ngIf="imageFile">
+                        <div class="row" style="margin-top: 1px">
+                          <div class="text-center col-md-6">
+                            <image-cropper
+                              [imageChangedEvent]="imageChangedEvent"
+                              [maintainAspectRatio]="true"
+                              [aspectRatio]="4 / 3"
+                              autoCrop="false"
+                              hideResizeSquares="true"
+                              [resizeToHeight]="500"
+                              [onlyScaleDown]="true"
+                              [roundCropper]="false"
+                              format="webp"
+                              (imageCropped)="imageCropped($event)"
+                              (imageLoaded)="imageLoaded()"
+                              (cropperReady)="cropperReady()"
+                              (loadImageFailed)="loadImageFailed()"
+                            ></image-cropper>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="news-dropdown">
+                      <div class="multi_dropdown_main">
+                        <span class="news-visible-dropdown">
+                          <!-- <label>{{ language.create_news.news_type }}</label> -->
+                          <ng-multiselect-dropdown
+                            formControlName="visible_dropdown"
+                            [ngClass]="{ 'is-invalid': submitted && createNewsForm.controls.visible_dropdown.errors }"
+                            [placeholder]="language.create_news.news_type"
+                            [settings]="visiblityDropdownSettings"
+                            [data]="visiblity"
+                            (onSelect)="onVisiblitySelect($event)"
+                          >
+                          </ng-multiselect-dropdown>
+                          <div *ngIf="(createNewsForm.controls.visible_dropdown.touched || submitted) && createNewsForm.controls.visible_dropdown.errors?.required" class="text-danger">
+                            <div *ngIf="createNewsForm.controls.visible_dropdown.errors.required">
+                              {{ language.error_message.common_required }}
+                            </div>
+                          </div>
+                        </span>
+                      </div>
+
+                      <div class="multi_dropdown_main">
+                        <span class="news-group-dropdown" *ngIf="groupVisiblity == 2">
+                          <!-- <label>{{ language.create_news.group }}</label> -->
+                          <ng-multiselect-dropdown
+                            formControlName="group_dropdown"
+                            [ngClass]="{ 'is-invalid': submitted && createNewsForm.controls.group_dropdown.errors }"
+                            [placeholder]="language.create_news.group"
+                            [settings]="groupDropdownSettings"
+                            [data]="groups"
+                            (onSelect)="onGroupItemSelect($event)"
+                            (onDeSelect)="onGroupItemDeSelect($event)"
+                          >
+                          </ng-multiselect-dropdown>
+                          <div *ngIf="(createNewsForm.controls.group_dropdown.touched || submitted) && createNewsForm.controls.group_dropdown.errors?.required" class="text-danger">
+                            <div *ngIf="createNewsForm.controls.group_dropdown.errors.required">
+                              {{ language.error_message.common_required }}
+                            </div>
+                          </div>
+                        </span>
+                      </div>
+                    </div>
+
+                    <div class="event_field">
+                      <!-- <label>{{ language.tags.tag }}</label> -->
+                      <mat-chip-list #chipList>
+                        <mat-chip *ngFor="let tag of tagsName" [selectable]="selectable" [removable]="removable" (removed)="remove(tag)">
+                          {{ tag }}
+                          <mat-icon matChipRemove *ngIf="removable"><i class="bx ri-close-circle-fill"></i></mat-icon>
+                        </mat-chip>
+                        <input
+                          class="form-control"
+                          placeholder="{{ language.tags.addTags }}"
+                          #tagInput
+                          [formControl]="tagCtrl"
+                          [matAutocomplete]="auto"
+                          [matChipInputFor]="chipList"
+                          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                          [matChipInputAddOnBlur]="addOnBlur"
+                          (matChipInputTokenEnd)="addTags($event)"
+                        />
+                        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+                          <mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
+                            {{ tag.name }}
+                          </mat-option>
+                        </mat-autocomplete>
+                      </mat-chip-list>
+                    </div>
+
+                    <div class="guest-option news-guest-option" *ngIf="!userDetails.isMember_light_admin">
+                      <label class="guest_label">
+                        <div class="switch_toggle">
+                          <input type="checkbox" id="switch" class="check-style" formControlName="show_guest" [ngClass]="{ 'is-invalid': submitted && createNewsForm.controls.show_guest.errors }" />
+                          <div *ngIf="(createNewsForm.controls.show_guest.touched || submitted) && createNewsForm.controls.show_guest.errors?.required" class="text-danger">
+                            <div *ngIf="createNewsForm.controls.show_guest.errors.required">
+                              {{ language.error_message.common_required }}
+                            </div>
+                          </div>
+                          <label for="switch">{{ language.create_news.show_guest }}</label>
+                        </div>
+                        &nbsp;<span>{{ language.create_news.show_guest }}</span>
+                      </label>
+                    </div>
+
+                    <div class="guest-option" *ngIf="!userDetails.isMember_light_admin">
+                      <label class="guest_label">
+                        <div class="switch_toggle">
+                          <input type="checkbox" id="switch_highlight" class="check-style" formControlName="isHighlighted" [ngClass]="{ 'is-invalid': submitted && createNewsForm.controls.isHighlighted.errors }" />
+                          <div *ngIf="(createNewsForm.controls.isHighlighted.touched || submitted) && createNewsForm.controls.isHighlighted.errors?.required" class="text-danger">
+                            <div *ngIf="createNewsForm.controls.isHighlighted.errors.required">
+                              {{ language.error_message.common_required }}
+                            </div>
+                          </div>
+                          <label for="switch_highlight">{{ language.create_news.news_highlight }}</label>
+                        </div>
+                        &nbsp;<span>{{ language.create_news.news_highlight }}</span>
+                      </label>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="event_field task_area_field paragr">
+                      <!-- <label>{{ language.create_news.content }}</label> -->
+                      <angular-editor placeholder="{{ language.create_news.content_placeholder }}" formControlName="content" [config]="editorConfig" [ngClass]="{ 'is-invalid': submitted && createNewsForm.controls.content.errors }"> </angular-editor>
+                      <div *ngIf="(createNewsForm.controls.content.touched || submitted) && createNewsForm.controls.content.errors?.required" class="text-danger">
+                        <div *ngIf="createNewsForm.controls.content.errors.required">
+                          {{ language.error_message.common_required }}
+                        </div>
+                      </div>
+                    </div>
+                    <div class="profile_sub_btn event_sub_btn mobile-show-desktop-hide">
+                      <button
+                        type="submit"
+                        class="save_btn"
+                        [ngStyle]="{
+                          'border-color': setTheme.default_status == true ? setTheme.create_button_bgcolor : setTheme.create_button_bgcolor,
+                          'background-color': setTheme.default_status == true ? setTheme.create_button_bgcolor : setTheme.create_button_bgcolor,
+                          color: setTheme.default_status == true ? setTheme.create_button_text : setTheme.create_button_text
+                        }"
+                      >
+                        <span
+                          ><span [ngStyle]="{ color: setTheme.default_status == true ? setTheme.create_button_text : setTheme.create_button_text }">{{ language.create_news.save }}</span></span
+                        >
+                      </button>
+                      <button
+                        type="button"
+                        (click)="onCancel()"
+                        class="Cancel_btn"
+                        [ngStyle]="{
+                          'border-color': setTheme.default_status == true ? setTheme.cancel_button_bgcolor : setTheme.cancel_button_bgcolor,
+                          'background-color': setTheme.default_status == true ? setTheme.cancel_button_bgcolor : setTheme.cancel_button_bgcolor,
+                          color: setTheme.default_status == true ? setTheme.cancel_button_text : setTheme.cancel_button_text
+                        }"
+                      >
+                        <span>
+                          <span [ngStyle]="{ color: setTheme.default_status == true ? setTheme.cancel_button_text : setTheme.cancel_button_text }">{{ language.create_news.cancel }}</span>
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- profile details data End -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

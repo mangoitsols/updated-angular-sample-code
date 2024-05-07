@@ -1,0 +1,339 @@
+<div class="content create-component">
+  <div class="mobile-back-main">
+    <div class="back-button">
+      <button type="button" (click)="navigation.back()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none">
+          <path
+            d="M13.5 15L18.375 19.875C18.6042 20.1042 18.7188 20.3958 18.7188 20.75C18.7188 21.1042 18.6042 21.3958 18.375 21.625C18.1458 21.8542 17.8542 21.9687 17.5 21.9687C17.1458 21.9687 16.8542 21.8542 16.625 21.625L10.875 15.875C10.75 15.75 10.6617 15.6146 10.61 15.4687C10.5583 15.3229 10.5321 15.1667 10.5312 15C10.5312 14.8333 10.5575 14.6771 10.61 14.5312C10.6625 14.3854 10.7508 14.25 10.875 14.125L16.625 8.375C16.8542 8.14583 17.1458 8.03125 17.5 8.03125C17.8542 8.03125 18.1458 8.14583 18.375 8.375C18.6042 8.60417 18.7188 8.89583 18.7188 9.25C18.7188 9.60417 18.6042 9.89583 18.375 10.125L13.5 15Z"
+            fill="#E93608"
+          />
+        </svg>
+      </button>
+    </div>
+    <div class="mb-title">{{ language.create_task.create_task }}</div>
+    <div class="empty-area">&nbsp;</div>
+  </div>
+  <div class="add_event_main event_main">
+    <form [formGroup]="createTaskForm" (ngSubmit)="onCreateTask()">
+      <div class="row">
+        <div class="col-md-12 add_event_content Payment_data_main create-news-main">
+          <div class="page-heading page-heading-event">
+            <vc-page-header [breadcrumbs]="breadCrumbItems" [headerTitle]="language.create_task.create_task">
+              <div class="profile_sub_btn event_sub_btn">
+                <button
+                  type="submit"
+                  class="save_btn"
+                  [ngStyle]="{
+                    'border-color': setTheme.default_status == true ? setTheme.create_button_bgcolor : setTheme.create_button_bgcolor,
+                    'background-color': setTheme.default_status == true ? setTheme.create_button_bgcolor : setTheme.create_button_bgcolor,
+                    color: setTheme.default_status == true ? setTheme.create_button_text : setTheme.create_button_text
+                  }"
+                >
+                  <span
+                    ><span [ngStyle]="{ color: setTheme.default_status == true ? setTheme.create_button_text : setTheme.create_button_text }">{{ language.create_faq.save }}</span></span
+                  >
+                </button>
+                <button
+                  type="button"
+                  (click)="onCancel()"
+                  class="Cancel_btn"
+                  [ngStyle]="{
+                    'border-color': setTheme.default_status == true ? setTheme.cancel_button_bgcolor : setTheme.cancel_button_bgcolor,
+                    'background-color': setTheme.default_status == true ? setTheme.cancel_button_bgcolor : setTheme.cancel_button_bgcolor,
+                    color: setTheme.default_status == true ? setTheme.cancel_button_text : setTheme.cancel_button_text
+                  }"
+                >
+                  <span
+                    ><span [ngStyle]="{ color: setTheme.default_status == true ? setTheme.cancel_button_text : setTheme.cancel_button_text }">{{ language.create_task.cancel }}</span></span
+                  >
+                </button>
+              </div>
+            </vc-page-header>
+          </div>
+          <div class="card create-event-main-box">
+            <div class="card-body">
+              <div class="profile_details">
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="event_field">
+                      <input type="text" formControlName="title" placeholder="{{ language.create_task.title_placeholder }}" [ngClass]="{ 'is-invalid': submitted && createTaskForm.controls.title.errors }" />
+                      <div *ngIf="(createTaskForm.controls.title.touched || submitted) && (createTaskForm.controls.title.errors?.required || createTaskForm.controls.title.errors?.whitespace)" class="text-danger">
+                        <div *ngIf="createTaskForm.controls.title.errors.required">
+                          {{ language.error_message.common_required }}
+                        </div>
+                        <div *ngIf="createTaskForm.controls.title.errors?.whitespace">
+                          {{ language.error_message.common_valid }}
+                        </div>
+                      </div>
+                    </div>
+                    <div class="event_field" [ngClass]="{ imageUpload: imageFile }">
+                      <!-- <label>{{ language.create_news.add_picture }}</label> -->
+                      <div class="event_upload news_pic_upload">
+                        <label class="preview_txt" style="display: none"></label>
+                        <input type="file" (change)="uploadFile($event)" id="add_image" accept="image/*" />
+                        <span class="event_uplod_overlay">
+                          <label *ngIf="errorImage.isError" class="text-danger">{{ errorImage.errorMessage }}</label>
+                          <div class="loader_image" *ngIf="isImage"></div>
+                          <img onContextMenu="return false;" *ngIf="croppedImage == null || (croppedImage == '' && !isImage)" class="preview_img" src="assets/img/new-design/create-pages/upload-img.svg" alt="" loading="lazy" />
+                          <img onContextMenu="return false;" *ngIf="croppedImage" class="preview_img" [src]="croppedImage" alt="" loading="lazy" />
+                        </span>
+                        <div *ngIf="(createTaskForm.controls.add_image.touched || submitted) && createTaskForm.controls.add_image.errors?.required" class="text-danger">
+                          <div *ngIf="createTaskForm.controls.add_image.errors.required">
+                            {{ language.error_message.common_required }}
+                          </div>
+                        </div>
+                      </div>
+                      <div class="card-body" *ngIf="imageFile">
+                        <div class="row" style="margin-top: 1px">
+                          <div class="text-center col-md-6">
+                            <image-cropper
+                              [imageChangedEvent]="imageChangedEvent"
+                              [maintainAspectRatio]="true"
+                              [aspectRatio]="4 / 3"
+                              autoCrop="false"
+                              hideResizeSquares="true"
+                              [resizeToHeight]="500"
+                              [onlyScaleDown]="true"
+                              [roundCropper]="false"
+                              format="webp"
+                              (imageCropped)="imageCropped($event)"
+                              (imageLoaded)="imageLoaded()"
+                              (cropperReady)="cropperReady()"
+                              (loadImageFailed)="loadImageFailed()"
+                            >
+                            </image-cropper>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="group_input">
+                      <div class="event_field">
+                        <input
+                          matInput
+                          [matDatepicker]="picker"
+                          placeholder="{{ language.create_task.select_date }}"
+                          [min]="getToday()"
+                          formControlName="date"
+                          onfocus="blur()"
+                          [ngClass]="{ 'is-invalid': submitted && createTaskForm.controls.date.errors }"
+                          readonly
+                        />
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+
+                        <div *ngIf="submitted && createTaskForm.controls.date.errors?.required" class="text-danger">
+                          <div *ngIf="createTaskForm.controls.date.errors.required">
+                            {{ language.error_message.common_required }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="event_field paragr">
+                      <angular-editor placeholder="{{ language.create_task.description_placeholder }}" formControlName="description" [config]="editorConfig" [ngClass]="{ 'is-invalid': submitted && createTaskForm.controls.description.errors }">
+                      </angular-editor>
+                      <div *ngIf="submitted && createTaskForm.controls.description.errors?.required" class="text-danger">
+                        {{ language.error_message.common_required }}
+                      </div>
+                    </div>
+                    <div class="event_field">
+                      <mat-chip-list #chipList>
+                        <mat-chip *ngFor="let tag of tagsName" [selectable]="selectable" [removable]="removable" (removed)="remove(tag)">
+                          {{ tag }}
+                          <mat-icon matChipRemove *ngIf="removable"><i class="bx ri-close-circle-fill"></i></mat-icon>
+                        </mat-chip>
+                        <input
+                          class="form-control"
+                          placeholder="{{ language.tags.addTags }}"
+                          #tagInput
+                          [formControl]="tagCtrl"
+                          [matAutocomplete]="auto"
+                          [matChipInputFor]="chipList"
+                          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                          [matChipInputAddOnBlur]="addOnBlur"
+                          (matChipInputTokenEnd)="addTags($event)"
+                        />
+                        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+                          <mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
+                            {{ tag.name }}
+                          </mat-option>
+                        </mat-autocomplete>
+                      </mat-chip-list>
+                    </div>
+
+                    <div class="all-dropdowns">
+                      <div class="news-dropdown">
+                        <!-- <label>{{ language.create_task.collaborators }}</label> -->
+                        <ng-multiselect-dropdown
+                          formControlName="type_dropdown"
+                          [ngClass]="{ 'is-invalid': submitted && createTaskForm.controls?.type_dropdown?.errors }"
+                          [placeholder]="language.create_task.type"
+                          [settings]="typeDropdownSettings"
+                          [data]="type_dropdown"
+                          (onDeSelect)="onTypeDeSelect($event)"
+                          (onSelect)="onTypeSelect($event)"
+                        >
+                        </ng-multiselect-dropdown>
+                        <div *ngIf="submitted && createTaskForm.controls?.type_dropdown?.errors?.required" class="text-danger">
+                          <div *ngIf="createTaskForm.controls.type_dropdown?.errors.required">
+                            {{ language.error_message.common_required }}
+                          </div>
+                        </div>
+                      </div>
+                      <div class="news-dropdown" *ngIf="type_visibility == 1">
+                        <!-- <label>{{ language.create_task.group_label }}</label> -->
+                        <ng-multiselect-dropdown
+                          formControlName="groups"
+                          [ngClass]="{ 'is-invalid': submitted && createTaskForm.controls?.groups?.errors }"
+                          [placeholder]="language.create_task.group"
+                          [settings]="groupDropdownSettings"
+                          [data]="group_dropdown"
+                          (onSelect)="onGroupSelect($event)"
+                        >
+                        </ng-multiselect-dropdown>
+                        <div *ngIf="submitted && createTaskForm.controls?.groups?.errors?.required" class="text-danger">
+                          <div *ngIf="createTaskForm.controls.groups.errors.required">
+                            {{ language.error_message.common_required }}
+                          </div>
+                        </div>
+                      </div>
+                      <div class="news-dropdown" *ngIf="receiveData && type_visibility == 0">
+                        <!-- <label>{{ language.create_task.participant_label }}</label> -->
+                        <ng-multiselect-dropdown
+                          formControlName="user_participant"
+                          *ngIf="user_dropdown"
+                          [placeholder]="language.create_task.select_placeholder"
+                          [settings]="participantDropdownSettings"
+                          [data]="user_dropdown"
+                          (onSelect)="onUserSelect($event)"
+                          (onDeSelect)="onUserDeSelect($event)"
+                          [ngClass]="{ 'is-invalid': submitted && createTaskForm.controls?.user_participant?.errors }"
+                        >
+                        </ng-multiselect-dropdown>
+                        <div *ngIf="submitted && createTaskForm.controls?.user_participant?.errors?.required" class="text-danger">
+                          <div *ngIf="createTaskForm.controls.user_participant.errors?.required">
+                            {{ language.error_message.common_required }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="card-body col-md-6" formArrayName="subtasks" id="showSubtask">
+                      <div class="">
+                        <div class="" *ngFor="let subtask of subtaskFormGroup.controls; let i = index">
+                          <div [formGroupName]="i" class="col-md-12 p-0">
+                            <div class="row">
+                              <div class="form-group col-6 event_field">
+                                <!-- <label>{{ language.create_task.title_placeholder }}</label> -->
+                                <input class="form-control" placeholder="{{ language.create_task.title_placeholder }}" formControlName="title" type="text" />
+                                <span class="text-danger" *ngIf="submitted && getSubtasksFormGroup(i).controls['title'].hasError('required')"> {{ language.error_message.common_required }} </span>
+                                <span class="text-danger" *ngIf="submitted && getSubtasksFormGroup(i).controls['title'].hasError('whitespace')"> {{ language.error_message.common_valid }} </span>
+                              </div>
+                              <div class="form-group col-6 event_field">
+                                <!-- <label>{{ language.create_task.end_date }}</label> -->
+                                <div style="position: relative">
+                                  <input matInput [matDatepicker]="picker1" placeholder="{{ language.create_task.select_date }}" (dateChange)="checkDate(i)" [min]="getToday()" formControlName="date" onfocus="blur()" />
+                                  <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                                  <mat-datepicker #picker1></mat-datepicker>
+
+                                  <span class="text-danger" *ngIf="submitted && getSubtasksFormGroup(i).controls['date'].hasError('required')">
+                                    {{ language.error_message.common_required }}
+                                  </span>
+                                  <span class="text-danger" *ngIf="dateError == true && i == indax">
+                                    {{ language.organizer_task.endDateError }}
+                                  </span>
+                                </div>
+                              </div>
+                              <div></div>
+                              <div class="form-group col-12 event_field paragr">
+                                <!-- <label>{{ language.create_task.description }}</label> -->
+                                <angular-editor placeholder="{{ language.create_task.description_placeholder }}" formControlName="description" [config]="editorConfig"> </angular-editor>
+                                <span class="text-danger" *ngIf="submitted && getSubtasksFormGroup(i).controls['description'].hasError('required')">
+                                  <span>
+                                    {{ language.error_message.common_required }}
+                                  </span>
+                                </span>
+                                <div class="form-group news-dropdown col-12" *ngIf="this.subTaskVisibility == 0 && user_dropdown && user_dropdown.length">
+                                  <!-- <label>{{ language.create_task.participant }}</label> -->
+                                  <ng-multiselect-dropdown
+                                    formControlName="assigned_to"
+                                    [placeholder]="language.create_group.participants"
+                                    [settings]="subTaskUserDropdownSettings"
+                                    [data]="user_dropdown"
+                                    (onSelect)="onSubTaskUserSelect($event, i)"
+                                    (onDeSelect)="onSubTaskUserDeSelect($event)"
+                                  >
+                                  </ng-multiselect-dropdown>
+                                  <span class="text-danger" *ngIf="submitted && getSubtasksFormGroup(i).controls['assigned_to'].hasError('required')"> {{ language.error_message.common_required }} </span>
+                                </div>
+                                <div class="form-group news-dropdown col-12" *ngIf="this.subTaskVisibility == 1 && groupParticipants && groupParticipants.length > 0">
+                                  <!-- <label>{{ language.organizer_task.groupParticipant }}</label> -->
+                                  <ng-multiselect-dropdown
+                                    formControlName="assigned_to"
+                                    [placeholder]="language.create_group.participants"
+                                    [settings]="subTaskGroupUserDropdownSettings"
+                                    [data]="groupParticipants"
+                                    (onSelect)="onSubTaskUserSelect($event, i)"
+                                    (onDeSelect)="onSubTaskUserDeSelect($event)"
+                                  >
+                                  </ng-multiselect-dropdown>
+                                  <span class="text-danger" *ngIf="submitted && getSubtasksFormGroup(i).controls['assigned_to'].hasError('required')"> {{ language.error_message.common_required }} </span>
+                                </div>
+                                <div class="form-group col-12 text-right profile_sub_btn event_sub_btn" style="margin-top: 15px">
+                                  <button class="save_btn" type="button" (click)="removeSubtask(i)">
+                                    <span> {{ language.create_task.remove }}</span>
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="show-subtask profile_sub_btn event_sub_btn">
+                      <button type="button" class="show-subtask-btn Cancel_btn" (click)="addSubtask()">
+                        <i class="nc-icon nc-simple-add"></i>
+                        &nbsp;<span> {{ language.create_task.add_subtask }}</span>
+                      </button>
+                    </div>
+                    <div class="profile_sub_btn event_sub_btn mobile-show-desktop-hide">
+                      <button
+                        type="submit"
+                        class="save_btn"
+                        [ngStyle]="{
+                          'border-color': setTheme.default_status == true ? setTheme.create_button_bgcolor : setTheme.create_button_bgcolor,
+                          'background-color': setTheme.default_status == true ? setTheme.create_button_bgcolor : setTheme.create_button_bgcolor,
+                          color: setTheme.default_status == true ? setTheme.create_button_text : setTheme.create_button_text
+                        }"
+                      >
+                        <span
+                          ><span [ngStyle]="{ color: setTheme.default_status == true ? setTheme.create_button_text : setTheme.create_button_text }">{{ language.create_faq.save }}</span></span
+                        >
+                      </button>
+                      <button
+                        type="button"
+                        (click)="onCancel()"
+                        class="Cancel_btn"
+                        [ngStyle]="{
+                          'border-color': setTheme.default_status == true ? setTheme.cancel_button_bgcolor : setTheme.cancel_button_bgcolor,
+                          'background-color': setTheme.default_status == true ? setTheme.cancel_button_bgcolor : setTheme.cancel_button_bgcolor,
+                          color: setTheme.default_status == true ? setTheme.cancel_button_text : setTheme.cancel_button_text
+                        }"
+                      >
+                        <span
+                          ><span [ngStyle]="{ color: setTheme.default_status == true ? setTheme.cancel_button_text : setTheme.cancel_button_text }">{{ language.create_task.cancel }}</span></span
+                        >
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

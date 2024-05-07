@@ -1,0 +1,421 @@
+<div *ngIf="!noGroupDetails; else noGroup" class="group-details">
+  <div class="row">
+    <!--  Main Content  -->
+    <vc-page-header *ngIf="!loadings.groupDetails" [breadcrumbs]="breadcrumbs" [headerTitleStyles]="{ 'text-transform': 'none' }" [headerTitle]="groupDetails?.name">
+      <!-- Accept & Deny buttons -->
+      <div class="group-button" *ngIf="userDetails?.isAdmin && groupDetails?.created_by != userDetails?.userId && groupDetails?.approvedStatus == 0 && groupDetails?.denyById == null && showGroupDetails()">
+        <button (click)="approvedGroup(groupDetails.id)" type="button" class="vc-button-with-icon publish-btn disabled">
+          <span [ngStyle]="{ color: '#ffffff' }">{{ language.community_groups.PublishGroup }}</span>
+        </button>
+
+        <button (click)="unapproveGroup(groupDetails.id)" type="button" class="vc-button-with-icon deny-btn disabled">
+          <span [ngStyle]="{ color: '#ffffff' }">{{ language.community_groups.DenyGroup }}</span>
+        </button>
+      </div>
+    </vc-page-header>
+    <div class="author-des" *ngIf="groupDetails && showGroupDetails()">
+      <span class="author-status" *ngIf="groupDetails?.approvedStatus == 0 && !groupDetails?.denyById">{{ language.theme.status }}:-{{ language.community_groups.waitingApproval }}</span>
+      <span class="author-status" *ngIf="groupDetails?.approvedStatus == 0 && groupDetails?.denyById">{{ language.theme.status }}:-{{ language.community_groups.admin_deny }}</span>
+      <span class="author-id" *ngIf="groupDetails?.denyById >= 1"> </span>
+      <span class="deny-reason" *ngIf="groupDetails?.denyById >= 1"> {{ language.dashboard.denyReason }}:- {{ groupDetails?.denyReason }} </span>
+    </div>
+
+    <div class="group-box-middle" *ngIf="groupDetails && showGroupDetails(); else notParticipantDiv">
+      <div class="col-12 col-xl-9">
+        <ngx-skeleton-loader *ngIf="loadings.groupDetails" [theme]="{ background: 'var(--vc-skeleton-loader-background)', 'border-radius': '15px', width: '300px', height: '80px' }" count="1"></ngx-skeleton-loader>
+
+        <div class="group-details__content">
+          <ng-container *ngIf="!loadings.groupDetails; else groupDetailsLoading">
+            <!--  Group Info Row -->
+            <div class="row">
+              <!-- Group detail card -->
+              <div class="col-12 col-sm-6 col-md-8 col-xl-9">
+                <div class="group-details__content__detail-card">
+                  <div class="group-details__content__detail-card__image">
+                    <ng-container *ngIf="groupDetails.token">
+                      <ng-container *ngIf="!groupDetails.token.isLoading && groupDetails.token.imageLoaded">
+                        <img [src]="groupDetails.token.url" alt="Image" alt="" loading="lazy" />
+                      </ng-container>
+                      <ng-container *ngIf="groupDetails.token.isLoading">
+                        <img [src]="'../../../../assets/img/loading.gif'" alt="Image" />
+                      </ng-container>
+                    </ng-container>
+                    <ng-container *ngIf="!groupDetails.token">
+                      <img src="assets/img/no-image.png" />
+                    </ng-container>
+                  </div>
+
+                  <div class="group-details__content__detail-card__body">
+                    <p [innerHTML]="groupDetails.description" class="vc-scrollbar-container">...</p>
+
+                    <div class="group-details__content__detail-card__body__footer">
+                      <div class="stats">
+                        <span>
+                          {{ groupMembers?.length }}
+                          <small>{{ language.community_groups.members }}</small>
+                        </span>
+                        <span>
+                          {{ groupDetails.newsCount }} <small>{{ language.header.news }}</small>
+                        </span>
+                        <span>
+                          {{ groupDetails.taskGroupCount }}
+                          <small>{{ language.organizer_task.title }}</small>
+                        </span>
+                        <span>
+                          {{ groupDetails.eventGroupCount }}
+                          <small>{{ language.club_events.events }}</small>
+                        </span>
+                      </div>
+                      <div class="action">
+                        <vc-icon (click)="leaveGroup()" *ngIf="!isGroupAdmin && isGroupMember" cssClass="mr-1 cursor-pointer" iconName="team-remove" showBorder="true" tippy="{{ language.community_groups.tippy_leave_group }}"></vc-icon>
+                        <vc-icon (click)="joinGroup()" *ngIf="!isGroupAdmin && !isGroupMember" cssClass="mr-1 cursor-pointer" iconName="team" showBorder="true" tippy="{{ language.community_groups.tippy_join_group }}"></vc-icon>
+                        <vc-icon *ngIf="isGroupAdmin" cssClass="mr-1 cursor-pointer" iconName="edit" routerLink="/web/update-group/{{ groupId }}" showBorder="true" tippy="{{ language.community_groups.tippy_edit_group }}"></vc-icon>
+                        <vc-icon (click)="deleteGroup()" *ngIf="isGroupAdmin" cssClass="cursor-pointer" iconName="delete" showBorder="true" tippy="{{ language.community_groups.tippy_delete_group }}"></vc-icon>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Group Admin info card -->
+              <div class="col-12 col-sm-6 col-md-4 col-xl-3">
+                <div class="group-details__content__admin-card">
+                  <div class="group-details__content__admin-card__image">
+                    <div class="image-wrapper">
+                      <img onContextMenu="return false;" [src]="groupDetails?.createdByUser?.memberId | memberPhoto | async" alt="User Photo" loading="lazy" />
+                    </div>
+                  </div>
+
+                  <div class="group-details__content__admin-card__body">
+                    <p [ngClass]="{ 'mt-2': isGroupAdmin }" class="group-details__content__admin-card__body__title">{{ language.community_groups.group_admin }} :</p>
+                    <h4 class="group-details__content__admin-card__body__name">{{ groupDetails?.createdByUser?.fullName }}</h4>
+                    <p *ngIf="!isGroupAdmin" (click)="checkChatDetails(groupDetails.createdByUser.id)" class="group-details__content__admin-card__body__email">
+                      {{ language.community_groups.write_a_message }}
+                      <vc-icon color="white" iconName="send" size="10px"></vc-icon>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+
+          <!-- Group Members Row -->
+          <div class="row">
+            <div class="col">
+              <div class="group-details__content__members">
+                <div class="group-details__content__members__header">
+                  <h4>{{ language.community_groups.members }}</h4>
+                  <a (click)="navigateTo('members')"
+                    >{{ language.community_groups.all_members }}
+                    <vc-icon [cssStyle]="{ marginTop: '-1px', marginLeft: '-6px' }" boxSize="16px" color="var(--vc-color-darker-grey)" iconName="chevron-right"></vc-icon>
+                  </a>
+                </div>
+                <div class="group-details__content__members__list">
+                  <div class="row no-gutters">
+                    <ng-container *ngIf="!loadings.membersList; else membersRowLoading">
+                      <ng-container *ngIf="groupMembers.length; else noMembers">
+                        <ng-container *ngFor="let member of groupMembers | slice: 0:26">
+                          <div class="col-2 col-xl-1">
+                            <div class="group-details__content__members__list__item">
+                              <div class="group-details__content__members__list__item__image">
+                                <img onContextMenu="return false;" [src]="member.user?.memberId | memberPhoto | async" alt="User Photo" loading="lazy" />
+                              </div>
+                              <div class="group-details__content__members__list__item__name">
+                                <h5>
+                                  {{ member?.user?.fullName }}
+                                  <small *ngIf="isLoggedInUser(member.userId)">(You)</small>
+                                </h5>
+                              </div>
+                            </div>
+                          </div>
+                        </ng-container>
+                      </ng-container>
+                      <ng-template #noMembers>
+                        <div class="col text-center">
+                          <h3 class="text-muted text-capitalize pt-5">No Members</h3>
+                        </div>
+                      </ng-template>
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Group News Row -->
+          <div class="row">
+            <div class="col">
+              <div class="group-details__content__news">
+                <!--  News Row Header -->
+                <div class="group-details__content__news__header">
+                  <h4>{{ language.group_news.current_news_from_the_group }}</h4>
+                  <a (click)="navigateTo('news')"
+                    >{{ language.group_news.all_news }}
+                    <vc-icon [cssStyle]="{ marginTop: '-1px', marginLeft: '-6px' }" boxSize="16px" color="var(--vc-color-darker-grey)" iconName="chevron-right"></vc-icon>
+                  </a>
+                </div>
+
+                <!-- News List Currently only 4 latest cards -->
+                <div class="group-details__content__news__list">
+                  <ng-container *ngIf="!loadings.newsList; else newsRowLoading">
+                    <div class="row">
+                      <ng-container *ngIf="groupNews.length; else noNews">
+                        <ng-container *ngFor="let news of groupNews | slice: 0:4">
+                          <div class="col-6 col-lg-3">
+                            <vc-group-news-summary-card (refresh)="refetchData($event)" [news]="news"></vc-group-news-summary-card>
+                          </div>
+                        </ng-container>
+                      </ng-container>
+                      <ng-template #noNews>
+                        <div class="col text-center">
+                          <h3 class="text-muted text-capitalize pt-5">{{ language.community_groups.vc_no_news }}</h3>
+                        </div>
+                      </ng-template>
+                    </div>
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!--  News, Events and other side content  -->
+      <div class="col-12 col-xl-3">
+        <aside class="group-details__info-bar">
+          <!-- Group News headline Card -->
+          <div class="group-details__info-bar__news-card">
+            <div class="group-details__info-bar__news-card__header">
+              <h4>{{ language.community_groups.group_news }}</h4>
+              <a (click)="navigateTo('news')"
+                >{{ language.group_news.all_news }}
+                <vc-icon [cssStyle]="{ marginTop: '-1px', marginLeft: '-6px' }" boxSize="16px" iconName="chevron-right"></vc-icon>
+              </a>
+            </div>
+
+            <div class="group-details__info-bar__news-card__body vc-scrollbar-container">
+              <!-- For loop from array but get only 3 items -->
+              <ng-container *ngIf="!loadings.newsList; else sideHeadlinesLoader">
+                <ng-container *ngIf="groupNews.length; else noNews">
+                  <ng-container *ngFor="let newsItem of groupNews | slice: 0:3">
+                    <!-- News Item -->
+                    <div (click)="openNewsDetailModal(newsItem)" class="group-details__info-bar__news-card__body__item">
+                      <div class="group-details__info-bar__news-card__body__item__image">
+                        <ng-container *ngIf="newsItem.token">
+                          <ng-container *ngIf="!newsItem.token.isLoading && newsItem.token.imageLoaded">
+                            <!-- If the image has finished loading, display it -->
+                            <img [src]="newsItem.token.url" alt="Image" />
+                          </ng-container>
+                          <ng-container *ngIf="newsItem.token.isLoading">
+                            <!-- If the image is still loading, display a loader -->
+                            <img [src]="'../../../../assets/img/loading.gif'" alt="Image" />
+                          </ng-container>
+                        </ng-container>
+                      </div>
+                      <div class="group-details__info-bar__news-card__body__item__content">
+                        <h5>{{ newsItem.title }}</h5>
+                        <p [innerHTML]="newsItem.headline | limitText: '150'" class="mt-3">...</p>
+                      </div>
+                    </div>
+                  </ng-container>
+                </ng-container>
+                <ng-template #noNews>
+                  <div class="col text-center">
+                    <h5 class="text-muted text-capitalize">{{ language.community_groups.vc_no_news }}</h5>
+                  </div>
+                </ng-template>
+              </ng-container>
+            </div>
+          </div>
+
+          <!-- Group Events Headlines Card -->
+          <div class="group-details__info-bar__events-card">
+            <div class="group-details__info-bar__events-card__header">
+              <h4>{{ language.community_groups.group_events }}</h4>
+              <a (click)="navigateTo('events')"
+                >{{ language.banner.all_events }}
+                <vc-icon [cssStyle]="{ marginTop: '-1px', marginLeft: '-6px' }" boxSize="16px" iconName="chevron-right"></vc-icon>
+              </a>
+            </div>
+
+            <div class="group-details__info-bar__events-card__body vc-scrollbar-container">
+              <!-- For loop from array but get only 3 items -->
+              <ng-container *ngIf="!loadings.eventsList; else sideHeadlinesLoader">
+                <ng-container *ngIf="groupEvents.length; else noEvents">
+                  <ng-container *ngFor="let event of groupEvents | slice: 0:2">
+                    <!-- Event Item -->
+                    <div class="group-details__info-bar__events-card__body__item" [routerLink]="['../event', event?.id, 'details', 'date', event?.dateFrom | date: 'yyyy-MM-dd']">
+                      <div class="group-details__info-bar__events-card__body__item__event-date">
+                        <div class="group-details__info-bar__events-card__body__item__event-date__month">
+                          <p>{{ getDateSpecifics(event.dateFrom, 'month') }}</p>
+                        </div>
+                        <div class="group-details__info-bar__events-card__body__item__event-date__day">
+                          <h5>{{ event.dateFrom | date: 'dd':'UTC':'':'en-US' }}</h5>
+                        </div>
+                      </div>
+
+                      <div class="group-details__info-bar__events-card__body__item__content">
+                        <div>
+                          <h5 class="event-title">{{ event?.name }}</h5>
+                          <p class="mt-4 no-wrap">
+                            <span>{{ event?.recurringDates && event?.recurringDates.length ? event?.recurringDates[0].startTime + '-' + event?.recurringDates[0].endTime : event.startTime + ' - ' + event.endTime }} {{ language.login.o_clock }}</span>
+                            | {{ event?.place }}
+                          </p>
+                        </div>
+                        <p class="stats">
+                          {{ event?.participantsCount }} {{ language.community_groups.participants }} - {{ language.club_events.entry }} : {{ event?.pricePerParticipant === '0' ? language.organizer.free : event?.pricePerParticipant }}
+                        </p>
+                      </div>
+                    </div>
+                  </ng-container>
+                </ng-container>
+                <ng-template #noEvents>
+                  <div class="col text-center">
+                    <h5 class="text-muted text-capitalize">{{ language.community_groups.vc_no_events }}</h5>
+                  </div>
+                </ng-template>
+              </ng-container>
+            </div>
+          </div>
+
+          <!-- Group Members Headlines Card -->
+          <div class="group-details__info-bar__members-card">
+            <div class="group-details__info-bar__members-card__header">
+              <h4>{{ language.community_groups.new_members }}</h4>
+              <a (click)="navigateTo('members')"
+                >{{ language.community_groups.all_members }}
+                <vc-icon [cssStyle]="{ marginTop: '-1px', marginLeft: '-6px' }" boxSize="16px" iconName="chevron-right"></vc-icon>
+              </a>
+            </div>
+
+            <div class="group-details__info-bar__members-card__body vc-scrollbar-container">
+              <ng-container *ngIf="!loadings.membersList; else sideHeadlinesLoader">
+                <ng-container *ngIf="groupMembers.length">
+                  <!-- For loop from array but get only 4 items -->
+                  <ng-container *ngFor="let member of groupMembers | slice: 0:4">
+                    <!-- News Item -->
+                    <div class="group-details__info-bar__members-card__body__item">
+                      <div class="group-details__info-bar__members-card__body__item__image">
+                        <img onContextMenu="return false;" [src]="member.user?.memberId | memberPhoto | async" alt="User Photo" loading="lazy" />
+                      </div>
+
+                      <div class="group-details__info-bar__members-card__body__item__content">
+                        <div>
+                          <h5>{{ member?.user?.fullName }}</h5>
+                          <p>{{ member?.user?.email }}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </ng-container>
+                </ng-container>
+
+                <ng-template #noMembers>
+                  <div class="col text-center">
+                    <h5 class="text-muted text-capitalize">{{ language.community_groups.vc_no_members }}</h5>
+                  </div>
+                </ng-template>
+              </ng-container>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #notParticipantDiv>
+    <div class="not-f-main" *ngIf="!loadings.groupDetails; else groupDetailsLoading">
+      <div class="page-not-available">
+        <div class="not-available-user">
+          <vc-icon color="blue" iconName="feature-locked" size="50px"></vc-icon>
+          <h1>{{ language.genral_message.feature_locked }}</h1>
+          <span>
+            {{ language.community_groups.general_msg }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</div>
+
+<!-- ------------------------- LOADING TEMPLATES ------------------------- -->
+
+<!-- Group Details Loading Skeleton -->
+<ng-template #groupDetailsLoading>
+  <div class="row">
+    <div class="col-12 col-sm-6 col-md-8 col-xl-9">
+      <ngx-skeleton-loader
+        [theme]="{
+          'border-radius': '15px',
+          height: '200px',
+          width: '100%',
+          background: 'var(--vc-skeleton-loader-background)'
+        }"
+        appearance="circle"
+        count="1"
+      ></ngx-skeleton-loader>
+    </div>
+    <div class="col-12 col-sm-6 col-md-4 col-xl-3">
+      <ngx-skeleton-loader
+        [theme]="{
+          'border-radius': '15px',
+          height: '200px',
+          width: '100%',
+          background: 'var(--vc-skeleton-loader-background)'
+        }"
+        appearance="circle"
+        count="1"
+      ></ngx-skeleton-loader>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #membersRowLoading>
+  <ngx-skeleton-loader
+    [theme]="{
+      height: '70px',
+      width: '70px',
+      background: 'var(--vc-skeleton-loader-background)'
+    }"
+    appearance="circle"
+    count="10"
+  ></ngx-skeleton-loader>
+</ng-template>
+
+<ng-template #newsRowLoading>
+  <div class="row row-cols-2 row-cols-sm-3 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-5">
+    <ng-container *ngFor="let item of [].constructor(4)">
+      <div class="col">
+        <ngx-skeleton-loader
+          [theme]="{
+            'border-radius': '15px',
+            height: '290px',
+            width: '100%',
+            'margin-bottom': '50px',
+            background: 'var(--vc-skeleton-loader-background)'
+          }"
+          appearance="circle"
+        ></ngx-skeleton-loader>
+      </div>
+    </ng-container>
+  </div>
+</ng-template>
+
+<ng-template #sideHeadlinesLoader>
+  <ngx-skeleton-loader
+    [theme]="{
+      height: '50px',
+      width: '100%',
+      background: 'var(--vc-skeleton-loader-background)'
+    }"
+    count="3"
+  ></ngx-skeleton-loader>
+</ng-template>
+
+<ng-template #noGroup>
+  <div class="row noGroup">
+    <div class="col d-flex flex-column align-items-center justify-content-center text-center">
+      <h1>Group Not Found</h1>
+      <small><a href="" routerLink="../../../groups">Back to Groups</a></small>
+    </div>
+  </div>
+</ng-template>

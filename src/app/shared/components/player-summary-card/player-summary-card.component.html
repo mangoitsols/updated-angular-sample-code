@@ -1,0 +1,39 @@
+<div class="player-summary-card">
+  <div [ngClass]="{ 'white-background': !user }" [ngStyle]="cssStyle" class="vc-card-shadow-light vc-radius-light pl-1 pr-1 pt-2 pb-2 position-relative">
+    <div class="d-flex align-items-center">
+      <div class="player-summary-card__player">
+        <!-- <img [alt]="user?.firstName || member?.user?.firstName || 'Player'" [src]="user?.imageUrl || member?.user?.imageUrl || 'assets/img/new-design/community/group-events/team-member.png'" /> -->
+        <img onContextMenu="return false;" [src]="member?.user?.memberId | memberPhoto | async" alt="User Photo" loading="lazy" />
+      </div>
+
+      <!-- Check if 'user' is defined, if yes, use it; otherwise, use 'members' -->
+      <ng-container *ngIf="user; else membersBlock">
+        <h2 class="player-summary-card__name ml-2">
+          {{ user.firstName }} <br />
+          {{ user.lastName }}
+        </h2>
+        <!-- Include vc-badge only when 'user' is defined -->
+        <vc-badge
+          [backgroundColor]="badgeStyle.backgroundColor"
+          [color]="badgeStyle.color"
+          [text]="badgeText || 'Assumed'"
+          borderBottomLeftRadius="0"
+          borderBottomRightRadius="0"
+          borderTopLeftRadius="0"
+          borderTopRightRadius="7px"
+          class="vc-badge"
+          positionRight="0"
+          positionTop="0"
+        ></vc-badge>
+      </ng-container>
+
+      <!-- If 'user' is not defined, use 'members' without vc-badge -->
+      <ng-template #membersBlock>
+        <h2 class="player-summary-card__name ml-2">
+          {{ member?.user?.firstName }} <br />
+          {{ member?.user?.lastName }}
+        </h2>
+      </ng-template>
+    </div>
+  </div>
+</div>

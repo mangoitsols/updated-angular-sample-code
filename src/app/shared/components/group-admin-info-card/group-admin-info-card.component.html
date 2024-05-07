@@ -1,0 +1,23 @@
+<ng-container *ngIf="miniCard && user">
+  <div [ngStyle]="cssStyle" [style.background-color]="backgroundColor ? backgroundColor : 'var(--vc-color-dark-pink)'" class="vc-admin-detail-card">
+    <div class="vc-admin-detail-card__detail">
+      <div class="vc-admin-detail-card__detail__image">
+        <img [src]="user?.imageUrl || 'assets/img/default-user.png'" alt="" />
+      </div>
+      <div class="vc-admin-detail-card__detail__admin-name">
+        <h6>
+          {{ title }}{{ title ? ':' : '' }}
+          <br *ngIf="title && user?.firstName" />
+          <span>{{ user?.firstName }}&nbsp;{{ user?.lastName }}</span>
+        </h6>
+      </div>
+    </div>
+
+    <div class="vc-admin-detail-card__action">
+      <a (click)="checkChatDetails(user.id)">
+        <span *ngIf="showLinkText && !isGroupAdmin">{{ language?.community_groups?.write_to || 'Anschreiben' }}</span>
+        <vc-icon *ngIf="!isGroupAdmin" [cssStyle]="{ marginBottom: '-4px', marginLeft: '-2px' }" boxSize="5px" color="#fff" iconName="send" size="5px"></vc-icon>
+      </a>
+    </div>
+  </div>
+</ng-container>

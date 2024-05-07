@@ -1,0 +1,151 @@
+<div *ngIf="!noGroupDetails; else noGroup" class="group-details">
+  <div class="row">
+    <!--  Main Content  -->
+    <div class="col-12 col-xl-9">
+      <div class="group-details__content">
+        <ng-container *ngIf="!loadings.groupDetails; else groupDetailsLoading">
+          <!--  Group Info Row -->
+          <div class="row">
+            <!-- Group detail card -->
+            <div class="col-12 col-sm-6 col-md-8 col-xl-9">
+              <div class="group-details__content__detail-card">
+                <div class="group-details__content__detail-card__image">
+                  <!-- <img [src]="groupDetails?.groupImages[0]?.groupImage || 'assets/img/no-image.png'" alt="" /> -->
+                  <ng-container *ngIf="groupDetails.token">
+                    <ng-container *ngIf="!groupDetails.token.isLoading && groupDetails.token.imageLoaded">
+                      <img [src]="groupDetails.token.url" alt="" loading="lazy" />
+                    </ng-container>
+                    <ng-container *ngIf="groupDetails.token.isLoading">
+                      <img [src]="'../../../../assets/img/loading.gif'" alt="Image" />
+                    </ng-container>
+                  </ng-container>
+                </div>
+
+                <div class="group-details__content__detail-card__body">
+                  <p [innerHTML]="groupDetails?.description" class="vc-scrollbar-container">...</p>
+
+                  <div class="group-details__content__detail-card__body__footer">
+                    <div class="stats">
+                      <span>
+                        {{ groupMembers?.length }}
+                        <small>{{ language.community_groups.members }}</small>
+                      </span>
+                      <span>
+                        {{ groupDetails?.newsCount }} <small>{{ language.header.news }}</small>
+                      </span>
+                      <span>
+                        {{ groupDetails?.taskGroupCount }}
+                        <small>{{ language.organizer_task.title }}</small>
+                      </span>
+                      <span>
+                        {{ groupDetails?.eventGroupCount }}
+                        <small>{{ language.club_events.events }}</small>
+                      </span>
+                    </div>
+                    <div class="action">
+                      <vc-icon (click)="leaveGroup()" *ngIf="!isGroupAdmin && isGroupMember" cssClass="mr-1 cursor-pointer" iconName="team-remove" showBorder="true" tippy="{{ language.community_groups.tippy_leave_group }}"></vc-icon>
+                      <vc-icon (click)="joinGroup()" *ngIf="!isGroupAdmin && !isGroupMember" cssClass="mr-1 cursor-pointer" iconName="team" showBorder="true" tippy="{{ language.community_groups.tippy_join_group }}"></vc-icon>
+                      <vc-icon *ngIf="isGroupAdmin" cssClass="mr-1 cursor-pointer" iconName="edit" routerLink="/web/update-group/{{ groupId }}" showBorder="true" tippy="{{ language.community_groups.tippy_edit_group }}"></vc-icon>
+                      <vc-icon (click)="deleteGroup()" *ngIf="isGroupAdmin" cssClass="cursor-pointer" iconName="delete" showBorder="true" tippy="{{ language.community_groups.tippy_delete_group }}"></vc-icon>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Group Admin info card -->
+            <div class="col-12 col-sm-6 col-md-4 col-xl-3">
+              <div class="group-details__content__admin-card">
+                <div class="group-details__content__admin-card__image">
+                  <div class="image-wrapper">
+                    <!-- <img [src]="groupDetails?.createdByUser?.imageUrl || 'assets/img/default-user.png'" alt="" /> -->
+                    <img onContextMenu="return false;" [src]="groupDetails?.createdByUser?.memberId | memberPhoto | async" alt="User Photo" loading="lazy" />
+                  </div>
+                </div>
+
+                <div class="group-details__content__admin-card__body">
+                  <p [ngClass]="{ 'mt-2': isGroupAdmin }" class="group-details__content__admin-card__body__title">{{ language.community_groups.group_admin }} :</p>
+                  <h4 class="group-details__content__admin-card__body__name">{{ groupDetails?.createdByUser?.fullName }}</h4>
+                  <p *ngIf="!isGroupAdmin" class="group-details__content__admin-card__body__email">
+                    {{ language.community_groups.write_a_message }}
+                    <vc-icon color="white" iconName="send" size="10px"></vc-icon>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+  <div class="row col mt-49">
+    <ng-container *ngIf="!loadings.membersList; else membersRowLoading">
+      <ng-container *ngIf="groupMembers.length">
+        <ng-container *ngFor="let member of groupMembers">
+          <div class="col-xl-2 col-lg-4 col-md-6 col-sm-6 p-2">
+            <vc-player-summary-card [member]="member"></vc-player-summary-card>
+          </div>
+        </ng-container>
+      </ng-container>
+      <ng-template #noMembers>
+        <div class="col text-center">
+          <h3 class="text-muted text-capitalize pt-5">No Members</h3>
+        </div>
+      </ng-template>
+    </ng-container>
+  </div>
+</div>
+
+<!-- ------------------------- LOADING TEMPLATES ------------------------- -->
+
+<!-- Group Details Loading Skeleton -->
+<ng-template #groupDetailsLoading>
+  <div class="row">
+    <div class="col-12 col-sm-6 col-md-8 col-xl-9">
+      <ngx-skeleton-loader
+        [theme]="{
+          'border-radius': '15px',
+          height: '200px',
+          width: '100%',
+          background: 'var(--vc-skeleton-loader-background)'
+        }"
+        appearance="circle"
+        count="1"
+      ></ngx-skeleton-loader>
+    </div>
+    <div class="col-12 col-sm-6 col-md-4 col-xl-3">
+      <ngx-skeleton-loader
+        [theme]="{
+          'border-radius': '15px',
+          height: '200px',
+          width: '100%',
+          background: 'var(--vc-skeleton-loader-background)'
+        }"
+        appearance="circle"
+        count="1"
+      ></ngx-skeleton-loader>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #membersRowLoading>
+  <ngx-skeleton-loader
+    [theme]="{
+      height: '70px',
+      margin: '0 15px 15px 0',
+      width: '205px',
+      background: 'var(--vc-skeleton-loader-background)'
+    }"
+    appearance="square"
+    count="12"
+  ></ngx-skeleton-loader>
+</ng-template>
+
+<ng-template #noGroup>
+  <div class="row noGroup">
+    <div class="col d-flex flex-column align-items-center justify-content-center text-center">
+      <h1>Group Not Found</h1>
+      <small><a href="" routerLink="../../../groups">Back to Groups</a></small>
+    </div>
+  </div>
+</ng-template>

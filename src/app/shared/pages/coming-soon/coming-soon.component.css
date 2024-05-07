@@ -1,0 +1,46 @@
+/* new design css start */
+.content {
+    min-height: calc(82vh - 0px);
+    background-color: #F2F2F5;
+    overflow: hidden;
+}
+.page-heading h1 {
+    font-size: 24px;
+    font-family: 'Gellix', sans-serif !important;
+    font-weight: 700;
+    color: #68759F;
+    text-transform: uppercase;
+    margin: 0;
+    padding-left: 20px;
+}
+.page-heading {
+    text-align: center;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+}
+.content.profile_section .profile_navigation {
+    padding: 15px;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+}
+
+.page-action {
+    display: flex;
+    flex-wrap: nowrap;
+}
+.page-action {
+    margin-top: 25px;
+}
+
+@media only screen and (max-width:1024px) and (min-width:768px){
+.profile_content .card {
+    padding: 0;
+}
+}
+@media only screen and (max-width:767px){
+.content {
+    min-height: calc(82vh - 0px);
+}
+}

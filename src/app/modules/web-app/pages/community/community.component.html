@@ -1,0 +1,123 @@
+<div *ngIf="participateAccess.message == 'Yes' || participateAccess.group == 'Yes'" class="content">
+  <vc-page-header
+    [breadcrumbs]="breadCrumbItems"
+    [headerTitle]="displayGroups ? language.community.groups_overview : displayMessages ? language.community.messages : displayGroupsNews ? language.community.group_news : displayGroupTask ? language.organizer_task.group_task : ''"
+  >
+    <ng-container *ngIf="displayGroups == true && participateAccess.group == 'Yes'">
+      <button *ngIf="createAccess.group == 'Yes'" class="vc-button-with-icon disabled vc-button-create mr-2" routerLink="/web/create-group" type="button">
+        <vc-icon color="#ffffff" iconName="users" size="20px"></vc-icon>
+        <span>{{ language.create_group.create_button }}</span>
+      </button>
+    </ng-container>
+
+    <div *ngIf="displayMessages == true && participateAccess.message == 'Yes'" class="page-action-right">
+      <button *ngIf="createAccess.chat == 'Yes'" class="disabled button-create" routerLink="/web/create-chat" type="button">
+        <svg fill="none" height="20" viewBox="0 0 21 20" width="21" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M7.98103 19.6801C5.80791 19.6801 3.6348 19.6659 1.4623 19.6884C0.768371 19.6954 0.310513 19.2547 0.312998 18.5972C0.329772 14.5828 0.317347 10.5683 0.322938 6.55393C0.326666 3.79612 2.20469 1.56707 5.02887 0.950288C5.36931 0.875848 5.71535 0.83213 6.06573 0.83213C8.85201 0.83213 11.6383 0.807907 14.424 0.838628C17.3065 0.870531 19.7884 3.03105 20.1357 5.74514C20.1618 5.95073 20.181 6.15514 20.181 6.36133C20.1817 8.96139 20.2078 11.562 20.1742 14.1615C20.1382 16.9554 17.9067 19.2778 14.9862 19.6352C14.6843 19.6718 14.383 19.6795 14.081 19.6795C12.0477 19.6813 10.0144 19.6801 7.98103 19.6801ZM2.30098 11.9786C2.30098 13.8419 2.30471 15.7053 2.29539 17.5686C2.29415 17.7718 2.35814 17.8061 2.55507 17.8061C6.41176 17.8002 10.2685 17.8031 14.1251 17.7996C14.3724 17.7996 14.624 17.7884 14.8663 17.7458C16.871 17.3955 18.2024 15.876 18.2055 13.9376C18.2092 11.4776 18.2073 9.01752 18.2042 6.55747C18.2042 6.33711 18.1931 6.11379 18.1539 5.89756C17.8091 4.00585 16.1895 2.70966 14.1612 2.70611C11.5538 2.70139 8.94644 2.70434 6.33908 2.70552C5.89489 2.70552 5.46001 2.76637 5.03632 2.8993C3.3894 3.41447 2.30719 4.84891 2.30222 6.5427C2.29726 8.35465 2.30098 10.1666 2.30098 11.9786ZM5.27861 14.7836C5.27302 14.9219 5.32023 14.9585 5.4625 14.9567C6.01354 14.9496 6.56459 14.9508 7.11501 14.9561C7.23491 14.9573 7.31629 14.9189 7.3983 14.8409C9.14151 13.1838 10.886 11.5272 12.636 9.87653C12.7603 9.75955 12.7323 9.70874 12.6255 9.60949C12.0607 9.0831 11.4991 8.55375 10.9487 8.01377C10.8139 7.88143 10.7487 7.88734 10.6151 8.01495C9.06634 9.49251 7.52628 10.9789 5.94707 12.427C5.45753 12.876 5.09721 13.3102 5.28172 13.8638C5.28172 14.2537 5.28979 14.519 5.27861 14.7836ZM13.8058 8.76053C14.2395 8.34993 14.6694 7.93519 15.1092 7.5305C15.2154 7.43243 15.1788 7.38517 15.0949 7.30659C14.5109 6.75775 13.9288 6.20654 13.3511 5.6512C13.2635 5.56672 13.2132 5.5484 13.115 5.64411C12.6932 6.0553 12.2645 6.46117 11.8315 6.86173C11.7377 6.94857 11.7333 6.99525 11.829 7.08505C12.4198 7.63803 13.0044 8.1975 13.5909 8.75462C13.6232 8.78475 13.6567 8.8137 13.7002 8.85269C13.7406 8.81783 13.7748 8.79007 13.8058 8.76053Z"
+            fill="white"
+          />
+        </svg>
+        &nbsp;
+        <span>{{ language.community.new_chat }}</span>
+      </button>
+      <button *ngIf="createAccess.message == 'Yes'" class="disabled button-create" routerLink="/web/create-message" type="button">
+        <svg fill="none" height="20" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M5.97189 11.3126C5.81901 10.8625 5.96101 10.3781 6.33376 10.0781C6.53932 9.91259 6.78439 9.82842 7.06037 9.82842C7.06152 9.82842 7.06324 9.82842 7.06438 9.82842C7.26078 9.82899 7.4566 9.82842 7.653 9.82784C8.03549 9.8267 8.43114 9.82555 8.8205 9.833C8.84569 9.83357 8.8623 9.83242 8.87318 9.83071C8.87432 9.81983 8.87489 9.80265 8.87375 9.77517C8.86459 9.56045 8.86688 9.34344 8.8686 9.1333C8.86917 9.04569 8.87031 8.95866 8.87031 8.87105L8.87089 8.72791C8.87089 8.68496 8.87031 8.64259 8.87031 8.59965C8.86917 8.40096 8.86745 8.19541 8.8726 7.99214C8.88864 7.356 9.37075 6.87903 9.99544 6.87903C9.99773 6.87903 10 6.87903 10.0023 6.87903C10.615 6.88247 11.104 7.36745 11.1154 7.98355C11.1252 8.50116 11.1252 9.05657 11.116 9.78433C11.116 9.80609 11.1166 9.82097 11.1177 9.83128C11.1269 9.83242 11.1406 9.833 11.1595 9.83242C11.6536 9.82384 12.1552 9.82613 12.6402 9.82784L12.8933 9.82899C13.5701 9.83128 14.0665 10.2979 14.074 10.9392C14.0774 11.2576 13.9612 11.5479 13.7464 11.7569C13.5329 11.9647 13.2323 12.081 12.9002 12.0844C12.2835 12.0907 11.7161 12.0901 11.1658 12.0827C11.1429 12.0821 11.128 12.0833 11.1177 12.0844C11.1166 12.0936 11.116 12.1079 11.116 12.1279C11.1263 12.8654 11.1257 13.4283 11.1143 13.9522C11.1022 14.5099 10.6894 14.9513 10.11 15.0263C10.0664 15.0321 10.0235 15.0344 9.98055 15.0344C9.5076 15.0344 9.06327 14.7063 8.91497 14.2276C8.87203 14.0884 8.87146 13.9545 8.87089 13.8251C8.87031 13.6871 8.86974 13.5531 8.86917 13.4197C8.86688 13.0068 8.86459 12.5797 8.87547 12.1594C8.87661 12.1193 8.87318 12.0976 8.87089 12.0873C8.85943 12.085 8.83596 12.0815 8.78786 12.0827C8.21413 12.0924 7.63009 12.093 7.05236 12.0838C6.53646 12.0747 6.13221 11.7867 5.97189 11.3126ZM19.9767 15.0057C19.963 16.3118 19.4454 17.5411 18.5189 18.4676C17.5942 19.3917 16.3637 19.9133 15.0542 19.9363C14.4124 19.9471 13.7648 19.9506 13.1218 19.9506C12.5967 19.9506 12.0745 19.9483 11.5603 19.946C11.0856 19.9437 10.6104 19.942 10.1357 19.9414L9.99487 19.9448C9.49271 19.9448 8.98998 19.9454 8.48783 19.946C7.38446 19.9471 6.24387 19.9483 5.12217 19.9437C2.60452 19.9345 0.579287 18.274 0.0834288 15.8125C0.0273155 15.5337 0.00212177 15.2353 0.00212177 14.8448C0.00212177 13.9155 0.00154919 12.9856 0.000976604 12.0563C-0.000168566 10.0992 -0.00131374 8.07631 0.00383953 6.08658C0.010138 3.64278 1.61051 1.63702 3.98674 1.09535C4.31998 1.0192 4.62174 0.983701 4.91032 0.983701C4.92234 0.983701 4.9315 0.983128 4.9378 0.982555C4.94009 0.976257 4.94238 0.96595 4.94525 0.951636C5.06205 0.364164 5.48691 0 6.05377 0C6.05491 0 6.05606 0 6.0572 0C6.63036 0.00171775 7.06553 0.379624 7.16573 0.963087C7.16687 0.969386 7.16802 0.975112 7.16916 0.979692C7.18062 0.980265 7.19264 0.980265 7.19951 0.980265C8.98025 0.978547 10.8784 0.977402 12.7885 0.981983C12.8005 0.981983 12.8097 0.98141 12.8166 0.980838C12.8189 0.972821 12.8217 0.959652 12.8252 0.940757C12.9259 0.380196 13.3697 0.00229034 13.9297 0C13.9314 0 13.9331 0 13.9348 0C14.4925 0 14.9363 0.372753 15.0393 0.929305C15.0445 0.957362 15.0496 0.972249 15.0519 0.97912C15.0594 0.980838 15.0754 0.983701 15.1063 0.984846C17.8106 1.08161 19.9498 3.25114 19.9773 5.92282C20.0077 8.94835 20.0077 12.0042 19.9767 15.0057ZM4.9252 3.30152C4.9275 3.2706 4.92635 3.25171 4.9252 3.24026C4.91719 3.23911 4.90459 3.23797 4.88627 3.23797C4.87539 3.23797 4.86279 3.23854 4.84791 3.23911C3.39526 3.31527 2.25524 4.56923 2.25238 6.09402C2.24837 8.40383 2.24952 10.7526 2.25066 13.0234L2.25123 14.8271C2.25123 15.118 2.28559 15.3808 2.35602 15.6298C2.7093 16.8832 3.80008 17.6952 5.13534 17.698C6.25417 17.7003 7.3919 17.6997 8.49183 17.6992C8.98941 17.6992 9.48641 17.6986 9.98399 17.6986H11.1904C12.3969 17.6986 13.6033 17.6986 14.8097 17.6986C15.131 17.6986 15.4092 17.6642 15.6612 17.5938C16.9209 17.2422 17.7356 16.1457 17.7368 14.8007C17.7397 11.8159 17.7379 8.80406 17.7362 6.25148C17.7362 6.05279 17.7248 5.84952 17.7036 5.64626C17.5684 4.37684 16.3735 3.27289 15.0949 3.23625C15.0823 3.23568 15.0726 3.23568 15.0651 3.23625C15.0645 3.24426 15.0645 3.25457 15.0645 3.26717C15.0651 3.35248 15.0674 3.4378 15.0703 3.52311C15.0777 3.76245 15.0851 4.00924 15.0434 4.25774C14.9431 4.84979 14.4456 5.23285 13.8323 5.18819C13.2741 5.14754 12.8252 4.66828 12.8103 4.09799C12.8028 3.82315 12.7977 3.55403 12.8126 3.28034C12.8137 3.25858 12.8131 3.24369 12.8126 3.23396C12.8011 3.23224 12.7822 3.23052 12.7542 3.2311C11.9216 3.23682 11.0748 3.23625 10.256 3.23568C9.7916 3.2351 9.32724 3.2351 8.86287 3.23625C8.32865 3.23739 7.7761 3.23854 7.23272 3.2311C7.20638 3.2311 7.1892 3.23224 7.17833 3.23339C7.17775 3.24369 7.17718 3.25972 7.17833 3.2832C7.1892 3.48017 7.18634 3.67828 7.18405 3.8701C7.18348 3.92335 7.18233 3.9766 7.18176 4.02985C7.17604 4.6929 6.7111 5.18189 6.07725 5.19277C5.42736 5.20594 4.94181 4.7244 4.92291 4.05275L4.92234 4.03672C4.9149 3.79624 4.90803 3.54773 4.9252 3.30152Z"
+            fill="white"
+          />
+        </svg>
+        &nbsp;<span>{{ language.community.new_message }}</span>
+      </button>
+    </div>
+  </vc-page-header>
+
+  <div class="row 12346" *ngIf="!displayMessages">
+    <div class="col-md-12 page-main">
+      <div class="page-action">
+        <div class="page-action-left">
+          <div class="tab-button">
+            <button
+              (click)="onGroups()"
+              *ngIf="participateAccess.group == 'Yes' && (displayGroups == true || displayGroupsNews || displayGroupTask)"
+              [ngStyle]="
+                displayGroups == true
+                  ? {
+                      'border-color': setTheme.default_status == true ? '#68759F' : setTheme.button_bgcolor,
+                      'background-color': setTheme.default_status == true ? '#FBC52D' : setTheme.button_bgcolor,
+                      color: setTheme.default_status == true ? '#fff' : setTheme.button_text
+                    }
+                  : { 'border-color': setTheme.button_bgcolor, 'background-color': '#fff', color: '#68759F' }
+              "
+              id="groupTab"
+              routerLink="/web/community/groups"
+              type="button"
+            >
+              <span>{{ language.menu.Overview }}</span>
+            </button>
+
+            <button
+              (click)="onGroupNews()"
+              *ngIf="participateAccess.group == 'Yes' && (displayGroups == true || displayGroupsNews || displayGroupTask)"
+              [ngStyle]="
+                displayGroupsNews == true
+                  ? {
+                      'border-color': setTheme.default_status == true ? '#68759F' : setTheme.button_bgcolor,
+                      'background-color': setTheme.default_status == true ? '#FBC52D' : setTheme.button_bgcolor,
+                      color: setTheme.default_status == true ? '#fff' : setTheme.button_text
+                    }
+                  : { 'border-color': setTheme.button_bgcolor, 'background-color': '#fff', color: '#68759F' }
+              "
+              id="groupTab"
+              routerLink="/web/community/groups"
+              type="button"
+            >
+              <span>{{ language.community_groups.news }}</span>
+            </button>
+
+            <button
+              (click)="onGroupTask()"
+              *ngIf="participateAccess.group == 'Yes' && (displayGroups == true || displayGroupsNews || displayGroupTask)"
+              [ngStyle]="
+                displayGroupTask == true
+                  ? {
+                      'border-color': setTheme.default_status == true ? '#68759F' : setTheme.button_bgcolor,
+                      'background-color': setTheme.default_status == true ? '#FBC52D' : setTheme.button_bgcolor,
+                      color: setTheme.default_status == true ? '#fff' : setTheme.button_text
+                    }
+                  : { 'border-color': setTheme.button_bgcolor, 'background-color': '#fff', color: '#68759F' }
+              "
+              id="groupTab"
+              routerLink="/web/community/groups"
+              type="button"
+            >
+              <span>{{ language.community_groups.tasks }}</span>
+            </button>
+          </div>
+        </div>
+        <ng-container *ngIf="displayGroups == true && participateAccess.group == 'Yes'">
+          <div class="page-action-right">
+            <div class="group-filters">
+              <vc-dropdown [selectedItemStyle]="{ 'text-transform': 'none' }" (itemSelected)="onFilterChange($event)" [options]="groupsFilterDropDownItems" [selectedItem]="selectedFilter" displayName="name"></vc-dropdown>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+  <app-community-messages *ngIf="displayMessages == true && participateAccess.message == 'Yes'"></app-community-messages>
+  <vc-community-groups *ngIf="displayGroups == true"></vc-community-groups>
+  <app-group-news *ngIf="displayGroupsNews == true"></app-group-news>
+  <app-organizer-group-task [organizerTask]="organizerTask" *ngIf="displayGroupTask == true"></app-organizer-group-task>
+</div>
+
+<div *ngIf="participateAccess.message == 'No'" class="not-f-main">
+  <div class="page-not-available">
+    <div class="not-available-user">
+      <vc-icon color="blue" iconName="feature-locked" size="50px"></vc-icon>
+      <h1>{{ language.genral_message.feature_locked }}</h1>
+      <span>{{ language.genral_message.not_available_msg }}</span>
+    </div>
+  </div>
+</div>

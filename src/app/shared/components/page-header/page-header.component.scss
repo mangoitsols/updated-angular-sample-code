@@ -1,0 +1,51 @@
+.vc-page-header {
+  margin: 0px 5px 0px 5px;
+
+  h1 {
+    color: #3d475c;
+    font-family: 'Gellix' !important;
+    font-size: 28px;
+    font-style: normal;
+    font-weight: 800;
+    line-height: 19px;
+    letter-spacing: 0.485px;
+    margin-bottom: 10px;
+    text-transform: none;
+    white-space: nowrap;
+    padding-left: 0;
+  }
+
+  &__bread-crumbs {
+    color: var(--vc-color-dark-grey);
+    text-transform: capitalize;
+    display: flex;
+    white-space: nowrap;
+
+    a {
+      font-size: 14px;
+      color: var(--vc-color-dark-grey);
+      font-weight: 400;
+      line-height: 20px;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    span {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      text-transform: none;
+    }
+  }
+  svg {
+    margin: 0 8px;
+    position: relative;
+    top: -2px;
+  }
+  svg:last-child {
+    display: none;
+  }
+}

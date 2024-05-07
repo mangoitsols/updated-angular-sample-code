@@ -1,0 +1,137 @@
+<div class="content organizer-top-div" *ngIf="participateAccess.event == 'Yes' || participateAccess.appointments == 'Yes'">
+  <vc-page-header [breadcrumbs]="breadCrumbItems" [headerTitle]="displayEvents ? language.club_events.current_events : displayDates ? language.club_wall.club_dates : ''">
+    <ng-container class="top-button" *ngIf="createAccess.news == 'Yes' || createAccess.event == 'Yes'">
+      <button *ngIf="createAccess.event == 'Yes'" class="vc-button-with-icon disabled vc-button-create mr-2" routerLink="/web/create-event">
+        <vc-icon color="#ffffff" iconName="add-event" size="20px"></vc-icon>
+        &nbsp;<span>{{ language.club_wall.create_event }}</span>
+      </button>
+    </ng-container>
+  </vc-page-header>
+
+  <div class="row">
+    <div class="page_heading club-wall-top-heading" *ngIf="isClubDatesRoute() && displayDates == true">
+      <div class="page-action-left">
+        <div class="tab-button">
+          <button
+            type="button"
+            *ngIf="participateAccess.event == 'Yes'"
+            routerLink="organizer-event"
+            (click)="onEvents()"
+            [ngStyle]="
+              displayEvents == true
+                ? {
+                    'border-color': setTheme.default_status == true ? '#68759F' : setTheme.button_bgcolor,
+                    'background-color': setTheme.default_status == true ? '#FBC52D' : setTheme.button_bgcolor,
+                    color: setTheme.default_status == true ? '#fff' : setTheme.button_text
+                  }
+                : { 'border-color': setTheme.button_bgcolor, 'background-color': '#fff', color: '#68759F' }
+            "
+          >
+            <Span>{{ language.organizer.events }}</Span>
+          </button>
+
+          <button
+            type="button"
+            *ngIf="participateAccess.appointments == 'Yes'"
+            routerLink="club-dates"
+            (click)="onDates()"
+            [ngStyle]="
+              displayDates == true
+                ? {
+                    'border-color': setTheme.default_status == true ? '#68759F' : setTheme.button_bgcolor,
+                    'background-color': setTheme.default_status == true ? '#FBC52D' : setTheme.button_bgcolor,
+                    color: setTheme.default_status == true ? '#fff' : setTheme.button_text
+                  }
+                : { 'border-color': setTheme.button_bgcolor, 'background-color': '#fff', color: '#68759F' }
+            "
+          >
+            <Span>{{ language.club_wall.club_dates }}</Span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-12 page-main" *ngIf="(isOrganizerRoute() || isOrganizerEventRoute()) && displayEvents == true && participateAccess.event == 'Yes'">
+      <div class="page-action">
+        <div class="page-action-left">
+          <div class="tab-button">
+            <button
+              type="button"
+              *ngIf="participateAccess.event == 'Yes'"
+              routerLink="organizer-event"
+              (click)="onEvents()"
+              [ngStyle]="
+                displayEvents == true
+                  ? {
+                      'border-color': setTheme.default_status == true ? '#68759F' : setTheme.button_bgcolor,
+                      'background-color': setTheme.default_status == true ? '#FBC52D' : setTheme.button_bgcolor,
+                      color: setTheme.default_status == true ? '#fff' : setTheme.button_text
+                    }
+                  : { 'border-color': setTheme.button_bgcolor, 'background-color': '#fff', color: '#68759F' }
+              "
+            >
+              <Span>{{ language.organizer.events }}</Span>
+            </button>
+            <button
+              type="button"
+              routerLink="club-dates"
+              *ngIf="participateAccess.appointments == 'Yes'"
+              (click)="onDates()"
+              [ngStyle]="
+                displayDates == true
+                  ? {
+                      'border-color': setTheme.default_status == true ? '#68759F' : setTheme.button_bgcolor,
+                      'background-color': setTheme.default_status == true ? '#FBC52D' : setTheme.button_bgcolor,
+                      color: setTheme.default_status == true ? '#fff' : setTheme.button_text
+                    }
+                  : { 'border-color': setTheme.button_bgcolor, 'background-color': '#fff', color: '#68759F' }
+              "
+            >
+              <Span>{{ language.club_wall.club_dates }}</Span>
+            </button>
+            <!-- <button type="button" *ngIf="participateAccess.task == 'Yes'" routerLink="organizer-task"
+              id="organizer_task" (click)="onTasks()" [ngStyle]="
+                displayTasks == true
+                  ? {
+                      'border-color': setTheme.default_status == true ? '#68759F' : setTheme.button_bgcolor,
+                      'background-color': setTheme.default_status == true ? '#FBC52D' : setTheme.button_bgcolor,
+                      color: setTheme.default_status == true ? '#fff' : setTheme.button_text
+                    }
+                  : { 'border-color': setTheme.button_bgcolor, 'background-color': '#fff', color: '#68759F' }
+              ">
+              <Span>{{ language.organizer.task_list }}</Span>
+            </button>
+
+            <button type="button" *ngIf="participateAccess.document == 'Yes'" routerLink="organizer-documents"
+              id="organizer_doc" (click)="onDocuments()" [ngStyle]="
+                displayDocs == true
+                  ? {
+                      'border-color': setTheme.default_status == true ? '#68759F' : setTheme.button_bgcolor,
+                      'background-color': setTheme.default_status == true ? '#FBC52D' : setTheme.button_bgcolor,
+                      color: setTheme.default_status == true ? '#fff' : setTheme.button_text
+                    }
+                  : { 'border-color': setTheme.button_bgcolor, 'background-color': '#fff', color: '#68759F' }
+              ">
+              <span>{{ language.organizer.documents }}</span>
+            </button> -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- <app-organizer-event *ngIf="displayEvents == true && participateAccess.event == 'Yes'"></app-organizer-event> -->
+  <!-- <app-events-calendar *ngIf="displayEvents == true && participateAccess.event == 'Yes'"></app-events-calendar> -->
+  <!-- <app-club-dates *ngIf="displayDates == true"></app-club-dates> -->
+  <router-outlet></router-outlet>
+  <!-- <app-club-dates *ngIf="displayTasks == true && participateAccess.appointments == 'Yes'"></app-club-dates> -->
+</div>
+
+<div class="not-f-main" *ngIf="participateAccess.event == 'No' && participateAccess.task == 'No' && participateAccess.document == 'No'">
+  <div class="page-not-available">
+    <div class="not-available-user">
+      <vc-icon color="blue" iconName="feature-locked" size="50px"></vc-icon>
+      <h1>{{ language.genral_message.feature_locked }}</h1>
+      <span>{{ language.genral_message.not_available_msg }}</span>
+    </div>
+  </div>
+</div>

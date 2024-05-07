@@ -1,0 +1,316 @@
+@media only screen and (max-width: 1480px) and (min-width: 1261px) {
+  .row.eve_grid_main .col-lg-3.col-md-6.col-sm-6 {
+    flex: 0 0 33.3%;
+    max-width: 33.3%;
+  }
+}
+@media only screen and (max-width: 1260px) and (min-width: 1024px) {
+  .row.eve_grid_main .col-lg-3.col-md-6.col-sm-6 {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+}
+.row.eve_grid_main .news-image img {
+  width: 100%;
+  margin: auto;
+  text-align: center;
+  object-fit: cover;
+  height: 100%;
+}
+.row.eve_grid_main .news-image {
+  height: 210px;
+  overflow: hidden;
+}
+
+@media (min-width: 1024px) {
+  .search-result {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .search-result > div {
+    width: 33.33%;
+    padding: 0 10px;
+  }
+  .search-result > div .organizer-event-grid {
+    width: 100%;
+    max-width: 100%;
+    flex: 100%;
+    border: none;
+    padding: 15px 0 0;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .card {
+    margin-right: 0px;
+    margin-left: 0px;
+  }
+  .event_grid_widget .tasks_navigation {
+    display: inline-block !important;
+    width: 100%;
+  }
+}
+.event_grid_widget .tasks_navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.filter-events select option {
+  color: #98a5c6;
+}
+.filter-events select:focus {
+  outline: none;
+}
+.card {
+  margin-right: 0px;
+  margin-left: 0px;
+}
+
+.event_box_right span {
+  display: inline-block;
+  width: 100%;
+}
+span.event_location i {
+  position: relative;
+  top: 2px;
+}
+span.event_location {
+  font-family: 'Gellix', sans-serif;
+  text-transform: capitalize;
+  color: #d6860e;
+}
+.news-content p.event-day,
+.news-content p.event-time {
+  float: left;
+  color: #a6b9c7;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: 'Gellix', sans-serif;
+  display: flex;
+}
+p.event-day {
+  margin-right: 5px;
+}
+.club_calendar_widget .card {
+  background: #fff;
+  box-shadow: none;
+  padding: 35px 25px;
+  border-radius: 20px;
+}
+.fc-view-harness.fc-view-harness-active {
+  background: #fff !important;
+}
+.nav-tabs .nav-item.show .nav-link,
+.nav-tabs .nav-link.active {
+  background-color: transparent;
+}
+a.fc-daygrid-event .fc-daygrid-event-dot {
+  display: none;
+}
+.title-btn-group.right-btn-group button:nth-child(2) {
+  margin-right: 0px !important;
+}
+.tasks_navigation a.nav-link {
+  /* border-bottom: 2px solid transparent !important; */
+  border-left: 0px;
+  border-right: 0px;
+  border-top: 0px;
+  height: 48px;
+  padding: 0 24px;
+  cursor: pointer;
+  box-sizing: border-box;
+  opacity: 0.6;
+  min-width: auto;
+  text-align: center;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  white-space: nowrap;
+  position: relative;
+}
+/* .tasks_navigation a.nav-link.active {
+    border-bottom: 2px solid red !important;
+  }
+  .tasks_navigation a.nav-link.active div{
+    color: red;
+  } */
+.tasks_navigation {
+  padding: 0;
+  padding-bottom: 25px;
+  border-bottom: 1px solid #eff2fd;
+  margin-bottom: 30px;
+}
+.tasks_navigation ul li a:first-child {
+  padding-left: 0 !important;
+}
+.eve_grid_main {
+  display: flex;
+  flex-flow: row wrap;
+}
+.organizer-event-grid {
+  max-width: 19%;
+  padding: 12px;
+  border: 1px solid #eff2fd;
+  flex: 0 0 25%;
+}
+.news-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.organizer-event-grid .news-image {
+  border-radius: 15px;
+  overflow: hidden;
+  height: 260px;
+}
+.news-content .event-cat {
+  background: #4fb96d !important;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 1px 10px;
+  border-radius: 25px !important;
+  margin: 10px 0px 0px 0px !important;
+  display: inline-block;
+  line-height: 23px;
+  color: #fff;
+}
+/* modal css start */
+
+.grid-button button {
+  background: #6e63ee;
+  width: 100%;
+  height: 45px;
+  font-size: 13px;
+  font-family: 'Gellix', sans-serif;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+@media only screen and (max-width: 1200px) and (min-width: 768px) {
+  .organizer-event-grid {
+    max-width: 33.3%;
+    padding: 12px;
+    border: 1px solid #eff2fd;
+    flex: 0 0 33.3%;
+  }
+}
+@media only screen and (max-width: 1024px) and (min-width: 768px) {
+  .club_calendar_widget .card {
+    padding: 0;
+  }
+}
+
+.page-title img {
+  margin-right: 0px;
+}
+.title-btn-group button {
+  padding: 12px 20px;
+  border: none;
+  box-shadow: none;
+  font-weight: bold;
+}
+@media only screen and (min-width: 768px) {
+  .all_activity {
+    display: none;
+  }
+}
+@media screen and (max-width: 600px) {
+  .card {
+    margin-right: 0px;
+    margin-left: 0px;
+  }
+  .col-md-12.page-main {
+    padding: 0 15px;
+  }
+}
+
+/* new design css start */
+.page-action-left {
+  width: 50%;
+  justify-content: flex-start;
+  margin-bottom: 30px;
+}
+.page-heading h1 {
+  font-size: 24px;
+  font-family: 'Gellix', sans-serif !important;
+  font-weight: 700;
+  color: #68759f;
+  text-transform: uppercase;
+  margin: 0;
+  padding-left: 20px;
+}
+.page-heading {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 30px;
+}
+.page-action {
+  display: flex;
+  flex-wrap: nowrap;
+}
+.page-action {
+  margin-top: 0px;
+}
+.tab-button button span {
+  position: relative;
+  top: -2px;
+}
+.event_grid_widget .card {
+  padding: 35px 25px;
+  border-radius: 20px;
+  box-shadow: none;
+}
+.event_grid_widget .card-body {
+  padding: 0;
+}
+@media only screen and (max-width: 1360px) {
+  .page-action-right button:first-child {
+    margin-right: 10px;
+  }
+  .page-action-right button {
+    padding-right: 10px;
+  }
+  .page-action-left {
+    width: 46%;
+  }
+  .page-action-right {
+    width: 41%;
+  }
+  .tab-button button {
+    padding: 0 15px;
+  }
+}
+@media only screen and (max-width: 1024px) and (min-width: 768px) {
+  .page-action {
+    flex-flow: row wrap !important;
+  }
+  .page-heading {
+    width: 46%;
+  }
+  .page-action-right {
+    width: 60%;
+  }
+  .page-action-left {
+    width: 40%;
+    justify-content: flex-start;
+    display: flex;
+  }
+  .tab-button button {
+    padding: 0 25px;
+  }
+  .page-action-right button:first-child {
+    margin-right: 10px;
+  }
+  .event_grid_widget .card {
+    padding: 25px;
+  }
+}
+@media (max-width: 767px) {
+  .event_grid_widget .card {
+    padding: 0px;
+  }
+}

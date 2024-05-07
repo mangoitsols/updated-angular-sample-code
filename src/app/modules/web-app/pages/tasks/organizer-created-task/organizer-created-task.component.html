@@ -1,0 +1,168 @@
+<div class="all-tasks-list">
+  <div class="todo-task task-list">
+    <div class="task-list-header">
+      <h5>{{ language.organizer_task.toDoTask }}</h5>
+    </div>
+    <div class="task-list-row">
+      <!-- task-item list -->
+      <ng-container *ngFor="let task of toDoTask; let i = index">
+        <div class="task-list-item" *ngIf="toDoTask && toDoTask.length > 0">
+          <div class="task-list-image" *ngIf="task.token" (click)="openModal(task, toDoTask, i)">
+            <ng-container>
+              <ng-container *ngIf="!task.token.isLoading && task.token.imageLoaded">
+                <img [src]="task.token.url" alt="Image" />
+              </ng-container>
+              <ng-container *ngIf="task.token.isLoading">
+                <img [src]="'../../../../assets/img/loading.gif'" alt="Image" />
+              </ng-container>
+            </ng-container>
+          </div>
+
+          <div class="task-category">
+            <h5 (click)="openModal(task, toDoTask, i)">{{ task.title }}</h5>
+            <div class="event-action" *ngIf="userDetails.userId == task.organizer_id || userDetails.isAdmin">
+              <button mat-button [matMenuTriggerFor]="menu">
+                <svg xmlns="http://www.w3.org/2000/svg" width="8" height="24" viewBox="0 0 8 24" fill="none">
+                  <path
+                    d="M3.35205 23.5631C2.99799 23.4405 2.6296 23.3689 2.28941 23.195C0.986847 22.53 0.260366 21.0573 0.494469 19.5277C0.711563 18.1087 1.90849 16.9169 3.31087 16.7241C5.44511 16.4313 7.2481 18.1225 7.14963 20.3263C7.08025 21.8806 5.91555 23.2207 4.38246 23.5117C4.33547 23.5209 4.27369 23.4956 4.24728 23.5631C3.94872 23.5631 3.65061 23.5631 3.35205 23.5631ZM3.39681 0.074646C3.38159 0.122833 3.34041 0.113197 3.3055 0.117786C1.75943 0.336237 0.520431 1.72174 0.449707 3.31193C0.351679 5.51525 2.15423 7.2064 4.28891 6.91314C5.6904 6.72085 6.88822 5.52855 7.10487 4.10954C7.33852 2.57948 6.61249 1.10723 5.30993 0.442247C4.96974 0.268774 4.60135 0.19718 4.24728 0.0741863C3.96394 0.074646 3.6806 0.074646 3.39681 0.074646ZM3.80056 8.37896C1.95638 8.3785 0.444784 9.92739 0.444336 11.8186C0.443888 13.7094 1.95459 15.2592 3.79922 15.2597C5.6434 15.2601 7.155 13.7113 7.15545 11.82C7.15545 9.92876 5.64474 8.37942 3.80056 8.37896Z"
+                    fill="#D1D8EF"
+                  />
+                </svg>
+              </button>
+              <mat-menu #menu="matMenu" xPosition="before">
+                <button mat-menu-item routerLink="/web/update-task/{{ task.id }}">{{ language.Survey.edit }}</button>
+              </mat-menu>
+            </div>
+          </div>
+          <div class="tag" (click)="openModal(task, toDoTask, i)">
+            <span class="individual-badge" *ngIf="task.group_id == null || task.group_id == 0">{{ language.create_task.individual }}</span>
+            <span class="group-badge" *ngIf="task.group_id > 0">{{ language.community_groups.group }}</span>
+          </div>
+          <div class="task-list-content" (click)="openModal(task, toDoTask, i)">
+            <p [innerHTML]="task?.description?.length > 0 ? (task?.description | slice: 0:140) : task?.description"></p>
+            <div class="progress-task">
+              <div class="progress-content">
+                <span
+                  >{{ language.organizer_task.progress }} :
+                  <ng-container *ngIf="task.subtasks.length > 0">{{ task.approvedCount }}/{{ task.subtasks.length }}</ng-container>
+                </span>
+              </div>
+              <mat-progress-bar mode="determinate" [value]="task.progressVal"></mat-progress-bar>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+      <div class="col-lg-12 col-md-12 col-sm-12 empty-data-image" *ngIf="toDoTask && toDoTask.length == 0">
+        <span>{{ language.organizer_task.no_task_available }}</span>
+      </div>
+    </div>
+  </div>
+  <div class="progress-task task-list">
+    <div class="task-list-header">
+      <h5>{{ language.organizer_task.inProgress }}</h5>
+    </div>
+    <div class="task-list-row">
+      <!-- task-item list -->
+      <ng-container *ngFor="let task of inProgress; let i = index">
+        <div class="task-list-item">
+          <div class="task-list-image" *ngIf="task.token" (click)="openModal(task, inProgress, i)">
+            <ng-container>
+              <ng-container *ngIf="!task.token.isLoading && task.token.imageLoaded">
+                <img [src]="task.token.url" alt="Image" />
+              </ng-container>
+              <ng-container *ngIf="task.token.isLoading">
+                <img [src]="'../../../../assets/img/loading.gif'" alt="Image" />
+              </ng-container>
+            </ng-container>
+          </div>
+
+          <div class="task-category">
+            <h5 (click)="openModal(task, inProgress, i)">{{ task.title }}</h5>
+            <div class="event-action" *ngIf="userDetails.userId == task.organizer_id || userDetails.isAdmin">
+              <button mat-button [matMenuTriggerFor]="menu">
+                <svg xmlns="http://www.w3.org/2000/svg" width="8" height="24" viewBox="0 0 8 24" fill="none">
+                  <path
+                    d="M3.35205 23.5631C2.99799 23.4405 2.6296 23.3689 2.28941 23.195C0.986847 22.53 0.260366 21.0573 0.494469 19.5277C0.711563 18.1087 1.90849 16.9169 3.31087 16.7241C5.44511 16.4313 7.2481 18.1225 7.14963 20.3263C7.08025 21.8806 5.91555 23.2207 4.38246 23.5117C4.33547 23.5209 4.27369 23.4956 4.24728 23.5631C3.94872 23.5631 3.65061 23.5631 3.35205 23.5631ZM3.39681 0.074646C3.38159 0.122833 3.34041 0.113197 3.3055 0.117786C1.75943 0.336237 0.520431 1.72174 0.449707 3.31193C0.351679 5.51525 2.15423 7.2064 4.28891 6.91314C5.6904 6.72085 6.88822 5.52855 7.10487 4.10954C7.33852 2.57948 6.61249 1.10723 5.30993 0.442247C4.96974 0.268774 4.60135 0.19718 4.24728 0.0741863C3.96394 0.074646 3.6806 0.074646 3.39681 0.074646ZM3.80056 8.37896C1.95638 8.3785 0.444784 9.92739 0.444336 11.8186C0.443888 13.7094 1.95459 15.2592 3.79922 15.2597C5.6434 15.2601 7.155 13.7113 7.15545 11.82C7.15545 9.92876 5.64474 8.37942 3.80056 8.37896Z"
+                    fill="#D1D8EF"
+                  />
+                </svg>
+              </button>
+              <mat-menu #menu="matMenu" xPosition="before">
+                <button mat-menu-item routerLink="/web/update-task/{{ task.id }}">{{ language.Survey.edit }}</button>
+              </mat-menu>
+            </div>
+          </div>
+          <div class="tag" (click)="openModal(task, inProgress, i)">
+            <span class="individual-badge" *ngIf="task.group_id == null || task.group_id == 0">{{ language.create_task.individual }}</span>
+            <span class="group-badge" *ngIf="task.group_id > 0">{{ language.community_groups.group }}</span>
+          </div>
+          <div class="task-list-content" (click)="openModal(task, inProgress, i)">
+            <p [innerHTML]="task?.description?.length > 0 ? (task?.description | slice: 0:140) : task?.description"></p>
+            <div class="progress-task">
+              <div class="progress-content">
+                <span
+                  >{{ language.organizer_task.progress }} :
+                  <ng-container *ngIf="task.subtasks.length > 0">{{ task.approvedCount }}/{{ task.subtasks.length }}</ng-container>
+                </span>
+              </div>
+              <mat-progress-bar mode="determinate" [value]="task.progressVal"></mat-progress-bar>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+      <div class="col-lg-12 col-md-12 col-sm-12 empty-data-image" *ngIf="inProgress && inProgress.length == 0">
+        <span>{{ language.organizer_task.no_task_available }}</span>
+      </div>
+    </div>
+  </div>
+  <div class="completed-task task-list">
+    <div class="task-list-header">
+      <h5>{{ language.organizer_task.completed }}</h5>
+    </div>
+    <div class="task-list-row">
+      <!-- task-item list -->
+      <ng-container *ngFor="let task of completed; let i = index">
+        <div class="task-list-item" *ngIf="completed && completed.length > 0">
+          <div class="task-list-image" *ngIf="task.token" (click)="openModal(task, completed, i)">
+            <ng-container>
+              <ng-container *ngIf="!task.token.isLoading && task.token.imageLoaded">
+                <img [src]="task.token.url" alt="Image" />
+              </ng-container>
+              <ng-container *ngIf="task.token.isLoading">
+                <img [src]="'../../../../assets/img/loading.gif'" alt="Image" />
+              </ng-container>
+            </ng-container>
+          </div>
+
+          <div class="task-category">
+            <h5 (click)="openModal(task, completed, i)">{{ task.title }}</h5>
+            <div class="event-action" *ngIf="userDetails.userId == task.organizer_id || userDetails.isAdmin">
+              <mat-menu #menu="matMenu" xPosition="before">
+                <button mat-menu-item routerLink="/web/update-task/{{ task.id }}">{{ language.Survey.edit }}</button>
+              </mat-menu>
+            </div>
+          </div>
+          <div class="tag" (click)="openModal(task, completed, i)">
+            <span class="individual-badge" *ngIf="task.group_id == null || task.group_id == 0">{{ language.create_task.individual }}</span>
+            <span class="group-badge" *ngIf="task.group_id > 0">{{ language.community_groups.group }}</span>
+          </div>
+          <div class="task-list-content" (click)="openModal(task, completed, i)">
+            <p [innerHTML]="task?.description?.length > 0 ? (task?.description | slice: 0:140) : task?.description"></p>
+            <div class="progress-task">
+              <div class="progress-content">
+                <span
+                  >{{ language.organizer_task.progress }} :
+                  <ng-container *ngIf="task.subtasks.length > 0">{{ task.approvedCount }}/{{ task.subtasks.length }}</ng-container>
+                </span>
+              </div>
+              <mat-progress-bar mode="determinate" [value]="task.progressVal"></mat-progress-bar>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+      <div class="col-lg-12 col-md-12 col-sm-12 empty-data-image" *ngIf="completed && completed.length == 0">
+        <span>{{ language.organizer_task.no_task_available }}</span>
+      </div>
+    </div>
+  </div>
+</div>

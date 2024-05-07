@@ -1,0 +1,24 @@
+<div (click)="toggleDropdown()" [ngClass]="isMobileView ? 'm-vc-dropdown' : 'vc-dropdown'">
+  <button class="dropdown-btn">
+    {{ displayValue }}
+    <span>
+      <vc-icon *ngIf="!isOpen" [color]="isMobileView ? '#E93608' : '#68759F'" [planIcon]="isMobileView" [size]="isMobileView ? '20px' : '10px'" iconName="chevron-down-slim"></vc-icon>
+      <vc-icon *ngIf="isOpen" [color]="isMobileView ? '#E93608' : '#68759F'" [planIcon]="isMobileView" [size]="isMobileView ? '20px' : '10px'" iconName="chevron-up-slim"></vc-icon>
+    </span>
+  </button>
+  <ng-container *ngIf="!isMobileView; else mobile">
+    <div *ngIf="isOpen" [ngClass]="{ 'dropdown-content': true, top: dropdownPosition === 'top', bottom: dropdownPosition === 'bottom' || dropdownPosition === 'auto' }" class="dropdown-content">
+      <div (click)="selectItem(item)" *ngFor="let item of options" [ngClass]="isItemSelected(item) ? (selectedItemClass ? selectedItemClass : 'selected-item') : ''" [ngStyle]="isItemSelected(item) ? selectedItemStyle : {}" class="dropdown-item">
+        {{ getDisplayName(item) }}
+      </div>
+    </div>
+  </ng-container>
+  <ng-template #mobile>
+    <div *ngIf="isOpen" [ngClass]="{ 'dropdown-content': true, top: dropdownPosition === 'top', bottom: dropdownPosition === 'bottom' || dropdownPosition === 'auto' }" class="dropdown-content">
+      <div (click)="selectItem(item)" *ngFor="let item of options" [ngStyle]="{ 'background-color': isItemSelected(item) ? '#EAF0F6' : '' }" class="dropdown-item d-flex justify-content-between align-items-center">
+        <p class="items">{{ getDisplayName(item) }}</p>
+        <vc-icon *ngIf="isItemSelected(item)" [planIcon]="true" color="#E93608" iconName="check" size="18px"></vc-icon>
+      </div>
+    </div>
+  </ng-template>
+</div>

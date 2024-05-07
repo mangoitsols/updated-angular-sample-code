@@ -1,0 +1,121 @@
+<div class="modal fade change_pass_section news_details_popup all_news" id="push-notification" tabindex="-1" aria-labelledby="exampleModalLabel" *ngIf="displayNotification?.length > 0 || newsData?.length > 0 || surveyData?.length > 0">
+  <div class="modal-dialog all-notification-modal">
+    <div class="modal-content">
+      <div class="modal-body notification-close-btn">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    </div>
+    <div class="modal-content survey_notification" *ngIf="displayNotification?.length > 0">
+      <div class="modal-header">
+        <h3>
+          <strong>{{ displayNotification.text }}</strong>
+        </h3>
+      </div>
+      <div class="modal-body">
+        <div class="notification-modal-action">
+          <h3>{{ language.Survey.survey }}</h3>
+        </div>
+        <div class="survey-noti-grid">
+          <div class="news-grid-main" *ngFor="let item of displayNotification; let i = index">
+            <div class="news-grid-item" *ngIf="i < 3">
+              <div class="news-media">
+                <img src="../../../../../../assets/img/test_img.png" />
+              </div>
+              <div class="news-grid-content">
+                <h5 *ngIf="displayNotification" class="modal-title" id="exampleModalCenterTitle">{{ item.survey.length > 0 ? (item.survey | slice: 0:50) : item.survey }}</h5>
+                <p [innerHTML]="item.surveys.description.length > 0 ? (item.surveys.description | slice: 0:50) : item.surveys.description"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="profile_sub_btn event_sub_btn">
+            <button type="submit" class="save_btn" (click)="viewReadSurveyDetail()">{{ language.create_message.read }}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-content crm_news_notification" *ngIf="newsData?.length > 0">
+      <div class="modal-body">
+        <div class="notification-modal-action">
+          <h3>{{ language.dashboard.crm_news }}</h3>
+        </div>
+        <div class="survey-noti-grid" *ngIf="newsData">
+          <div class="news-grid-main" *ngFor="let news of newsData; let i = index">
+            <div class="news-grid-item" *ngIf="i < 3">
+              <div class="news-media">
+                <img onContextMenu="return false;" [src]="news.image != null || news.image != '' ? news.image : '../../assets/img/no_image.png'" alt="{{ item?.user_name?.firstname }}" loading="lazy" />
+              </div>
+              <div class="news-grid-content">
+                <h5>{{ news.title.length > 0 ? (news.title | slice: 0:30) : news.title }}</h5>
+                <p [innerHTML]="news.content.length > 0 ? (news.content | slice: 0:50) : news.content"></p>
+              </div>
+              <div class="news-grid-footer">
+                <div class="author-info">
+                  <div class="author-img" *ngIf="news?.picture == null || news?.picture == ''">
+                    <img onContextMenu="return false;" src="assets/img/defaultProfile.jpeg" alt="" loading="lazy" />
+                  </div>
+                  <div class="author-img" *ngIf="news?.picture != ''">
+                    <img onContextMenu="return false;" [src]="news?.picture" style="width: 100px" alt="" loading="lazy" />
+                  </div>
+                  <div class="author-des">
+                    <span class="author-id"> {{ language.dashboard.dashboardNewsAuthor }}</span>
+                    <span class="author-id"> {{ news.author }} </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer profile_sub_btn event_sub_btn">
+          <button type="button" class="save_btn" (click)="viewNewsDetails()">
+            {{ language.Survey.view_detail }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-content crm_news_notification" *ngIf="surveyData?.length > 0">
+      <div class="modal-body crm">
+        <div class="notification-modal-action">
+          <h3>{{ language.menu.crm_survey }}</h3>
+        </div>
+        <div class="survey-noti-grid">
+          <div class="news-grid-main" *ngFor="let item of surveyData; let i = index">
+            <div class="news-grid-item" *ngIf="i < 3">
+              <div class="news-media">
+                <img onContextMenu="return false;" [src]="item.picture != null || item.picture != '' ? item.picture : '../../assets/img/no_image.png'" alt="{{ item?.user_name?.firstname }}" loading="lazy" />
+              </div>
+              <div class="news-grid-content">
+                <h5>{{ item.title.length > 0 ? (item.title | slice: 0:30) : item.title }}</h5>
+                <p [innerHTML]="item.description.length > 0 ? (item.description | slice: 0:50) : item.description"></p>
+              </div>
+              <div class="news-grid-footer">
+                <div class="author-info">
+                  <div class="author-img" *ngIf="item?.picture == null || item?.picture == ''">
+                    <img onContextMenu="return false;" src="assets/img/defaultProfile.jpeg" alt="" loading="lazy" />
+                  </div>
+                  <div class="author-img" *ngIf="item?.picture != ''">
+                    <img onContextMenu="return false;" [src]="item?.picture" style="width: 100px" alt="" loading="lazy" />
+                  </div>
+                  <div class="author-des">
+                    <span class="author-id">{{ item.author }} </span>
+                    <span class="author-date"> {{ item?.created_at?.split('T')[0] | date: 'dd.MM.YYYY' }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer profile_sub_btn event_sub_btn">
+          <button type="button" class="save_btn" (click)="viewDetails()">
+            {{ language.Survey.view_detail }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

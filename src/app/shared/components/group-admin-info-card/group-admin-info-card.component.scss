@@ -1,0 +1,63 @@
+.vc-admin-detail-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--vc-color-dark-pink);
+  border-radius: var(--vc-border-radius);
+  box-shadow: var(--vc-box-shadow);
+  color: #ffffff !important;
+  font-size: 11px;
+  font-style: normal;
+  line-height: 20px;
+  max-height: 45px;
+  min-width: 230px;
+  padding: 9px 12px 9px 8px;
+
+  &__detail {
+    //line-height: 5px;
+    margin-left: 7px;
+    margin-right: 10px;
+    display: flex;
+    gap: 7px;
+
+    &__image {
+      width: 26px;
+      height: 26px;
+      border: 0.5px solid #fff;
+      border-radius: 50%;
+      overflow: hidden;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    &__admin-name {
+      h6 {
+        padding: 0;
+        margin: 0;
+        font-weight: 600;
+        font-size: 11px;
+        line-height: 12px;
+
+        span {
+          font-weight: 400;
+        }
+      }
+    }
+  }
+
+  &__action {
+    a {
+      padding: 0;
+      margin: 0;
+      color: inherit;
+      font-weight: 600;
+      line-height: 12px;
+      text-decoration: none;
+      font-style: normal;
+    }
+  }
+}

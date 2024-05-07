@@ -1,0 +1,197 @@
+<div class="tasks-wrapper">
+  <div class="kanban-board vc-card-shadow vc-radius mt-4">
+    <!--   TASKS TO BE DONE COL     -->
+
+    <div class="kanban-block" id="todo">
+      <div class="tasks-wrapper__done">{{ language.community_groups.tasks_to_be_done }}</div>
+      <div
+        #todoList="cdkDropList"
+        (cdkDropListDropped)="drop($event)"
+        [cdkDropListConnectedTo]="[inProgressList, completeList]"
+        [cdkDropListData]="categorizedTasks?.todo"
+        [id]="Status.TaskStatus.Todo"
+        cdkDropList
+        cdkDropListSortingDisabled
+        class="tasks-wrapper__card-bg vc-scrollbar-container"
+      >
+        <ng-container *ngIf="!isLoading; else loading">
+          <div *ngFor="let task of categorizedTasks.todo; index as i" cdkDrag class="task" id="{{ task.id }}">
+            <!-- 1st Card -->
+            <div class="vc-card-shadow vc-radius">
+              <ng-container *ngIf="task.token">
+                <div (click)="openGroupTaskDialogModal(task)" class="task-image-wrapper">
+                  <!-- <img [src]="task.taskImage ? task.taskImage[0]?.taskImage : 'assets/img/no-image.png'" alt="task-image" class="tasks-wrapper__image" /> -->
+                  <ng-container *ngIf="!task.token.isLoading && task.token.imageLoaded">
+                    <img [src]="task.token.url" alt="Image" />
+                  </ng-container>
+                  <ng-container *ngIf="task.token.isLoading">
+                    <img [src]="'../../../../assets/img/loading.gif'" alt="Image" />
+                  </ng-container>
+                </div>
+              </ng-container>
+              <div class="tasks-wrapper__body">
+                <div class="d-flex justify-content-between align-items-center">
+                  <p (click)="openGroupTaskDialogModal(task)" class="tasks-wrapper__title">{{ task.title }}</p>
+                  <div>
+                    <button [matMenuTriggerFor]="menu" mat-button>
+                      <vc-icon cssClass="cursor-pointer" iconName="vertical-ellipsis" size="22px"></vc-icon>
+                    </button>
+                    <mat-menu #menu="matMenu">
+                      <button mat-menu-item routerLink="/web/task-detail/{{ task.id }}">{{ language.Survey.view_detail }}</button>
+                    </mat-menu>
+                  </div>
+                </div>
+                <vc-badge [cssStyle]="{ 'border-radius': '5px', 'margin-top': '6px' }" text="{{ task.taskType }}"></vc-badge>
+                <p [innerHTML]="task.description" class="tasks-wrapper__text">...</p>
+                <div *ngIf="task.subtasks">
+                  <p class="tasks-wrapper__progress">{{ language.organizer_task.progress }} : {{ getSubTaskStatusCount(+task?.id).count }}</p>
+                  <div [attr.aria-valuenow]="getSubTaskStatusCount(+task.id).percentage + '%'" aria-label="Success example" aria-valuemax="100" aria-valuemin="0" class="progress" role="progressbar">
+                    <div [ngStyle]="{ width: getSubTaskStatusCount(+task.id).percentage + '%' }" class="progress-bar tasks-wrapper__done-progress"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+
+    <!-- TASKS IN PROGRESS COL -->
+
+    <div class="kanban-block" id="inprogress">
+      <div class="tasks-wrapper__in-progress">{{ language.community_groups.in_progress }}</div>
+      <div
+        #inProgressList="cdkDropList"
+        (cdkDropListDropped)="drop($event)"
+        [cdkDropListConnectedTo]="[todoList, completeList]"
+        [cdkDropListData]="categorizedTasks?.inProgress"
+        [id]="Status.TaskStatus.InProgress"
+        cdkDropList
+        cdkDropListSortingDisabled
+        class="tasks-wrapper__card-bg vc-scrollbar-container"
+      >
+        <ng-container *ngIf="!isLoading; else loading">
+          <div *ngFor="let task of categorizedTasks.inProgress; index as i" cdkDrag class="task" id="{{ task.id }}">
+            <div class="vc-card-shadow vc-radius">
+              <!-- <div (click)="openGroupTaskDialogModal(task)" class="task-image-wrapper">
+                <img [src]="task.taskImage ? task.taskImage[0]?.taskImage : 'assets/img/no-image.png'" alt="task-image" class="tasks-wrapper__image" />
+              </div> -->
+
+              <ng-container *ngIf="task.token">
+                <div (click)="openGroupTaskDialogModal(task)" class="task-image-wrapper">
+                  <!-- <img [src]="task.taskImage ? task.taskImage[0]?.taskImage : 'assets/img/no-image.png'" alt="task-image" class="tasks-wrapper__image" /> -->
+                  <ng-container *ngIf="!task.token.isLoading && task.token.imageLoaded">
+                    <img [src]="task.token.url" alt="Image" />
+                  </ng-container>
+                  <ng-container *ngIf="task.token.isLoading">
+                    <img [src]="'../../../../assets/img/loading.gif'" alt="Image" />
+                  </ng-container>
+                </div>
+              </ng-container>
+
+              <div class="tasks-wrapper__body">
+                <div class="d-flex justify-content-between align-items-center">
+                  <p (click)="openGroupTaskDialogModal(task)" class="tasks-wrapper__title">{{ task.title }}</p>
+                  <div>
+                    <button [matMenuTriggerFor]="menu" mat-button>
+                      <vc-icon cssClass="cursor-pointer" iconName="vertical-ellipsis" size="22px"></vc-icon>
+                    </button>
+                    <mat-menu #menu="matMenu">
+                      <button mat-menu-item routerLink="/web/task-detail/{{ task.id }}">{{ language.Survey.view_detail }}</button>
+                    </mat-menu>
+                  </div>
+                </div>
+                <vc-badge [cssStyle]="{ 'border-radius': '5px', 'margin-top': '6px' }" text="{{ task.taskType }}"></vc-badge>
+                <p [innerHTML]="task.description" class="tasks-wrapper__text">...</p>
+                <div *ngIf="task.subtasks">
+                  <p class="tasks-wrapper__progress">{{ language.organizer_task.progress }} : {{ getSubTaskStatusCount(+task?.id).count }}</p>
+                  <div aria-label="Success example" aria-valuemax="100" aria-valuemin="0" class="progress" role="progressbar">
+                    <div [ngStyle]="{ width: getSubTaskStatusCount(+task?.id).percentage + '%' }" class="progress-bar tasks-wrapper__In-progress"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+
+    <!-- TASKS COMPLETED COL -->
+
+    <div class="kanban-block" id="done">
+      <div class="tasks-wrapper__completed">{{ language.community_groups.completed }}</div>
+      <div
+        #completeList="cdkDropList"
+        (cdkDropListDropped)="drop($event)"
+        [cdkDropListConnectedTo]="[todoList, inProgressList]"
+        [cdkDropListData]="categorizedTasks?.completed"
+        [id]="Status.TaskStatus.Completed"
+        cdkDropList
+        cdkDropListSortingDisabled
+        class="tasks-wrapper__card-bg vc-scrollbar-container"
+      >
+        <ng-container *ngIf="!isLoading; else loading">
+          <div *ngFor="let task of categorizedTasks.completed; index as i" cdkDrag class="task" draggable="true" id="{{ task.id }}">
+            <div class="vc-card-shadow vc-radius">
+              <!-- <div (click)="openGroupTaskDialogModal(task)" class="task-image-wrapper">
+                <img [src]="task.taskImage ? task.taskImage[0]?.taskImage : 'assets/img/no-image.png'" alt="task-image" class="tasks-wrapper__image" />
+              </div> -->
+              <ng-container *ngIf="task.token">
+                <div (click)="openGroupTaskDialogModal(task)" class="task-image-wrapper">
+                  <!-- <img [src]="task.taskImage ? task.taskImage[0]?.taskImage : 'assets/img/no-image.png'" alt="task-image" class="tasks-wrapper__image" /> -->
+                  <ng-container *ngIf="!task.token.isLoading && task.token.imageLoaded">
+                    <img [src]="task.token.url" alt="Image" />
+                  </ng-container>
+                  <ng-container *ngIf="task.token.isLoading">
+                    <img [src]="'../../../../assets/img/loading.gif'" alt="Image" />
+                  </ng-container>
+                </div>
+              </ng-container>
+
+              <div class="tasks-wrapper__body">
+                <div class="d-flex justify-content-between align-items-center">
+                  <p (click)="openGroupTaskDialogModal(task)" class="tasks-wrapper__title">{{ task.title }}</p>
+                  <div>
+                    <button [matMenuTriggerFor]="menu" mat-button>
+                      <vc-icon cssClass="cursor-pointer" iconName="vertical-ellipsis" size="22px"></vc-icon>
+                    </button>
+                    <mat-menu #menu="matMenu">
+                      <button mat-menu-item routerLink="/web/task-detail/{{ task.id }}">{{ language.Survey.view_detail }}</button>
+                    </mat-menu>
+                  </div>
+                </div>
+                <vc-badge [cssStyle]="{ 'border-radius': '5px', 'margin-top': '6px' }" text="{{ task.taskType }}"></vc-badge>
+                <p [innerHTML]="task.description" class="tasks-wrapper__text">...</p>
+                <div *ngIf="task.subtasks">
+                  <p class="tasks-wrapper__progress">
+                    {{ language.organizer_task.progress }}
+                    : {{ getSubTaskStatusCount(+task?.id).count }}
+                  </p>
+                  <div aria-label="Success example" aria-valuemax="100" aria-valuemin="0" aria-valuenow="0" class="progress" role="progressbar">
+                    <div [ngStyle]="{ width: getSubTaskStatusCount(+task.id).percentage + '%' }" class="progress-bar tasks-wrapper__completed-progress"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #loading>
+  <div>
+    <ngx-skeleton-loader
+      [theme]="{
+        'border-radius': '15px',
+        height: '430px',
+        width: '495px',
+        'margin-bottom': '22px',
+        'background-color': 'var(--vc-skeleton-card-bg)'
+      }"
+      appearance="circle"
+      count="2"
+    ></ngx-skeleton-loader>
+  </div>
+</ng-template>
